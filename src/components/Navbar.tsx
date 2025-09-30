@@ -5,17 +5,12 @@ import { Button } from "@/components/ui/button";
 import logo from "@/assets/aitd-logo.png";
 
 const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Events", path: "/events" },
-  { name: "Sponsors", path: "/sponsors" },
-  { name: "Tasks", path: "/tasks" },
+  { name: "Internships", path: "/jobs" },
   { name: "Jobs", path: "/jobs" },
-  { name: "Resume", path: "/resume" },
-  { name: "Blogs", path: "/blogs" },
-  { name: "Reels", path: "/reels" },
-  { name: "Alumni", path: "/alumni" },
-  { name: "AI Tools", path: "/ai-tools" },
-  { name: "AI Chat", path: "/ai-chat" },
+  { name: "Competitions", path: "/events" },
+  { name: "Mentorships", path: "/mentorship" },
+  { name: "Practice", path: "/practice" },
+  { name: "More", path: "/more" },
 ];
 
 export const Navbar = () => {
@@ -34,12 +29,12 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive(link.path)
                     ? "bg-primary text-primary-foreground"
                     : "text-foreground hover:bg-muted"
@@ -48,13 +43,17 @@ export const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <Button size="sm" variant="outline" className="ml-2">
+              For Business
+            </Button>
+            <Button size="sm" className="ml-2">Login</Button>
           </div>
 
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -63,7 +62,7 @@ export const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 space-y-2">
+          <div className="lg:hidden py-4 space-y-2">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -78,6 +77,10 @@ export const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <div className="pt-2 space-y-2">
+              <Button size="sm" variant="outline" className="w-full">For Business</Button>
+              <Button size="sm" className="w-full">Login</Button>
+            </div>
           </div>
         )}
       </div>

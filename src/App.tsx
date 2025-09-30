@@ -16,6 +16,9 @@ import Reels from "./pages/Reels";
 import Alumni from "./pages/Alumni";
 import AITools from "./pages/AITools";
 import AIChat from "./pages/AIChat";
+import Mentorship from "./pages/Mentorship";
+import Practice from "./pages/Practice";
+import More from "./pages/More";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +44,9 @@ const App = () => (
               <Route path="/alumni" element={<Alumni />} />
               <Route path="/ai-tools" element={<AITools />} />
               <Route path="/ai-chat" element={<AIChat />} />
+              <Route path="/mentorship" element={<Mentorship />} />
+              <Route path="/practice" element={<Practice />} />
+              <Route path="/more" element={<More />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

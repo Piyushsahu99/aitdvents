@@ -19,6 +19,8 @@ import AIChat from "./pages/AIChat";
 import Mentorship from "./pages/Mentorship";
 import Practice from "./pages/Practice";
 import More from "./pages/More";
+import About from "./pages/About";
+import Scholarships from "./pages/Scholarships";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +49,8 @@ const App = () => (
               <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/practice" element={<Practice />} />
               <Route path="/more" element={<More />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/scholarships" element={<Scholarships />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

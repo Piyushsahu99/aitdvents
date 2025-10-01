@@ -6,7 +6,8 @@ import {
   Sparkles, 
   MessageCircle, 
   Handshake,
-  ArrowRight 
+  ArrowRight,
+  Info
 } from "lucide-react";
 
 export default function More() {
@@ -59,6 +60,13 @@ export default function More() {
       icon: FileText,
       link: "/blogs",
       color: "bg-gradient-to-br from-teal-500/10 to-teal-500/5 border-teal-500/20",
+    },
+    {
+      title: "About Us",
+      description: "Learn about our mission and vision",
+      icon: Info,
+      link: "/about",
+      color: "bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 border-indigo-500/20",
     },
   ];
 

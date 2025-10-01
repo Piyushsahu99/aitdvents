@@ -4,7 +4,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { tasks } from "@/data/mockData";
-import { Clock, DollarSign } from "lucide-react";
+import { Clock, DollarSign, Zap, Trophy } from "lucide-react";
 
 export default function Tasks() {
   const [search, setSearch] = useState("");
@@ -61,6 +61,16 @@ export default function Tasks() {
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
                     <span>{task.duration}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-primary" />
+                    <span className="font-medium">{task.xp} XP</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-4 w-4 text-primary" />
+                    <Badge variant={task.difficulty === "Easy" ? "outline" : task.difficulty === "Medium" ? "secondary" : "default"}>
+                      {task.difficulty}
+                    </Badge>
                   </div>
                 </div>
                 

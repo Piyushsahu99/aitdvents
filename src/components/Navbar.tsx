@@ -10,6 +10,7 @@ const navLinks = [
   { name: "Competitions", path: "/events" },
   { name: "Mentorships", path: "/mentorship" },
   { name: "Practice", path: "/practice" },
+  { name: "Scholarships", path: "/scholarships" },
   { name: "More", path: "/more" },
 ];
 
@@ -43,6 +44,11 @@ export const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <Link to="/about">
+              <Button size="sm" variant="ghost" className="ml-2">
+                About
+              </Button>
+            </Link>
             <Button size="sm" variant="outline" className="ml-2">
               For Business
             </Button>
@@ -78,6 +84,9 @@ export const Navbar = () => {
               </Link>
             ))}
             <div className="pt-2 space-y-2">
+              <Link to="/about" onClick={() => setIsOpen(false)}>
+                <Button size="sm" variant="ghost" className="w-full">About</Button>
+              </Link>
               <Button size="sm" variant="outline" className="w-full">For Business</Button>
               <Button size="sm" className="w-full">Login</Button>
             </div>

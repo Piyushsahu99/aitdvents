@@ -63,6 +63,13 @@ export default function Home() {
       link: "/tasks",
       gradient: "bg-primary",
     },
+    {
+      icon: GraduationCap,
+      title: "Scholarships",
+      subtitle: "Fund Your Education",
+      link: "/scholarships",
+      gradient: "bg-[image:var(--gradient-mentorship)]",
+    },
   ];
 
   const personas = [
@@ -121,7 +128,7 @@ export default function Home() {
           </div>
 
           {/* Feature Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {features.map((feature) => (
               <FeatureCard key={feature.title} {...feature} />
             ))}

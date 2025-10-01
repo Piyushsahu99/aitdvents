@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { sponsors } from "@/data/mockData";
-import { Mail, Handshake } from "lucide-react";
+import { Mail, Handshake, Gift } from "lucide-react";
 
 export default function Sponsors() {
   return (
@@ -40,6 +40,17 @@ export default function Sponsors() {
                   <Badge variant="secondary">{sponsor.type}</Badge>
                 </div>
                 <p className="text-muted-foreground mb-4">{sponsor.description}</p>
+                
+                {sponsor.benefits && (
+                  <div className="flex items-start gap-2 text-sm mb-3 p-3 bg-primary/5 rounded-lg">
+                    <Gift className="h-4 w-4 text-primary mt-0.5" />
+                    <div>
+                      <span className="font-medium text-foreground">Benefits: </span>
+                      <span className="text-muted-foreground">{sponsor.benefits}</span>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Mail className="h-4 w-4 text-primary" />
                   <a href={`mailto:${sponsor.contact}`} className="hover:text-primary">

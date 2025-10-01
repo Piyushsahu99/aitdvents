@@ -69,6 +69,12 @@ export default function Jobs() {
                     <Banknote className="h-4 w-4 text-primary" />
                     <span className="font-medium text-primary">{job.stipend}</span>
                   </div>
+                  {job.applyBy && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Clock className="h-4 w-4 text-warning" />
+                      <span className="text-sm">Apply by: {job.applyBy}</span>
+                    </div>
+                  )}
                 </div>
                 
                 <Badge variant="outline">{job.category}</Badge>

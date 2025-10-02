@@ -14,16 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blogs: {
+        Row: {
+          ai_generated: boolean | null
+          author: string
+          category: string
+          content: string
+          created_at: string | null
+          event_id: string | null
+          excerpt: string
+          id: string
+          published: boolean | null
+          read_time: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          author: string
+          category: string
+          content: string
+          created_at?: string | null
+          event_id?: string | null
+          excerpt: string
+          id?: string
+          published?: boolean | null
+          read_time: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          ai_generated?: boolean | null
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string | null
+          event_id?: string | null
+          excerpt?: string
+          id?: string
+          published?: boolean | null
+          read_time?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blogs_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          category: string
+          created_at: string | null
+          created_by: string | null
+          date: string
+          description: string
+          external_link: string | null
+          hashtags: string[] | null
+          id: string
+          location: string
+          participants: number | null
+          poster_url: string | null
+          status: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          date: string
+          description: string
+          external_link?: string | null
+          hashtags?: string[] | null
+          id?: string
+          location: string
+          participants?: number | null
+          poster_url?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          date?: string
+          description?: string
+          external_link?: string | null
+          hashtags?: string[] | null
+          id?: string
+          location?: string
+          participants?: number | null
+          poster_url?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      jobs: {
+        Row: {
+          apply_by: string | null
+          category: string
+          company: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          duration: string
+          id: string
+          location: string
+          requirements: string | null
+          status: Database["public"]["Enums"]["event_status"]
+          stipend: string
+          title: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          apply_by?: string | null
+          category: string
+          company: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          duration: string
+          id?: string
+          location: string
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          stipend: string
+          title: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          apply_by?: string | null
+          category?: string
+          company?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          duration?: string
+          id?: string
+          location?: string
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          stipend?: string
+          title?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      scholarships: {
+        Row: {
+          amount: string
+          category: string
+          created_at: string | null
+          created_by: string | null
+          deadline: string
+          description: string
+          eligibility: string
+          id: string
+          provider: string
+          requirements: string | null
+          status: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: string
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          deadline: string
+          description: string
+          eligibility: string
+          id?: string
+          provider: string
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: string
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          deadline?: string
+          description?: string
+          eligibility?: string
+          id?: string
+          provider?: string
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      event_status: "draft" | "live" | "ended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +387,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      event_status: ["draft", "live", "ended"],
+    },
   },
 } as const

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
 
 const navLinks = [
@@ -16,7 +17,42 @@ const navLinks = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    // Get current user
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkAdminStatus = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    
+    setIsAdmin(!!data);
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -49,10 +85,25 @@ export const Navbar = () => {
                 About
               </Button>
             </Link>
-            <Button size="sm" variant="outline" className="ml-2">
-              For Business
-            </Button>
-            <Button size="sm" className="ml-2">Login</Button>
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button size="sm" variant="outline" className="ml-2">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                )}
+                <Button size="sm" variant="outline" className="ml-2" onClick={() => supabase.auth.signOut()}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link to="/auth">
+                <Button size="sm" className="ml-2">Login</Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,8 +138,25 @@ export const Navbar = () => {
               <Link to="/about" onClick={() => setIsOpen(false)}>
                 <Button size="sm" variant="ghost" className="w-full">About</Button>
               </Link>
-              <Button size="sm" variant="outline" className="w-full">For Business</Button>
-              <Button size="sm" className="w-full">Login</Button>
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Link to="/admin" onClick={() => setIsOpen(false)}>
+                      <Button size="sm" variant="outline" className="w-full">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => supabase.auth.signOut()}>
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button size="sm" className="w-full">Login</Button>
+                </Link>
+              )}
             </div>
           </div>
         )}

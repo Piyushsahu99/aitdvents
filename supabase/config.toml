@@ -1,1 +1,7 @@
 project_id = "dmujttufuslvuozoygpq"
+
+[functions.generate-content]
+verify_jwt = true
+
+[functions.generate-poster]
+verify_jwt = true

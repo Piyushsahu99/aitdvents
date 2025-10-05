@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings } from "lucide-react";
+import { Menu, X, Settings, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
@@ -10,7 +10,7 @@ const navLinks = [
   { name: "Bounties", path: "/bounties" },
   { name: "Jobs", path: "/jobs" },
   { name: "Mentorship", path: "/mentorship" },
-  { name: "Practice", path: "/practice" },
+  { name: "AI Chat", path: "/ai-chat", icon: "sparkles" },
   { name: "More", path: "/more" },
 ];
 
@@ -70,12 +70,13 @@ export const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1 ${
                   isActive(link.path)
                     ? "bg-primary text-primary-foreground"
                     : "text-foreground hover:bg-muted"
                 }`}
               >
+                {link.icon === "sparkles" && <Sparkles className="h-4 w-4" />}
                 {link.name}
               </Link>
             ))}

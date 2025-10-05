@@ -67,6 +67,169 @@ export type Database = {
           },
         ]
       }
+      bounties: {
+        Row: {
+          banner_url: string | null
+          category: string
+          created_at: string | null
+          created_by: string | null
+          deadline: string
+          description: string
+          difficulty: string
+          id: string
+          judging_criteria: string | null
+          max_submissions: number | null
+          prize_amount: string
+          prize_currency: string | null
+          requirements: string
+          rules: string | null
+          status: Database["public"]["Enums"]["event_status"]
+          tags: string[] | null
+          title: string
+          total_participants: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          deadline: string
+          description: string
+          difficulty: string
+          id?: string
+          judging_criteria?: string | null
+          max_submissions?: number | null
+          prize_amount: string
+          prize_currency?: string | null
+          requirements: string
+          rules?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          tags?: string[] | null
+          title: string
+          total_participants?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          deadline?: string
+          description?: string
+          difficulty?: string
+          id?: string
+          judging_criteria?: string | null
+          max_submissions?: number | null
+          prize_amount?: string
+          prize_currency?: string | null
+          requirements?: string
+          rules?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          tags?: string[] | null
+          title?: string
+          total_participants?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      bounty_payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string | null
+          id: string
+          paid_at: string | null
+          payment_method: string | null
+          status: string
+          submission_id: string
+          transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          status?: string
+          submission_id: string
+          transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          status?: string
+          submission_id?: string
+          transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bounty_payments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "bounty_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bounty_submissions: {
+        Row: {
+          bounty_id: string
+          description: string
+          feedback: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          score: number | null
+          status: string
+          submission_url: string
+          submitted_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bounty_id: string
+          description: string
+          feedback?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number | null
+          status?: string
+          submission_url: string
+          submitted_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bounty_id?: string
+          description?: string
+          feedback?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number | null
+          status?: string
+          submission_url?: string
+          submitted_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bounty_submissions_bounty_id_fkey"
+            columns: ["bounty_id"]
+            isOneToOne: false
+            referencedRelation: "bounties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           category: string

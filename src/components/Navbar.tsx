@@ -6,12 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
 
 const navLinks = [
-  { name: "Internships", path: "/jobs" },
+  { name: "Events", path: "/events" },
+  { name: "Bounties", path: "/bounties" },
   { name: "Jobs", path: "/jobs" },
-  { name: "Competitions", path: "/events" },
-  { name: "Mentorships", path: "/mentorship" },
+  { name: "Mentorship", path: "/mentorship" },
   { name: "Practice", path: "/practice" },
-  { name: "Scholarships", path: "/scholarships" },
   { name: "More", path: "/more" },
 ];
 

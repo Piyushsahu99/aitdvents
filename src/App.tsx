@@ -23,6 +23,8 @@ import About from "./pages/About";
 import Scholarships from "./pages/Scholarships";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
+import Bounties from "./pages/Bounties";
+import TermsAndConditions from "./pages/TermsAndConditions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,8 +55,10 @@ const App = () => (
               <Route path="/more" element={<More />} />
               <Route path="/about" element={<About />} />
               <Route path="/scholarships" element={<Scholarships />} />
+              <Route path="/bounties" element={<Bounties />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

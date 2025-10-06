@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
@@ -8,6 +8,7 @@ import logo from "@/assets/aitd-logo.png";
 const navLinks = [
   { name: "Events", path: "/events" },
   { name: "Bounties", path: "/bounties" },
+  { name: "Leaderboard", path: "/leaderboard", icon: "trophy" },
   { name: "Jobs", path: "/jobs" },
   { name: "Mentorship", path: "/mentorship" },
   { name: "AI Chat", path: "/ai-chat", icon: "sparkles" },
@@ -77,6 +78,7 @@ export const Navbar = () => {
                 }`}
               >
                 {link.icon === "sparkles" && <Sparkles className="h-4 w-4" />}
+                {link.icon === "trophy" && <Trophy className="h-4 w-4" />}
                 {link.name}
               </Link>
             ))}
@@ -87,6 +89,12 @@ export const Navbar = () => {
             </Link>
             {user ? (
               <>
+                <Link to="/dashboard">
+                  <Button size="sm" variant="outline" className="ml-2">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
                 {isAdmin && (
                   <Link to="/admin">
                     <Button size="sm" variant="outline" className="ml-2">
@@ -140,6 +148,12 @@ export const Navbar = () => {
               </Link>
               {user ? (
                 <>
+                  <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                    <Button size="sm" variant="outline" className="w-full">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Button>
+                  </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setIsOpen(false)}>
                       <Button size="sm" variant="outline" className="w-full">

@@ -59,7 +59,11 @@ export default function Dashboard() {
     pendingSubmissions: submissions.filter(s => s.status === "pending").length,
     totalEarnings: submissions
       .filter(s => s.status === "approved")
-      .reduce((sum, s) => sum + (parseFloat(s.bounties?.prize_amount || 0)), 0),
+      .reduce((sum, s) => {
+        const bounty = Array.isArray(s.bounties) ? s.bounties[0] : s.bounties;
+        const amount = bounty?.prize_amount || "0";
+        return sum + parseFloat(amount.replace(/[^0-9.-]/g, '') || "0");
+      }, 0),
   };
 
   const getStatusColor = (status: string) => {
@@ -152,46 +156,49 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           ) : (
-            submissions.map((submission) => (
-              <Card key={submission.id} className="hover:shadow-[var(--shadow-hover)] transition-all">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg mb-1">{submission.bounties?.title}</CardTitle>
-                      <CardDescription className="flex items-center gap-2">
-                        <Calendar className="h-3 w-3" />
-                        Submitted {new Date(submission.submitted_at).toLocaleDateString()}
-                      </CardDescription>
+            submissions.map((submission) => {
+              const bounty = Array.isArray(submission.bounties) ? submission.bounties[0] : submission.bounties;
+              return (
+                <Card key={submission.id} className="hover:shadow-[var(--shadow-hover)] transition-all">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg mb-1">{bounty?.title || "Untitled Bounty"}</CardTitle>
+                        <CardDescription className="flex items-center gap-2">
+                          <Calendar className="h-3 w-3" />
+                          Submitted {new Date(submission.submitted_at).toLocaleDateString()}
+                        </CardDescription>
+                      </div>
+                      <Badge variant={getStatusColor(submission.status)}>
+                        {submission.status}
+                      </Badge>
                     </div>
-                    <Badge variant={getStatusColor(submission.status)}>
-                      {submission.status}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-3">{submission.description}</p>
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <DollarSign className="h-4 w-4 text-primary" />
-                      <span className="font-medium">₹{submission.bounties?.prize_amount}</span>
-                    </div>
-                    <Badge variant="outline">{submission.bounties?.category}</Badge>
-                    {submission.score && (
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-3">{submission.description}</p>
+                    <div className="flex items-center gap-4 text-sm">
                       <div className="flex items-center gap-1">
-                        <Trophy className="h-4 w-4 text-accent" />
-                        <span className="font-medium">{submission.score}/100</span>
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        <span className="font-medium">{bounty?.prize_amount || "N/A"}</span>
+                      </div>
+                      {bounty?.category && <Badge variant="outline">{bounty.category}</Badge>}
+                      {submission.score && (
+                        <div className="flex items-center gap-1">
+                          <Trophy className="h-4 w-4 text-accent" />
+                          <span className="font-medium">{submission.score}/100</span>
+                        </div>
+                      )}
+                    </div>
+                    {submission.feedback && (
+                      <div className="mt-4 p-3 bg-muted rounded-lg">
+                        <p className="text-sm font-medium mb-1">Feedback:</p>
+                        <p className="text-sm text-muted-foreground">{submission.feedback}</p>
                       </div>
                     )}
-                  </div>
-                  {submission.feedback && (
-                    <div className="mt-4 p-3 bg-muted rounded-lg">
-                      <p className="text-sm font-medium mb-1">Feedback:</p>
-                      <p className="text-sm text-muted-foreground">{submission.feedback}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
         </TabsContent>
 
@@ -205,20 +212,23 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {submissions.slice(0, 5).map((submission) => (
-                  <div key={submission.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
-                    <div className="h-2 w-2 rounded-full bg-primary" />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{submission.bounties?.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(submission.submitted_at).toLocaleDateString()}
-                      </p>
+                {submissions.slice(0, 5).map((submission) => {
+                  const bounty = Array.isArray(submission.bounties) ? submission.bounties[0] : submission.bounties;
+                  return (
+                    <div key={submission.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
+                      <div className="h-2 w-2 rounded-full bg-primary" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{bounty?.title || "Untitled Bounty"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(submission.submitted_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <Badge variant={getStatusColor(submission.status)} className="text-xs">
+                        {submission.status}
+                      </Badge>
                     </div>
-                    <Badge variant={getStatusColor(submission.status)} className="text-xs">
-                      {submission.status}
-                    </Badge>
-                  </div>
-                ))}
+                  );
+                })}
                 {submissions.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-8">
                     No activity yet. Start by submitting to bounties!

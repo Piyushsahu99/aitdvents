@@ -43,7 +43,11 @@ export default function Leaderboard() {
           };
         }
         acc[userId].totalSubmissions += 1;
-        acc[userId].totalEarnings += parseFloat(submission.bounties?.prize_amount || 0);
+        
+        const bounty = Array.isArray(submission.bounties) ? submission.bounties[0] : submission.bounties;
+        const amount = bounty?.prize_amount || "0";
+        acc[userId].totalEarnings += parseFloat(amount.replace(/[^0-9.-]/g, '') || "0");
+        
         if (submission.score) {
           acc[userId].scores.push(submission.score);
         }

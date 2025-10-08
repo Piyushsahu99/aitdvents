@@ -8,6 +8,7 @@ import logo from "@/assets/aitd-logo.png";
 const navLinks = [
   { name: "Events", path: "/events" },
   { name: "Bounties", path: "/bounties" },
+  { name: "Hackathons", path: "/hackathons", icon: "code" },
   { name: "Leaderboard", path: "/leaderboard", icon: "trophy" },
   { name: "Jobs", path: "/jobs" },
   { name: "Mentorship", path: "/mentorship" },

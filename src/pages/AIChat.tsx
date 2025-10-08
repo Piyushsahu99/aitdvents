@@ -9,11 +9,22 @@ interface Message {
   content: string;
 }
 
+const SUGGESTED_PROMPTS = [
+  "🎯 Find hackathons happening this month",
+  "💰 Top bounties with highest rewards",
+  "🎓 Scholarships for engineering students",
+  "💼 Latest internship opportunities",
+  "📚 How to prepare for technical interviews?",
+  "🏆 Show me active competitions",
+  "🤖 AI and ML learning resources",
+  "🌟 Career guidance for web developers"
+];
+
 export default function AIChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! 👋 I'm your AI career assistant. I can help you with events, bounties, career advice, scholarships, and more! What would you like to know?",
+      content: "Hello! 👋 I'm your AI-powered career assistant for AITD Events.\n\nI can help you with:\n• 🎯 Finding hackathons, bounties & competitions\n• 💼 Discovering jobs and internships\n• 🎓 Locating scholarships and funding\n• 📚 Career guidance and skill development\n• 🏆 Track your progress and achievements\n\nWhat would you like to explore today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -203,23 +214,40 @@ export default function AIChat() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          "Find hackathons near me",
-          "Best scholarships for CS students",
-          "How to prepare for interviews?",
-          "Latest bounties I can apply for"
-        ].map((suggestion) => (
-          <button
-            key={suggestion}
-            onClick={() => setInput(suggestion)}
-            className="p-3 text-sm text-left rounded-lg bg-muted hover:bg-muted/80 border border-border hover:border-primary/50 transition-all hover:shadow-md"
-            disabled={isLoading}
-          >
-            {suggestion}
-          </button>
-        ))}
+      {/* Suggested Prompts */}
+      <div className="mt-8">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4 flex items-center gap-2">
+          <Sparkles className="h-4 w-4" />
+          Suggested Prompts - Try asking:
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          {SUGGESTED_PROMPTS.map((suggestion) => (
+            <button
+              key={suggestion}
+              onClick={() => setInput(suggestion)}
+              className="group p-4 text-sm text-left rounded-xl bg-gradient-to-br from-card to-muted/50 hover:from-primary/5 hover:to-accent/5 border border-border hover:border-primary/50 transition-all hover:shadow-lg hover:scale-[1.02] duration-300"
+              disabled={isLoading}
+            >
+              <span className="group-hover:text-primary transition-colors">{suggestion}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Info Cards */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-6 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+          <h4 className="font-semibold mb-2 text-primary">🎯 Smart Search</h4>
+          <p className="text-sm text-muted-foreground">Ask me to find specific opportunities matching your interests and skills.</p>
+        </div>
+        <div className="p-6 rounded-xl bg-gradient-to-br from-info/10 to-primary/10 border border-info/20">
+          <h4 className="font-semibold mb-2 text-info">📊 Personalized Insights</h4>
+          <p className="text-sm text-muted-foreground">Get tailored recommendations based on your profile and goals.</p>
+        </div>
+        <div className="p-6 rounded-xl bg-gradient-to-br from-accent/10 to-primary/10 border border-accent/20">
+          <h4 className="font-semibold mb-2 text-accent">⚡ Instant Answers</h4>
+          <p className="text-sm text-muted-foreground">Powered by Gemini 2.5 Flash for lightning-fast responses.</p>
+        </div>
       </div>
     </div>
   );

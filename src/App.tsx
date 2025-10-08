@@ -24,6 +24,7 @@ import Scholarships from "./pages/Scholarships";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import Bounties from "./pages/Bounties";
+import Hackathons from "./pages/Hackathons";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Dashboard from "./pages/Dashboard";
 import Leaderboard from "./pages/Leaderboard";
@@ -57,7 +58,8 @@ const App = () => (
               <Route path="/more" element={<More />} />
               <Route path="/about" element={<About />} />
               <Route path="/scholarships" element={<Scholarships />} />
-              <Route path="/bounties" element={<Bounties />} />
+          <Route path="/bounties" element={<Bounties />} />
+          <Route path="/hackathons" element={<Hackathons />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/terms" element={<TermsAndConditions />} />

@@ -281,6 +281,78 @@ export type Database = {
         }
         Relationships: []
       }
+      hackathons: {
+        Row: {
+          banner_url: string | null
+          category: string
+          created_at: string | null
+          created_by: string | null
+          description: string
+          difficulty: string
+          end_date: string
+          external_link: string | null
+          id: string
+          location: string
+          max_team_size: number
+          mode: string
+          organizer: string
+          prize_pool: string
+          registration_deadline: string
+          start_date: string
+          status: Database["public"]["Enums"]["event_status"]
+          themes: Json | null
+          title: string
+          total_participants: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          difficulty: string
+          end_date: string
+          external_link?: string | null
+          id?: string
+          location: string
+          max_team_size?: number
+          mode: string
+          organizer: string
+          prize_pool: string
+          registration_deadline: string
+          start_date: string
+          status?: Database["public"]["Enums"]["event_status"]
+          themes?: Json | null
+          title: string
+          total_participants?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          difficulty?: string
+          end_date?: string
+          external_link?: string | null
+          id?: string
+          location?: string
+          max_team_size?: number
+          mode?: string
+          organizer?: string
+          prize_pool?: string
+          registration_deadline?: string
+          start_date?: string
+          status?: Database["public"]["Enums"]["event_status"]
+          themes?: Json | null
+          title?: string
+          total_participants?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       jobs: {
         Row: {
           apply_by: string | null

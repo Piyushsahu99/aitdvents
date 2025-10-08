@@ -232,14 +232,18 @@ export type Database = {
       }
       events: {
         Row: {
+          applied_count: number | null
           category: string
           created_at: string | null
           created_by: string | null
           date: string
+          days_left: number | null
           description: string
           external_link: string | null
           hashtags: string[] | null
           id: string
+          is_free: boolean | null
+          is_online: boolean | null
           location: string
           participants: number | null
           poster_url: string | null
@@ -248,14 +252,18 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          applied_count?: number | null
           category: string
           created_at?: string | null
           created_by?: string | null
           date: string
+          days_left?: number | null
           description: string
           external_link?: string | null
           hashtags?: string[] | null
           id?: string
+          is_free?: boolean | null
+          is_online?: boolean | null
           location: string
           participants?: number | null
           poster_url?: string | null
@@ -264,14 +272,18 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          applied_count?: number | null
           category?: string
           created_at?: string | null
           created_by?: string | null
           date?: string
+          days_left?: number | null
           description?: string
           external_link?: string | null
           hashtags?: string[] | null
           id?: string
+          is_free?: boolean | null
+          is_online?: boolean | null
           location?: string
           participants?: number | null
           poster_url?: string | null

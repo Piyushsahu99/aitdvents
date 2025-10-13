@@ -29,6 +29,9 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import Dashboard from "./pages/Dashboard";
 import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
+import Community from "./pages/Community";
+import Network from "./pages/Network";
+import Groups from "./pages/Groups";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +68,9 @@ const App = () => (
               <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/network" element={<Network />} />
+              <Route path="/groups" element={<Groups />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

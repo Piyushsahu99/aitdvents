@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, Users, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
@@ -12,6 +12,9 @@ const navLinks = [
   { name: "Leaderboard", path: "/leaderboard", icon: "trophy" },
   { name: "Jobs", path: "/jobs" },
   { name: "Mentorship", path: "/mentorship" },
+  { name: "Network", path: "/network", icon: "users" },
+  { name: "Groups", path: "/groups", icon: "users" },
+  { name: "Community", path: "/community", icon: "message" },
   { name: "AI Chat", path: "/ai-chat", icon: "sparkles" },
   { name: "More", path: "/more" },
 ];
@@ -80,6 +83,8 @@ export const Navbar = () => {
               >
                 {link.icon === "sparkles" && <Sparkles className="h-4 w-4" />}
                 {link.icon === "trophy" && <Trophy className="h-4 w-4" />}
+                {link.icon === "users" && <Users className="h-4 w-4" />}
+                {link.icon === "message" && <MessageCircle className="h-4 w-4" />}
                 {link.name}
               </Link>
             ))}

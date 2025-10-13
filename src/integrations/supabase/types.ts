@@ -79,12 +79,14 @@ export type Database = {
           id: string
           judging_criteria: string | null
           max_submissions: number | null
+          posted_by_student: boolean | null
           prize_amount: string
           prize_currency: string | null
           requirements: string
           rules: string | null
           status: Database["public"]["Enums"]["event_status"]
           tags: string[] | null
+          task_type: string | null
           title: string
           total_participants: number | null
           updated_at: string | null
@@ -100,12 +102,14 @@ export type Database = {
           id?: string
           judging_criteria?: string | null
           max_submissions?: number | null
+          posted_by_student?: boolean | null
           prize_amount: string
           prize_currency?: string | null
           requirements: string
           rules?: string | null
           status?: Database["public"]["Enums"]["event_status"]
           tags?: string[] | null
+          task_type?: string | null
           title: string
           total_participants?: number | null
           updated_at?: string | null
@@ -121,12 +125,14 @@ export type Database = {
           id?: string
           judging_criteria?: string | null
           max_submissions?: number | null
+          posted_by_student?: boolean | null
           prize_amount?: string
           prize_currency?: string | null
           requirements?: string
           rules?: string | null
           status?: Database["public"]["Enums"]["event_status"]
           tags?: string[] | null
+          task_type?: string | null
           title?: string
           total_participants?: number | null
           updated_at?: string | null
@@ -230,6 +236,39 @@ export type Database = {
           },
         ]
       }
+      community_links: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          platform: string
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon: string
+          id?: string
+          is_active?: boolean | null
+          platform: string
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          platform?: string
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           applied_count: number | null
@@ -292,6 +331,38 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "student_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hackathons: {
         Row: {
@@ -464,6 +535,99 @@ export type Database = {
           status?: Database["public"]["Enums"]["event_status"]
           title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      student_groups: {
+        Row: {
+          avatar_url: string | null
+          category: string
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          max_members: number | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          category: string
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          max_members?: number | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          category?: string
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          max_members?: number | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      student_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          college: string | null
+          created_at: string | null
+          full_name: string
+          github_url: string | null
+          graduation_year: number | null
+          id: string
+          interests: string[] | null
+          is_looking_for_team: boolean | null
+          linkedin_url: string | null
+          portfolio_url: string | null
+          skills: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          college?: string | null
+          created_at?: string | null
+          full_name: string
+          github_url?: string | null
+          graduation_year?: number | null
+          id?: string
+          interests?: string[] | null
+          is_looking_for_team?: boolean | null
+          linkedin_url?: string | null
+          portfolio_url?: string | null
+          skills?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          college?: string | null
+          created_at?: string | null
+          full_name?: string
+          github_url?: string | null
+          graduation_year?: number | null
+          id?: string
+          interests?: string[] | null
+          is_looking_for_team?: boolean | null
+          linkedin_url?: string | null
+          portfolio_url?: string | null
+          skills?: string[] | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }

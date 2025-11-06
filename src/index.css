@@ -172,7 +172,34 @@ All colors MUST be HSL.
   }
   
   .hover-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px) scale(1.02);
     box-shadow: var(--shadow-hover);
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 }

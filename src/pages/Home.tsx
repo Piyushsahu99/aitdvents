@@ -18,6 +18,10 @@ import {
   Zap,
   ArrowRight,
 } from "lucide-react";
+import heroImage from "@/assets/hero-collaboration.jpg";
+import internshipImage from "@/assets/internship-card.jpg";
+import mentorshipImage from "@/assets/mentorship-card.jpg";
+import practiceImage from "@/assets/practice-card.jpg";
 
 export default function Home() {
   const features = [
@@ -91,39 +95,97 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 px-4 overflow-hidden bg-gradient-to-br from-background via-background to-muted/30">
-        <div className="container mx-auto">
-          <div className="max-w-2xl mb-12">
-            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
-              <Zap className="h-3 w-3 mr-1" />
-              Trusted by 10,000+ Students
-            </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Unlock Your{" "}
-              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                Career
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              Explore opportunities from across the globe to grow, showcase skills, gain CV points & get hired by your dream company.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" asChild className="text-lg">
-                <Link to="/events">
-                  Get Started
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="text-lg">
-                <Link to="/mentorship">Find a Mentor</Link>
-              </Button>
+      <section className="relative py-16 md:py-24 px-4 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-accent/5">
+        {/* Background Image */}
+        <div className="absolute inset-0 opacity-10">
+          <img 
+            src={heroImage} 
+            alt="Students collaborating" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        <div className="container mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="animate-fade-in">
+              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 animate-pulse">
+                <Zap className="h-3 w-3 mr-1" />
+                Trusted by 10,000+ Students
+              </Badge>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                Unlock Your{" "}
+                <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
+                  Career
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                Explore opportunities from across the globe to grow, showcase skills, gain CV points & get hired by your dream company.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" asChild className="text-lg shadow-lg hover:shadow-xl transition-shadow">
+                  <Link to="/events">
+                    Get Started
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild className="text-lg">
+                  <Link to="/mentorship">Find a Mentor</Link>
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Content - Feature Cards in Colorful Layout */}
+            <div className="grid grid-cols-2 gap-4 animate-fade-in">
+              <Link to="/jobs" className="group">
+                <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 p-6 text-white hover-lift cursor-pointer">
+                  <img src={internshipImage} alt="Internships" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" />
+                  <div className="relative z-10">
+                    <Briefcase className="h-8 w-8 mb-2" />
+                    <h3 className="font-bold text-lg">Jobs</h3>
+                    <p className="text-sm opacity-90">Explore Diverse Careers</p>
+                  </div>
+                </div>
+              </Link>
+              
+              <Link to="/mentorship" className="group">
+                <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 p-6 text-white hover-lift cursor-pointer">
+                  <img src={mentorshipImage} alt="Mentorships" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" />
+                  <div className="relative z-10">
+                    <MessageCircle className="h-8 w-8 mb-2" />
+                    <h3 className="font-bold text-lg">Mentorships</h3>
+                    <p className="text-sm opacity-90">Guidance From Top Mentors</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link to="/practice" className="group">
+                <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-400 to-purple-600 p-6 text-white hover-lift cursor-pointer">
+                  <img src={practiceImage} alt="Practice" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" />
+                  <div className="relative z-10">
+                    <Target className="h-8 w-8 mb-2" />
+                    <h3 className="font-bold text-lg">Practice</h3>
+                    <p className="text-sm opacity-90">Refine Skills Daily</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link to="/events" className="group">
+                <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-400 to-yellow-600 p-6 text-white hover-lift cursor-pointer">
+                  <Calendar className="h-8 w-8 mb-2" />
+                  <h3 className="font-bold text-lg">Competitions</h3>
+                  <p className="text-sm opacity-90">Battle For Excellence</p>
+                </div>
+              </Link>
             </div>
           </div>
 
-          {/* Feature Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {features.map((feature) => (
-              <FeatureCard key={feature.title} {...feature} />
+          {/* Feature Cards Grid - Below Hero */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-16">
+            {features.map((feature, index) => (
+              <div key={feature.title} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+                <FeatureCard {...feature} />
+              </div>
             ))}
           </div>
         </div>

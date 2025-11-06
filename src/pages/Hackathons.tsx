@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AuthModal } from "@/components/AuthModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
+import hackathonBanner from "@/assets/hackathon-banner.jpg";
 
 export default function Hackathons() {
   const [hackathons, setHackathons] = useState<any[]>([]);
@@ -106,60 +107,70 @@ export default function Hackathons() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 mb-4">
-          <Trophy className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Build. Compete. Win.</span>
+    <div className="min-h-screen">
+      {/* Hero Banner */}
+      <div className="relative h-64 md:h-80 overflow-hidden bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20">
+        <img 
+          src={hackathonBanner} 
+          alt="Hackathon" 
+          className="w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+          <div className="animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 mb-4">
+              <Trophy className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">Build. Compete. Win.</span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-3">Hackathons</h1>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Join exciting hackathons, collaborate with talented developers, and bring your innovative ideas to life
+            </p>
+          </div>
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-3">Hackathons</h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Join exciting hackathons, collaborate with talented developers, and bring your innovative ideas to life
-        </p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <SearchBar
-          placeholder="Search hackathons by name, organizer, or keywords..."
-          value={searchQuery}
-          onChange={setSearchQuery}
-        />
-        <CategoryFilter
-          categories={categories.filter(c => c !== 'all')}
-          selected={selectedCategory}
-          onSelect={setSelectedCategory}
-        />
-      </div>
+      <div className="container mx-auto px-4 py-8">
+        {/* Search and Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <SearchBar
+            placeholder="Search hackathons by name, organizer, or keywords..."
+            value={searchQuery}
+            onChange={setSearchQuery}
+          />
+          <CategoryFilter
+            categories={categories.filter(c => c !== 'all')}
+            selected={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
+        </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-primary">{hackathons.length}</div>
-            <p className="text-xs text-muted-foreground">Active Hackathons</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-accent">₹{(hackathons.reduce((sum, h) => sum + parseInt(h.prize_pool.replace(/[^0-9]/g, '') || '0'), 0) / 100000).toFixed(1)}L+</div>
-            <p className="text-xs text-muted-foreground">Total Prize Pool</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-info">{hackathons.reduce((sum, h) => sum + (h.total_participants || 0), 0)}</div>
-            <p className="text-xs text-muted-foreground">Participants</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-success">{categories.length - 1}</div>
-            <p className="text-xs text-muted-foreground">Categories</p>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <Card className="hover-lift bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{hackathons.length}</div>
+              <p className="text-xs text-muted-foreground font-medium">Active Hackathons</p>
+            </CardContent>
+          </Card>
+          <Card className="hover-lift bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">₹{(hackathons.reduce((sum, h) => sum + parseInt(h.prize_pool.replace(/[^0-9]/g, '') || '0'), 0) / 100000).toFixed(1)}L+</div>
+              <p className="text-xs text-muted-foreground font-medium">Total Prize Pool</p>
+            </CardContent>
+          </Card>
+          <Card className="hover-lift bg-gradient-to-br from-info/5 to-info/10 border-info/20">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold bg-gradient-to-r from-info to-primary bg-clip-text text-transparent">{hackathons.reduce((sum, h) => sum + (h.total_participants || 0), 0)}</div>
+              <p className="text-xs text-muted-foreground font-medium">Participants</p>
+            </CardContent>
+          </Card>
+          <Card className="hover-lift bg-gradient-to-br from-success/5 to-success/10 border-success/20">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold bg-gradient-to-r from-success to-primary bg-clip-text text-transparent">{categories.length - 1}</div>
+              <p className="text-xs text-muted-foreground font-medium">Categories</p>
+            </CardContent>
+          </Card>
+        </div>
 
       {/* Hackathons Grid */}
       {loading ? (
@@ -295,6 +306,7 @@ export default function Hackathons() {
       )}
 
       <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
+      </div>
     </div>
   );
 }

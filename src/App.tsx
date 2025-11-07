@@ -32,6 +32,9 @@ import NotFound from "./pages/NotFound";
 import Community from "./pages/Community";
 import Network from "./pages/Network";
 import Groups from "./pages/Groups";
+import Courses from "./pages/Courses";
+import CourseDetails from "./pages/CourseDetails";
+import MyCourses from "./pages/MyCourses";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +74,9 @@ const App = () => (
               <Route path="/community" element={<Community />} />
               <Route path="/network" element={<Network />} />
               <Route path="/groups" element={<Groups />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:id" element={<CourseDetails />} />
+              <Route path="/my-courses" element={<MyCourses />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

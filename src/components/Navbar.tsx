@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, Users, MessageCircle } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, Users, MessageCircle, BookOpen, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
 
 const navLinks = [
   { name: "Events", path: "/events" },
+  { name: "Courses", path: "/courses", icon: "book" },
+  { name: "My Courses", path: "/my-courses", icon: "graduation" },
   { name: "Bounties", path: "/bounties" },
   { name: "Hackathons", path: "/hackathons", icon: "code" },
   { name: "Leaderboard", path: "/leaderboard", icon: "trophy" },
@@ -85,6 +87,8 @@ export const Navbar = () => {
                 {link.icon === "trophy" && <Trophy className="h-4 w-4" />}
                 {link.icon === "users" && <Users className="h-4 w-4" />}
                 {link.icon === "message" && <MessageCircle className="h-4 w-4" />}
+                {link.icon === "book" && <BookOpen className="h-4 w-4" />}
+                {link.icon === "graduation" && <GraduationCap className="h-4 w-4" />}
                 {link.name}
               </Link>
             ))}

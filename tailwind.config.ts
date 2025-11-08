@@ -95,10 +95,38 @@ export default {
             height: "0",
           },
         },
+        "shimmer": {
+          "0%": {
+            backgroundPosition: "-200% 0",
+          },
+          "100%": {
+            backgroundPosition: "200% 0",
+          },
+        },
+        "pulse-glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 20px -5px hsl(var(--primary) / 0.3)",
+          },
+          "50%": {
+            boxShadow: "0 0 30px -5px hsl(var(--primary) / 0.6)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "shimmer": "shimmer 3s linear infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+      },
+      backgroundImage: {
+        "gradient-courses": "var(--gradient-courses)",
+        "gradient-bounties": "var(--gradient-bounties)",
+        "gradient-events": "var(--gradient-events)",
+        "gradient-jobs": "var(--gradient-jobs)",
+        "gradient-mentorship": "var(--gradient-mentorship)",
+        "gradient-practice": "var(--gradient-practice)",
+        "gradient-scholarships": "var(--gradient-scholarships)",
+        "gradient-network": "var(--gradient-network)",
       },
     },
   },

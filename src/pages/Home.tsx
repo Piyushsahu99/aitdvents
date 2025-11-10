@@ -152,7 +152,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 px-4 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <section className="relative py-20 md:py-32 px-4 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-accent/5">
         {/* Background Image */}
         <div className="absolute inset-0 opacity-10">
           <img 
@@ -163,32 +163,32 @@ export default function Home() {
         </div>
         
         <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
-            <div className="animate-fade-in">
-              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 animate-pulse">
-                <Zap className="h-3 w-3 mr-1" />
+            <div className="animate-fade-in text-center lg:text-left">
+              <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 animate-pulse text-base px-4 py-2">
+                <Zap className="h-4 w-4 mr-2" />
                 Trusted by 10,000+ Students
               </Badge>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                Unlock Your{" "}
+                Build Your Future,{" "}
                 <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
-                  Career
+                  One Skill at a Time
                 </span>
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Explore opportunities from across the globe to grow, showcase skills, gain CV points & get hired by your dream company.
+              <p className="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                Learn, compete, earn, and connect. Everything you need to launch your dream tech career in one platform.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/courses">
-                  <Button size="lg" className="text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 w-full sm:w-auto">
-                    Explore Courses
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link to="/courses" className="w-full sm:w-auto">
+                  <Button size="lg" className="text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 w-full px-8 py-6">
+                    Start Learning Free
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Link to="/events">
-                  <Button size="lg" variant="outline" className="text-lg hover:scale-105 transition-all w-full sm:w-auto">
-                    Browse Events
+                <Link to="/events" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="text-lg hover:scale-105 transition-all w-full px-8 py-6">
+                    Explore Opportunities
                   </Button>
                 </Link>
               </div>
@@ -239,13 +239,19 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Feature Cards Grid - Below Hero */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-16">
-            {features.map((feature, index) => (
-              <div key={feature.title} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <FeatureCard {...feature} />
-              </div>
-            ))}
+          {/* Quick Access Cards */}
+          <div className="mt-20">
+            <h2 className="text-3xl font-bold text-center mb-4">What Would You Like To Do?</h2>
+            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+              Choose from our comprehensive range of opportunities designed for students like you
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {features.map((feature, index) => (
+                <div key={feature.title} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                  <FeatureCard {...feature} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

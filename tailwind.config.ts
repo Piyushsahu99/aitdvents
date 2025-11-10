@@ -111,12 +111,35 @@ export default {
             boxShadow: "0 0 30px -5px hsl(var(--primary) / 0.6)",
           },
         },
+        "gradient": {
+          "0%, 100%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0px)",
+          },
+          "50%": {
+            transform: "translateY(-20px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "shimmer": "shimmer 3s linear infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "gradient": "gradient 8s linear infinite",
+        "float": "float 3s ease-in-out infinite",
+        "float-delayed": "float 3s ease-in-out infinite 1.5s",
+      },
+      perspective: {
+        '1000': '1000px',
+        '2000': '2000px',
       },
       backgroundImage: {
         "gradient-courses": "var(--gradient-courses)",

@@ -240,14 +240,29 @@ export default function Home() {
           </div>
 
           {/* Quick Access Cards */}
-          <div className="mt-20">
-            <h2 className="text-3xl font-bold text-center mb-4">What Would You Like To Do?</h2>
-            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
-              Choose from our comprehensive range of opportunities designed for students like you
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="mt-24">
+            <div className="text-center mb-12">
+              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-base px-4 py-2">
+                <Sparkles className="h-4 w-4 mr-2" />
+                Your Learning Hub
+              </Badge>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                What Would You Like To Do Today?
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                Choose from our comprehensive range of opportunities designed to accelerate your tech career journey
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {features.map((feature, index) => (
-                <div key={feature.title} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                <div 
+                  key={feature.title} 
+                  className="animate-fade-in transform-gpu" 
+                  style={{ 
+                    animationDelay: `${index * 75}ms`,
+                    transformStyle: 'preserve-3d'
+                  }}
+                >
                   <FeatureCard {...feature} />
                 </div>
               ))}
@@ -365,45 +380,102 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5">
-        <div className="container mx-auto">
+      {/* Stats Section with 3D Effect */}
+      <section className="py-24 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 relative overflow-hidden">
+        {/* Floating background elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-float-delayed" />
+        
+        <div className="container mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Join Our Growing <span className="text-primary">Community</span>
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Thousands of students are already building their future with us
+            </p>
+          </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">50K+</div>
-              <div className="text-muted-foreground">Active Students</div>
+            <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
+              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary to-primary/60 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                50K+
+              </div>
+              <div className="text-muted-foreground font-semibold text-lg">Active Students</div>
+              <p className="text-sm text-muted-foreground/70 mt-2">Learning & Growing</p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">500+</div>
-              <div className="text-muted-foreground">Companies</div>
+            <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
+              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-accent to-accent/60 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                500+
+              </div>
+              <div className="text-muted-foreground font-semibold text-lg">Partner Companies</div>
+              <p className="text-sm text-muted-foreground/70 mt-2">Hiring Talent</p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">1000+</div>
-              <div className="text-muted-foreground">Events</div>
+            <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
+              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                1000+
+              </div>
+              <div className="text-muted-foreground font-semibold text-lg">Events Hosted</div>
+              <p className="text-sm text-muted-foreground/70 mt-2">Hackathons & Workshops</p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">200+</div>
-              <div className="text-muted-foreground">Mentors</div>
+            <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
+              <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-accent to-primary bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                200+
+              </div>
+              <div className="text-muted-foreground font-semibold text-lg">Expert Mentors</div>
+              <p className="text-sm text-muted-foreground/70 mt-2">Industry Veterans</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Transform Your Career?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of students who are already building their future with AITD Events
-          </p>
-          <Button size="lg" className="text-lg hover:scale-105 transition-all" asChild>
-            <Link to="/auth">
-              Start Your Journey
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+      {/* CTA Section with 3D Effect */}
+      <section className="py-24 px-4 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10 animate-gradient" 
+             style={{ backgroundSize: '200% 200%' }} />
+        
+        <div className="container mx-auto text-center relative z-10">
+          <div className="max-w-4xl mx-auto bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-border/50 transform hover:scale-105 transition-all duration-500"
+               style={{ transformStyle: 'preserve-3d' }}>
+            <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 text-base px-6 py-2 animate-pulse">
+              <Star className="h-4 w-4 mr-2 fill-primary" />
+              Limited Spots Available
+            </Badge>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
+              Ready to Transform Your Career?
+            </h2>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+              Join thousands of students who are already building their future with cutting-edge skills and real-world experience
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button size="lg" className="text-lg hover:scale-110 transition-all shadow-xl hover:shadow-2xl px-8 py-6 group" asChild>
+                <Link to="/auth">
+                  <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
+                  Start Your Journey Free
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg hover:scale-110 transition-all px-8 py-6" asChild>
+                <Link to="/courses">
+                  Browse Courses
+                </Link>
+              </Button>
+            </div>
+            
+            <div className="mt-8 flex items-center justify-center gap-8 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span>100% Free to Start</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+                <span>No Credit Card Required</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>

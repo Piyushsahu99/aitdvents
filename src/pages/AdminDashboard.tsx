@@ -10,12 +10,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, Plus, Loader2, Sparkles } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle } from "lucide-react";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [events, setEvents] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -23,12 +26,15 @@ export default function AdminDashboard() {
     location: "",
     category: "",
     participants: 0,
+    is_online: true,
+    is_free: true,
   });
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     checkAdminStatus();
+    fetchEvents();
   }, []);
 
   const checkAdminStatus = async () => {
@@ -66,9 +72,71 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchEvents = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
+  };
+
+  const updateEventStatus = async (id: string, status: 'draft' | 'live' | 'ended') => {
+    try {
+      const { error } = await supabase
+        .from("events")
+        .update({ status })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Event ${status === 'live' ? 'published' : 'updated'} successfully`,
+      });
+
+      fetchEvents();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteEvent = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("events")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Event deleted successfully",
+      });
+
+      fetchEvents();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCreateEvent = async (e: React.FormEvent) => {
@@ -155,7 +223,11 @@ export default function AdminDashboard() {
         location: "",
         category: "",
         participants: 0,
+        is_online: true,
+        is_free: true,
       });
+
+      fetchEvents();
     } catch (error: any) {
       console.error("Error creating event:", error);
       toast({
@@ -179,23 +251,32 @@ export default function AdminDashboard() {
   if (!isAdmin) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage events with AI-powered content generation</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 animate-fade-in">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Admin Dashboard
+            </h1>
+            <p className="text-muted-foreground">Manage events with AI-powered content generation</p>
+          </div>
+          <Button variant="outline" onClick={handleLogout} className="hover-lift">
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
         </div>
-        <Button variant="outline" onClick={handleLogout}>
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
-        </Button>
-      </div>
 
-      <Tabs defaultValue="create-event">
-        <TabsList>
-          <TabsTrigger value="create-event">Create Event</TabsTrigger>
-          <TabsTrigger value="manage-events">Manage Events</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="manage-events" className="animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 mb-6">
+            <TabsTrigger value="manage-events" className="gap-2">
+              <Calendar className="h-4 w-4" />
+              Manage Events
+            </TabsTrigger>
+            <TabsTrigger value="create-event" className="gap-2">
+              <Plus className="h-4 w-4" />
+              Create Event
+            </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="create-event">
           <Card className="p-6">
@@ -285,9 +366,43 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="bg-primary/5 p-4 rounded-lg">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-primary" />
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Event Type</Label>
+                  <Select
+                    value={formData.is_online ? "online" : "offline"}
+                    onValueChange={(value) => setFormData({...formData, is_online: value === "online"})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="online">Online</SelectItem>
+                      <SelectItem value="offline">Offline</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Registration</Label>
+                  <Select
+                    value={formData.is_free ? "free" : "paid"}
+                    onValueChange={(value) => setFormData({...formData, is_free: value === "free"})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="free">Free</SelectItem>
+                      <SelectItem value="paid">Paid</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 rounded-xl border border-primary/20 shadow-lg">
+                <h3 className="font-semibold mb-3 flex items-center gap-2 text-lg">
+                  <Sparkles className="h-5 w-5 text-primary animate-pulse" />
                   AI Will Generate:
                 </h3>
                 <ul className="text-sm text-muted-foreground space-y-1">
@@ -316,14 +431,202 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="manage-events">
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Event Management</h2>
-            <p className="text-muted-foreground">
-              View and manage all events, approve AI-generated content, and publish.
-            </p>
-          </Card>
+          <div className="grid gap-4">
+            {/* Stats Cards */}
+            <div className="grid md:grid-cols-4 gap-4 mb-4">
+              <Card className="p-4 hover-lift">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Calendar className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Events</p>
+                    <p className="text-2xl font-bold">{events.length}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-4 hover-lift">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-500/10 rounded-lg">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Live Events</p>
+                    <p className="text-2xl font-bold">{events.filter(e => e.status === 'live').length}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-4 hover-lift">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-yellow-500/10 rounded-lg">
+                    <Edit className="h-5 w-5 text-yellow-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Draft Events</p>
+                    <p className="text-2xl font-bold">{events.filter(e => e.status === 'draft').length}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-4 hover-lift">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <Users className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Registrations</p>
+                    <p className="text-2xl font-bold">{events.reduce((acc, e) => acc + (e.applied_count || 0), 0)}</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Events Table */}
+            <Card className="overflow-hidden">
+              <div className="p-6 border-b bg-gradient-to-r from-primary/5 to-transparent">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Calendar className="h-6 w-6 text-primary" />
+                  Event Management
+                </h2>
+                <p className="text-muted-foreground mt-1">
+                  View, edit, and manage all events
+                </p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Event Title</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Registrations</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {events.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                          No events yet. Create your first event to get started!
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      events.map((event) => (
+                        <TableRow key={event.id} className="hover:bg-muted/50 transition-colors">
+                          <TableCell className="font-medium">{event.title}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{event.category}</Badge>
+                          </TableCell>
+                          <TableCell>{event.date}</TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={event.status === 'live' ? 'default' : 'secondary'}
+                              className={event.status === 'live' ? 'bg-green-500 hover:bg-green-600' : ''}
+                            >
+                              {event.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4 text-muted-foreground" />
+                              {event.applied_count || 0}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="ghost" size="sm">
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>{event.title}</DialogTitle>
+                                    <DialogDescription>Event Details</DialogDescription>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <Label>Description</Label>
+                                      <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
+                                    </div>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                      <div>
+                                        <Label>Date</Label>
+                                        <p className="text-sm">{event.date}</p>
+                                      </div>
+                                      <div>
+                                        <Label>Location</Label>
+                                        <p className="text-sm">{event.location}</p>
+                                      </div>
+                                    </div>
+                                    {event.poster_url && (
+                                      <div>
+                                        <Label>AI Generated Poster</Label>
+                                        <img src={event.poster_url} alt={event.title} className="mt-2 rounded-lg w-full" />
+                                      </div>
+                                    )}
+                                    {event.hashtags && event.hashtags.length > 0 && (
+                                      <div>
+                                        <Label>Hashtags</Label>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                          {event.hashtags.map((tag: string, i: number) => (
+                                            <Badge key={i} variant="secondary">{tag}</Badge>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+
+                              {event.status === 'draft' && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => updateEventStatus(event.id, 'live')}
+                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                >
+                                  <CheckCircle className="h-4 w-4" />
+                                </Button>
+                              )}
+
+                              {event.status === 'live' && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => updateEventStatus(event.id, 'draft')}
+                                  className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                                >
+                                  <XCircle className="h-4 w-4" />
+                                </Button>
+                              )}
+
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => deleteEvent(event.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }

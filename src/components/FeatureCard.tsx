@@ -14,8 +14,9 @@ export const FeatureCard = ({ title, subtitle, icon: Icon, link, gradient, class
   return (
     <Link
       to={link}
-      className={`group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:scale-110 ${gradient} ${className} shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] perspective-1000`}
+      className={`group relative overflow-hidden rounded-3xl p-6 md:p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${className} shadow-lg hover:shadow-2xl border border-border/50`}
       style={{ 
+        background: gradient,
         transform: 'translateZ(0)',
         transformStyle: 'preserve-3d'
       }}
@@ -31,22 +32,22 @@ export const FeatureCard = ({ title, subtitle, icon: Icon, link, gradient, class
       <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/5 rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
       
       {/* Content */}
-      <div className="relative z-10 flex flex-col gap-4 h-full min-h-[140px]">
+      <div className="relative z-10 flex flex-col gap-3 md:gap-4 h-full min-h-[120px]">
         <div className="flex items-start justify-between">
-          <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110"
+          <div className="p-2.5 md:p-3 rounded-xl bg-white/15 backdrop-blur-sm group-hover:bg-white/25 transition-all duration-300 group-hover:rotate-6 group-hover:scale-110"
                style={{ transform: 'translateZ(20px)' }}>
-            <Icon className="h-8 w-8 text-white drop-shadow-lg" />
+            <Icon className="h-6 w-6 md:h-8 md:w-8 text-white drop-shadow-lg" />
           </div>
           <div className="flex gap-1">
-            <div className="h-2 w-2 rounded-full bg-white/30 group-hover:bg-white/60 transition-all duration-300 animate-pulse" />
-            <div className="h-2 w-2 rounded-full bg-white/20 group-hover:bg-white/50 transition-all duration-300 animate-pulse" style={{ animationDelay: '150ms' }} />
+            <div className="h-1.5 w-1.5 rounded-full bg-white/40 group-hover:bg-white/70 transition-all duration-300 animate-pulse" />
+            <div className="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-white/60 transition-all duration-300 animate-pulse" style={{ animationDelay: '150ms' }} />
           </div>
         </div>
         <div className="flex-1" style={{ transform: 'translateZ(15px)' }}>
-          <h3 className="text-2xl font-bold text-white mb-2 group-hover:translate-x-2 transition-transform duration-300 drop-shadow-md">
+          <h3 className="text-xl md:text-2xl font-bold text-white mb-1.5 md:mb-2 group-hover:translate-x-1 transition-transform duration-300 drop-shadow-md">
             {title}
           </h3>
-          <p className="text-white/95 text-base leading-relaxed font-medium drop-shadow-sm">
+          <p className="text-white/90 text-sm md:text-base leading-relaxed font-medium drop-shadow-sm">
             {subtitle}
           </p>
         </div>

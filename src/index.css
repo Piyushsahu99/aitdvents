@@ -198,6 +198,10 @@ All colors MUST be HSL.
     animation: float 3s ease-in-out infinite;
   }
 
+  .animate-float-delayed {
+    animation: float 3s ease-in-out 1.5s infinite;
+  }
+
   @keyframes float {
     0%, 100% {
       transform: translateY(0px);
@@ -205,5 +209,37 @@ All colors MUST be HSL.
     50% {
       transform: translateY(-10px);
     }
+  }
+
+  .bg-gradient-courses {
+    background: var(--gradient-courses);
+  }
+
+  .bg-gradient-bounties {
+    background: var(--gradient-bounties);
+  }
+
+  .bg-gradient-events {
+    background: var(--gradient-events);
+  }
+
+  .bg-gradient-jobs {
+    background: var(--gradient-jobs);
+  }
+
+  .bg-gradient-mentorship {
+    background: var(--gradient-mentorship);
+  }
+
+  .bg-gradient-practice {
+    background: var(--gradient-practice);
+  }
+
+  .bg-gradient-scholarships {
+    background: var(--gradient-scholarships);
+  }
+
+  .bg-gradient-network {
+    background: var(--gradient-network);
   }
 }

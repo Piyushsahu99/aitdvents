@@ -205,14 +205,14 @@ export const GlobalSearch = () => {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 hover:bg-muted transition-all duration-300 border border-border/50 hover:border-border group w-full max-w-md"
+        className="relative flex items-center gap-3 px-5 py-3 rounded-xl bg-background hover:bg-muted/50 transition-all duration-300 border-2 border-border hover:border-primary/30 hover:shadow-lg group w-full"
       >
-        <Search className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        <span className="text-sm text-muted-foreground flex-1 text-left">
-          Search everything...
+        <Search className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+        <span className="text-base text-muted-foreground flex-1 text-left">
+          Search courses, events, jobs, and more...
         </span>
-        <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-background border border-border rounded-md">
-          <span className="text-xs">⌘</span>K
+        <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1.5 text-xs font-medium bg-muted border border-border rounded-md">
+          <span>⌘</span>K
         </kbd>
       </button>
 

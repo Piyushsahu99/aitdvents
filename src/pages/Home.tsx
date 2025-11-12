@@ -6,6 +6,7 @@ import { PersonaCard } from "@/components/PersonaCard";
 import { TrustBadge } from "@/components/TrustBadge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlobalSearch } from "@/components/GlobalSearch";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Calendar,
@@ -176,9 +177,15 @@ export default function Home() {
                   One Skill at a Time
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="text-xl md:text-2xl text-muted-foreground mb-6 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Learn, compete, earn, and connect. Everything you need to launch your dream tech career in one platform.
               </p>
+              
+              {/* Global Search */}
+              <div className="mb-10 max-w-2xl mx-auto lg:mx-0">
+                <GlobalSearch />
+              </div>
+              
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link to="/courses" className="w-full sm:w-auto">
                   <Button size="lg" className="text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 w-full px-8 py-6">

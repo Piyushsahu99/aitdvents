@@ -14,9 +14,8 @@ export const FeatureCard = ({ title, subtitle, icon: Icon, link, gradient, class
   return (
     <Link
       to={link}
-      className={`group relative overflow-hidden rounded-3xl p-6 md:p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${className} shadow-lg hover:shadow-2xl border border-border/50`}
+      className={`group relative overflow-hidden rounded-3xl p-6 md:p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${gradient} ${className} shadow-lg hover:shadow-2xl border border-white/10`}
       style={{ 
-        background: gradient,
         transform: 'translateZ(0)',
         transformStyle: 'preserve-3d'
       }}

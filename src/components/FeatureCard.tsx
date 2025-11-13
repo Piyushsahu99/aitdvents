@@ -24,11 +24,11 @@ export const FeatureCard = ({ title, subtitle, icon: Icon, link, gradient, class
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
            style={{ transform: 'translateZ(-10px)' }} />
       
-      {/* Shimmer effect overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+      {/* Shimmer effect overlay (removed to improve color visibility) */}
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" /> */}
       
-      {/* Glow ring effect */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/5 rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
+      {/* Glow ring effect (only on hover, very subtle) */}
+      <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
       
       {/* Content */}
       <div className="relative z-10 flex flex-col gap-3 md:gap-4 h-full min-h-[120px]">

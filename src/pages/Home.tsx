@@ -246,34 +246,39 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Quick Access Cards */}
-          <div className="mt-24">
-            <div className="text-center mb-12">
-              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-base px-4 py-2">
-                <Sparkles className="h-4 w-4 mr-2" />
-                Your Learning Hub
-              </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                What Would You Like To Do Today?
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Choose from our comprehensive range of opportunities designed to accelerate your tech career journey
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, index) => (
-                <div 
-                  key={feature.title} 
-                  className="animate-fade-in transform-gpu" 
-                  style={{ 
-                    animationDelay: `${index * 75}ms`,
-                    transformStyle: 'preserve-3d'
-                  }}
-                >
-                  <FeatureCard {...feature} />
-                </div>
-              ))}
-            </div>
+          {/* Quick Access Cards moved to its own section below for better contrast */}
+        </div>
+      </section>
+
+      {/* Quick Access Cards - separate section for strong visibility */}
+      <section className="py-20 px-4 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-base px-4 py-2">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Your Learning Hub
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              What Would You Like To Do Today?
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Choose from our comprehensive range of opportunities designed to accelerate your tech career journey
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <div 
+                key={feature.title} 
+                className="animate-fade-in transform-gpu" 
+                style={{ 
+                  animationDelay: `${index * 75}ms`,
+                  transformStyle: 'preserve-3d'
+                }}
+              >
+                <FeatureCard {...feature} />
+              </div>
+            ))}
           </div>
         </div>
       </section>

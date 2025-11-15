@@ -6,7 +6,7 @@ import { PersonaCard } from "@/components/PersonaCard";
 import { TrustBadge } from "@/components/TrustBadge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GlobalSearch } from "@/components/GlobalSearch";
+
 import { supabase } from "@/integrations/supabase/client";
 import {
   Calendar,
@@ -160,6 +160,8 @@ export default function Home() {
             src={heroImage} 
             alt="Students collaborating" 
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         
@@ -181,11 +183,6 @@ export default function Home() {
                 Learn, compete, earn, and connect. Everything you need to launch your dream tech career in one platform.
               </p>
               
-              {/* Global Search */}
-              <div className="mb-10 max-w-2xl mx-auto lg:mx-0">
-                <GlobalSearch />
-              </div>
-              
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link to="/courses" className="w-full sm:w-auto">
                   <Button size="lg" className="text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 w-full px-8 py-6">
@@ -205,7 +202,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-4 animate-fade-in">
               <Link to="/jobs" className="group">
                 <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 p-6 text-white hover-lift cursor-pointer">
-                  <img src={internshipImage} alt="Internships" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" />
+                  <img src={internshipImage} alt="Internships" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" decoding="async" />
                   <div className="relative z-10">
                     <Briefcase className="h-8 w-8 mb-2" />
                     <h3 className="font-bold text-lg">Jobs</h3>
@@ -216,7 +213,7 @@ export default function Home() {
               
               <Link to="/mentorship" className="group">
                 <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 p-6 text-white hover-lift cursor-pointer">
-                  <img src={mentorshipImage} alt="Mentorships" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" />
+                  <img src={mentorshipImage} alt="Mentorships" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" decoding="async" />
                   <div className="relative z-10">
                     <MessageCircle className="h-8 w-8 mb-2" />
                     <h3 className="font-bold text-lg">Mentorships</h3>
@@ -227,7 +224,7 @@ export default function Home() {
 
               <Link to="/practice" className="group">
                 <div className="relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-400 to-purple-600 p-6 text-white hover-lift cursor-pointer">
-                  <img src={practiceImage} alt="Practice" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" />
+                  <img src={practiceImage} alt="Practice" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" decoding="async" />
                   <div className="relative z-10">
                     <Target className="h-8 w-8 mb-2" />
                     <h3 className="font-bold text-lg">Practice</h3>
@@ -251,7 +248,7 @@ export default function Home() {
       </section>
 
       {/* Quick Access Cards - separate section for strong visibility */}
-      <section className="py-20 px-4 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <section className="py-20 px-4 bg-background">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-base px-4 py-2">
@@ -308,6 +305,8 @@ export default function Home() {
                         src={course.thumbnail_url || "/placeholder.svg"}
                         alt={course.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute top-4 right-4">
                         {course.is_free ? (

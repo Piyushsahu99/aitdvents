@@ -11,7 +11,6 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
-import { GlobalSearch } from "@/components/GlobalSearch";
 import logo from "@/assets/aitd-logo.png";
 
 // Primary navigation items - shown directly in navbar
@@ -141,12 +140,6 @@ export const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-3">
-            {/* Search Bar */}
-            <div className="mr-2">
-              <GlobalSearch />
-            </div>
-
-            <div className="h-6 w-px bg-border" />
 
             {primaryNavLinks.map((link) => {
               const Icon = link.icon;
@@ -266,12 +259,6 @@ export const Navbar = () => {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="lg:hidden py-4 space-y-3 animate-in slide-in-from-top duration-300">
-            {/* Mobile Search */}
-            <div className="px-2 mb-4">
-              <GlobalSearch />
-            </div>
-
-            <div className="h-px bg-border" />
 
             {/* Primary Links */}
             <div className="space-y-1">

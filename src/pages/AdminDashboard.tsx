@@ -28,6 +28,21 @@ export default function AdminDashboard() {
     participants: 0,
     is_online: true,
     is_free: true,
+    external_link: "",
+  });
+
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [jobFormData, setJobFormData] = useState({
+    title: "",
+    company: "",
+    location: "",
+    type: "",
+    duration: "",
+    stipend: "",
+    category: "",
+    description: "",
+    requirements: "",
   });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -35,6 +50,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     checkAdminStatus();
     fetchEvents();
+    fetchJobs();
+    fetchBlogs();
   }, []);
 
   const checkAdminStatus = async () => {
@@ -86,6 +103,34 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchJobs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setJobs(data || []);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    }
+  };
+
+  const fetchBlogs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("blogs")
+        .select("*, events(title)")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setBlogs(data || []);
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
@@ -130,6 +175,145 @@ export default function AdminDashboard() {
       });
 
       fetchEvents();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateJob = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("jobs")
+        .insert([{
+          ...jobFormData,
+          status: 'draft',
+          created_by: user.id,
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Job opportunity created successfully",
+      });
+
+      setJobFormData({
+        title: "",
+        company: "",
+        location: "",
+        type: "",
+        duration: "",
+        stipend: "",
+        category: "",
+        description: "",
+        requirements: "",
+      });
+
+      fetchJobs();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateJobStatus = async (id: string, status: 'draft' | 'live' | 'ended') => {
+    try {
+      const { error } = await supabase
+        .from("jobs")
+        .update({ status })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Job ${status === 'live' ? 'published' : 'updated'} successfully`,
+      });
+
+      fetchJobs();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteJob = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("jobs")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Job deleted successfully",
+      });
+
+      fetchJobs();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateBlogStatus = async (id: string, published: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("blogs")
+        .update({ published })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Blog ${published ? 'published' : 'unpublished'} successfully`,
+      });
+
+      fetchBlogs();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteBlog = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("blogs")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Blog deleted successfully",
+      });
+
+      fetchBlogs();
     } catch (error: any) {
       toast({
         title: "Error",
@@ -225,6 +409,7 @@ export default function AdminDashboard() {
         participants: 0,
         is_online: true,
         is_free: true,
+        external_link: "",
       });
 
       fetchEvents();
@@ -267,14 +452,22 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="manage-events" className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 mb-6">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-4 mb-6">
             <TabsTrigger value="manage-events" className="gap-2">
               <Calendar className="h-4 w-4" />
-              Manage Events
+              Events
+            </TabsTrigger>
+            <TabsTrigger value="manage-jobs" className="gap-2">
+              <Users className="h-4 w-4" />
+              Jobs
+            </TabsTrigger>
+            <TabsTrigger value="manage-blogs" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              Blogs
             </TabsTrigger>
             <TabsTrigger value="create-event" className="gap-2">
               <Plus className="h-4 w-4" />
-              Create Event
+              New Event
             </TabsTrigger>
           </TabsList>
 
@@ -398,6 +591,18 @@ export default function AdminDashboard() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="external_link">Registration Link (Optional)</Label>
+                <Input
+                  id="external_link"
+                  value={formData.external_link}
+                  onChange={(e) => setFormData({...formData, external_link: e.target.value})}
+                  placeholder="https://forms.google.com/..."
+                  type="url"
+                />
+                <p className="text-xs text-muted-foreground">Add an external registration link for this event</p>
               </div>
 
               <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 rounded-xl border border-primary/20 shadow-lg">
@@ -624,6 +829,350 @@ export default function AdminDashboard() {
               </div>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="manage-jobs">
+          <Card className="overflow-hidden">
+            <div className="p-6 border-b bg-gradient-to-r from-blue-500/5 to-transparent">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Users className="h-6 w-6 text-primary" />
+                Job Opportunities Management
+              </h2>
+              <p className="text-muted-foreground mt-1">
+                Create and manage job opportunities for students
+              </p>
+            </div>
+
+            {/* Job Creation Form */}
+            <div className="p-6 border-b bg-muted/20">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Plus className="h-5 w-5 text-primary" />
+                Add New Job Opportunity
+              </h3>
+              <form onSubmit={handleCreateJob} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="job_title">Job Title*</Label>
+                    <Input
+                      id="job_title"
+                      value={jobFormData.title}
+                      onChange={(e) => setJobFormData({...jobFormData, title: e.target.value})}
+                      required
+                      placeholder="Software Developer Intern"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="company">Company*</Label>
+                    <Input
+                      id="company"
+                      value={jobFormData.company}
+                      onChange={(e) => setJobFormData({...jobFormData, company: e.target.value})}
+                      required
+                      placeholder="Google"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="job_type">Type*</Label>
+                    <Select
+                      value={jobFormData.type}
+                      onValueChange={(value) => setJobFormData({...jobFormData, type: value})}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Internship">Internship</SelectItem>
+                        <SelectItem value="Full-time">Full-time</SelectItem>
+                        <SelectItem value="Part-time">Part-time</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="job_location">Location*</Label>
+                    <Input
+                      id="job_location"
+                      value={jobFormData.location}
+                      onChange={(e) => setJobFormData({...jobFormData, location: e.target.value})}
+                      required
+                      placeholder="Bangalore / Remote"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="stipend">Stipend*</Label>
+                    <Input
+                      id="stipend"
+                      value={jobFormData.stipend}
+                      onChange={(e) => setJobFormData({...jobFormData, stipend: e.target.value})}
+                      required
+                      placeholder="₹20,000/month"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="duration">Duration*</Label>
+                    <Input
+                      id="duration"
+                      value={jobFormData.duration}
+                      onChange={(e) => setJobFormData({...jobFormData, duration: e.target.value})}
+                      required
+                      placeholder="3 months"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="job_category">Category*</Label>
+                    <Select
+                      value={jobFormData.category}
+                      onValueChange={(value) => setJobFormData({...jobFormData, category: value})}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Development">Development</SelectItem>
+                        <SelectItem value="Design">Design</SelectItem>
+                        <SelectItem value="Marketing">Marketing</SelectItem>
+                        <SelectItem value="Data Science">Data Science</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="job_description">Description*</Label>
+                  <Textarea
+                    id="job_description"
+                    value={jobFormData.description}
+                    onChange={(e) => setJobFormData({...jobFormData, description: e.target.value})}
+                    required
+                    placeholder="Job description..."
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="job_requirements">Requirements*</Label>
+                  <Textarea
+                    id="job_requirements"
+                    value={jobFormData.requirements}
+                    onChange={(e) => setJobFormData({...jobFormData, requirements: e.target.value})}
+                    required
+                    placeholder="Skills and qualifications required..."
+                    rows={3}
+                  />
+                </div>
+
+                <Button type="submit" className="w-full">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Job Opportunity
+                </Button>
+              </form>
+            </div>
+
+            {/* Jobs Table */}
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Job Title</TableHead>
+                    <TableHead>Company</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {jobs.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                        No jobs yet. Add your first job opportunity!
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    jobs.map((job) => (
+                      <TableRow key={job.id} className="hover:bg-muted/50 transition-colors">
+                        <TableCell className="font-medium">{job.title}</TableCell>
+                        <TableCell>{job.company}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{job.type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={job.status === 'live' ? 'default' : 'secondary'}
+                            className={job.status === 'live' ? 'bg-green-500 hover:bg-green-600' : ''}
+                          >
+                            {job.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            {job.status === 'draft' && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => updateJobStatus(job.id, 'live')}
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {job.status === 'live' && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => updateJobStatus(job.id, 'draft')}
+                                className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                              >
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => deleteJob(job.id)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="manage-blogs">
+          <Card className="overflow-hidden">
+            <div className="p-6 border-b bg-gradient-to-r from-purple-500/5 to-transparent">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-primary" />
+                Blog Management
+              </h2>
+              <p className="text-muted-foreground mt-1">
+                Manage AI-generated and custom blog posts
+              </p>
+            </div>
+
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Author</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>AI Generated</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {blogs.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                        No blogs yet. Create an event to generate AI blog posts!
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    blogs.map((blog) => (
+                      <TableRow key={blog.id} className="hover:bg-muted/50 transition-colors">
+                        <TableCell className="font-medium max-w-xs truncate">{blog.title}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{blog.category}</Badge>
+                        </TableCell>
+                        <TableCell>{blog.author}</TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={blog.published ? 'default' : 'secondary'}
+                            className={blog.published ? 'bg-green-500 hover:bg-green-600' : ''}
+                          >
+                            {blog.published ? 'Published' : 'Draft'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {blog.ai_generated && (
+                            <Badge variant="outline" className="gap-1">
+                              <Sparkles className="h-3 w-3" />
+                              AI
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>{blog.title}</DialogTitle>
+                                  <DialogDescription>
+                                    By {blog.author} • {blog.read_time}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <Label>Excerpt</Label>
+                                    <p className="text-sm text-muted-foreground mt-1">{blog.excerpt}</p>
+                                  </div>
+                                  <div>
+                                    <Label>Content</Label>
+                                    <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none">
+                                      {blog.content}
+                                    </div>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+
+                            {!blog.published && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => updateBlogStatus(blog.id, true)}
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {blog.published && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => updateBlogStatus(blog.id, false)}
+                                className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                              >
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => deleteBlog(blog.id)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
         </TabsContent>
       </Tabs>
       </div>

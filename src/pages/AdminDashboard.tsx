@@ -478,147 +478,188 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-bold">Create New Event</h2>
               <Badge variant="secondary" className="ml-2">AI-Powered</Badge>
             </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              Fill in the event details below. The system will automatically generate a blog post, hashtags, and an eye-catching poster using AI.
+            </p>
 
             <form onSubmit={handleCreateEvent} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
+              {/* Basic Information Section */}
+              <div className="p-5 bg-muted/30 rounded-xl border border-border space-y-4">
+                <h3 className="font-semibold text-sm text-primary flex items-center gap-2">
+                  📋 Basic Information
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Event Title *</Label>
+                    <Input
+                      id="title"
+                      value={formData.title}
+                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      required
+                      placeholder="e.g., AI Innovation Summit 2025"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category *</Label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => setFormData({...formData, category: value})}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Hackathon">Hackathon</SelectItem>
+                        <SelectItem value="Workshop">Workshop</SelectItem>
+                        <SelectItem value="Competition">Competition</SelectItem>
+                        <SelectItem value="Conference">Conference</SelectItem>
+                        <SelectItem value="Webinar">Webinar</SelectItem>
+                        <SelectItem value="Meetup">Meetup</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="title">Event Title*</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  <Label htmlFor="description">Event Description *</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
                     required
-                    placeholder="AI Hackathon 2025"
+                    placeholder="Provide a detailed description of the event..."
+                    rows={4}
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category*</Label>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(value) => setFormData({...formData, category: value})}
-                    required
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Hackathon">Hackathon</SelectItem>
-                      <SelectItem value="Workshop">Workshop</SelectItem>
-                      <SelectItem value="Competition">Competition</SelectItem>
-                      <SelectItem value="Conference">Conference</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <p className="text-xs text-muted-foreground">This description will be used to generate AI content</p>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Description*</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  required
-                  placeholder="Describe the event..."
-                  rows={4}
-                />
+              {/* Date & Location Section */}
+              <div className="p-5 bg-muted/30 rounded-xl border border-border space-y-4">
+                <h3 className="font-semibold text-sm text-primary flex items-center gap-2">
+                  📅 Date & Location
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Event Date *</Label>
+                    <Input
+                      id="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({...formData, date: e.target.value})}
+                      required
+                      placeholder="15-17 Jan 2025"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Location *</Label>
+                    <Input
+                      id="location"
+                      value={formData.location}
+                      onChange={(e) => setFormData({...formData, location: e.target.value})}
+                      required
+                      placeholder="IIT Delhi / Online"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="participants">Expected Participants</Label>
+                    <Input
+                      id="participants"
+                      type="number"
+                      value={formData.participants}
+                      onChange={(e) => setFormData({...formData, participants: parseInt(e.target.value) || 0})}
+                      placeholder="500"
+                      min="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Event Type</Label>
+                    <Select
+                      value={formData.is_online ? "online" : "offline"}
+                      onValueChange={(value) => setFormData({...formData, is_online: value === "online"})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="online">🌐 Online</SelectItem>
+                        <SelectItem value="offline">📍 Offline</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Registration Fee</Label>
+                    <Select
+                      value={formData.is_free ? "free" : "paid"}
+                      onValueChange={(value) => setFormData({...formData, is_free: value === "free"})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="free">✨ Free</SelectItem>
+                        <SelectItem value="paid">💰 Paid</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              {/* Registration Link - Highlighted Section */}
+              <div className="p-5 bg-gradient-to-br from-primary/10 to-accent/5 rounded-xl border-2 border-primary/30 space-y-3">
+                <h3 className="font-semibold text-primary flex items-center gap-2">
+                  🔗 Registration Link
+                </h3>
                 <div className="space-y-2">
-                  <Label htmlFor="date">Date*</Label>
+                  <Label htmlFor="external_link" className="text-foreground">Registration Form URL</Label>
                   <Input
-                    id="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({...formData, date: e.target.value})}
-                    required
-                    placeholder="15-17 Jan 2025"
+                    id="external_link"
+                    value={formData.external_link}
+                    onChange={(e) => setFormData({...formData, external_link: e.target.value})}
+                    placeholder="https://forms.google.com/... or https://eventbrite.com/..."
+                    type="url"
+                    className="bg-background"
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location*</Label>
-                  <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={(e) => setFormData({...formData, location: e.target.value})}
-                    required
-                    placeholder="IIT Delhi / Online"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="participants">Expected Participants</Label>
-                  <Input
-                    id="participants"
-                    type="number"
-                    value={formData.participants}
-                    onChange={(e) => setFormData({...formData, participants: parseInt(e.target.value) || 0})}
-                    placeholder="500"
-                  />
+                  <p className="text-xs text-muted-foreground">
+                    💡 Paste your Google Form, Typeform, Eventbrite, or any registration page link here. The "Register Now" button on event cards will link to this URL.
+                  </p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Event Type</Label>
-                  <Select
-                    value={formData.is_online ? "online" : "offline"}
-                    onValueChange={(value) => setFormData({...formData, is_online: value === "online"})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="online">Online</SelectItem>
-                      <SelectItem value="offline">Offline</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Registration</Label>
-                  <Select
-                    value={formData.is_free ? "free" : "paid"}
-                    onValueChange={(value) => setFormData({...formData, is_free: value === "free"})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="free">Free</SelectItem>
-                      <SelectItem value="paid">Paid</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="external_link">Registration Link (Optional)</Label>
-                <Input
-                  id="external_link"
-                  value={formData.external_link}
-                  onChange={(e) => setFormData({...formData, external_link: e.target.value})}
-                  placeholder="https://forms.google.com/..."
-                  type="url"
-                />
-                <p className="text-xs text-muted-foreground">Add an external registration link for this event</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 rounded-xl border border-primary/20 shadow-lg">
+              {/* AI Generation Info */}
+              <div className="bg-gradient-to-br from-accent/10 to-primary/5 p-6 rounded-xl border-2 border-accent/20 shadow-lg">
                 <h3 className="font-semibold mb-3 flex items-center gap-2 text-lg">
                   <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-                  AI Will Generate:
+                  AI Will Automatically Generate:
                 </h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Professional blog post about the event</li>
-                  <li>• Trending hashtags for social media</li>
-                  <li>• Eye-catching event poster</li>
-                  <li>• SEO-optimized content</li>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>Professional blog post about the event</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>Trending hashtags for social media promotion</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>Eye-catching event poster image</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>SEO-optimized content for better visibility</span>
+                  </li>
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full" disabled={generating}>
+              <Button type="submit" className="w-full" size="lg" disabled={generating}>
                 {generating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -11,6 +11,7 @@ interface EventCardProps {
   category: string;
   image?: string;
   poster_url?: string;
+  external_link?: string;
   is_online?: boolean;
   is_free?: boolean;
   days_left?: number;
@@ -45,6 +46,7 @@ export const EventCard = ({
   category,
   image,
   poster_url,
+  external_link,
   is_online = true,
   is_free = true,
   days_left,
@@ -126,8 +128,9 @@ export const EventCard = ({
           size="sm" 
           className="w-full group/btn"
           variant="outline"
+          onClick={() => external_link && window.open(external_link, '_blank')}
         >
-          View Details
+          {external_link ? 'Register Now' : 'View Details'}
           <ArrowUpRight className="h-3.5 w-3.5 ml-1 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
         </Button>
       </div>

@@ -876,6 +876,7 @@ export type Database = {
           id: string
           interests: string[] | null
           is_looking_for_team: boolean | null
+          is_public: boolean | null
           linkedin_url: string | null
           portfolio_url: string | null
           skills: string[] | null
@@ -893,6 +894,7 @@ export type Database = {
           id?: string
           interests?: string[] | null
           is_looking_for_team?: boolean | null
+          is_public?: boolean | null
           linkedin_url?: string | null
           portfolio_url?: string | null
           skills?: string[] | null
@@ -910,6 +912,7 @@ export type Database = {
           id?: string
           interests?: string[] | null
           is_looking_for_team?: boolean | null
+          is_public?: boolean | null
           linkedin_url?: string | null
           portfolio_url?: string | null
           skills?: string[] | null

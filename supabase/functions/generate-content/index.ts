@@ -1,9 +1,26 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const eventSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200, 'Title too long (max 200 chars)'),
+  description: z.string().min(1, 'Description is required').max(2000, 'Description too long (max 2000 chars)'),
+  date: z.string().max(100, 'Date too long').optional().default(''),
+  location: z.string().max(200, 'Location too long').optional().default(''),
+  category: z.string().max(50, 'Category too long').optional().default('')
+});
+
+const requestSchema = z.object({
+  event: eventSchema,
+  type: z.enum(['blog', 'hashtags', 'poster'], { 
+    errorMap: () => ({ message: 'Type must be blog, hashtags, or poster' }) 
+  })
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -11,7 +28,22 @@ serve(async (req) => {
   }
 
   try {
-    const { event, type } = await req.json();
+    const body = await req.json();
+    
+    // Validate input
+    const validationResult = requestSchema.safeParse(body);
+    if (!validationResult.success) {
+      console.error('Validation error:', validationResult.error.errors);
+      return new Response(JSON.stringify({ 
+        error: 'Invalid request format',
+        details: validationResult.error.errors.map(e => e.message)
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { event, type } = validationResult.data;
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
@@ -125,8 +157,7 @@ Keep it concise but descriptive, suitable for AI image generation.`;
     });
   } catch (error) {
     console.error('Error in generate-content:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    return new Response(JSON.stringify({ error: 'An error occurred processing your request' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

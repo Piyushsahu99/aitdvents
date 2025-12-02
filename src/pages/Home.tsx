@@ -6,7 +6,7 @@ import { PersonaCard } from "@/components/PersonaCard";
 import { TrustBadge } from "@/components/TrustBadge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TelegramPopup } from "@/components/TelegramPopup";
+import { FloatingTelegram } from "@/components/FloatingTelegram";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -153,7 +153,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <TelegramPopup />
+      <FloatingTelegram />
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 px-4 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-accent/5">
         {/* Background Image */}

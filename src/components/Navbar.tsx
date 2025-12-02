@@ -221,6 +221,12 @@ export const Navbar = () => {
             {/* Auth Buttons */}
             {user ? (
               <>
+                <Link to="/profile">
+                  <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300">
+                    <UserCircle className="mr-2 h-4 w-4" />
+                    Profile
+                  </Button>
+                </Link>
                 <Link to="/dashboard">
                   <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -351,6 +357,12 @@ export const Navbar = () => {
                 <div className="p-4 border-t space-y-2 bg-muted/30">
                   {user ? (
                     <>
+                      <Link to="/profile" onClick={() => setIsOpen(false)} className="block">
+                        <Button variant="outline" className="w-full justify-start rounded-xl">
+                          <UserCircle className="mr-2 h-4 w-4" />
+                          My Profile
+                        </Button>
+                      </Link>
                       <Link to="/dashboard" onClick={() => setIsOpen(false)} className="block">
                         <Button variant="outline" className="w-full justify-start rounded-xl">
                           <LayoutDashboard className="mr-2 h-4 w-4" />

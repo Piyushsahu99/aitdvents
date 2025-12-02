@@ -777,6 +777,36 @@ export type Database = {
           },
         ]
       }
+      referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          id: string
+          referral_code: string
+          referred_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code: string
+          referred_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referred_id?: string | null
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       scholarships: {
         Row: {
           amount: string
@@ -870,6 +900,7 @@ export type Database = {
           bio: string | null
           college: string | null
           created_at: string | null
+          email_verified: boolean | null
           full_name: string
           github_url: string | null
           graduation_year: number | null
@@ -878,6 +909,8 @@ export type Database = {
           is_looking_for_team: boolean | null
           is_public: boolean | null
           linkedin_url: string | null
+          phone: string | null
+          phone_verified: boolean | null
           portfolio_url: string | null
           skills: string[] | null
           updated_at: string | null
@@ -888,6 +921,7 @@ export type Database = {
           bio?: string | null
           college?: string | null
           created_at?: string | null
+          email_verified?: boolean | null
           full_name: string
           github_url?: string | null
           graduation_year?: number | null
@@ -896,6 +930,8 @@ export type Database = {
           is_looking_for_team?: boolean | null
           is_public?: boolean | null
           linkedin_url?: string | null
+          phone?: string | null
+          phone_verified?: boolean | null
           portfolio_url?: string | null
           skills?: string[] | null
           updated_at?: string | null
@@ -906,6 +942,7 @@ export type Database = {
           bio?: string | null
           college?: string | null
           created_at?: string | null
+          email_verified?: boolean | null
           full_name?: string
           github_url?: string | null
           graduation_year?: number | null
@@ -914,6 +951,8 @@ export type Database = {
           is_looking_for_team?: boolean | null
           is_public?: boolean | null
           linkedin_url?: string | null
+          phone?: string | null
+          phone_verified?: boolean | null
           portfolio_url?: string | null
           skills?: string[] | null
           updated_at?: string | null

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,6 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/aitd-logo.png";
 
@@ -68,7 +70,6 @@ export const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Handle scroll effect
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
@@ -78,7 +79,6 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    // Get current user
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -86,7 +86,6 @@ export const Navbar = () => {
       }
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -112,6 +111,11 @@ export const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setIsOpen(false);
+  };
+
   return (
     <nav className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
       scrolled 
@@ -119,35 +123,34 @@ export const Navbar = () => {
         : 'bg-background/95 backdrop-blur-md border-border/50'
     }`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3 group">
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-xl blur-md group-hover:bg-primary/30 transition-all duration-300" />
+              <div className="absolute inset-0 bg-primary/20 rounded-lg sm:rounded-xl blur-md group-hover:bg-primary/30 transition-all duration-300" />
               <img 
                 src={logo} 
                 alt="AITD Events" 
-                className="h-11 w-11 rounded-xl relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-lg" 
+                className="h-9 w-9 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-lg" 
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent group-hover:from-accent group-hover:to-primary transition-all duration-300">
+              <span className="text-base sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 aitd.events
               </span>
-              <span className="text-xs text-muted-foreground -mt-1">Learn • Compete • Grow</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground -mt-0.5 sm:-mt-1 hidden xs:block">Learn • Compete • Grow</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-3">
-
+          <div className="hidden lg:flex items-center space-x-2 xl:space-x-3">
             {primaryNavLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 group ${
+                  className={`relative px-3 xl:px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 group ${
                     isActive(link.path)
                       ? "text-primary-foreground"
                       : "text-foreground hover:text-primary"
@@ -170,7 +173,7 @@ export const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="px-4 py-2 rounded-xl text-sm font-medium hover:text-primary hover:bg-transparent group relative"
+                  className="px-3 xl:px-4 py-2 rounded-xl text-sm font-medium hover:text-primary hover:bg-transparent group relative"
                 >
                   <span>More</span>
                   <ChevronDown className="ml-1 h-4 w-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
@@ -205,7 +208,7 @@ export const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="h-6 w-px bg-border mx-2" />
+            <div className="h-6 w-px bg-border mx-1 xl:mx-2" />
 
             {/* About */}
             <Link to="/about">
@@ -232,7 +235,7 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 )}
-                <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300" onClick={() => supabase.auth.signOut()}>
+                <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300" onClick={handleSignOut}>
                   Logout
                 </Button>
               </>
@@ -245,107 +248,139 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden rounded-xl"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="lg:hidden py-4 space-y-3 animate-in slide-in-from-top duration-300">
-
-            {/* Primary Links */}
-            <div className="space-y-1">
-              {primaryNavLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                      isActive(link.path)
-                        ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg"
-                        : "text-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {link.name}
+          {/* Mobile Menu */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden rounded-xl h-9 w-9 sm:h-10 sm:w-10"
+              >
+                <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[85vw] sm:w-[350px] p-0">
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b">
+                  <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-2">
+                    <img src={logo} alt="AITD Events" className="h-8 w-8 rounded-lg" />
+                    <span className="text-lg font-bold text-primary">aitd.events</span>
                   </Link>
-                );
-              })}
-            </div>
-
-            {/* More Items */}
-            {moreNavLinks.map((category) => (
-              <div key={category.category} className="space-y-1">
-                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground">
-                  {category.category}
                 </div>
-                {category.items.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition-all duration-300 ${
-                        isActive(item.path)
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
-              </div>
-            ))}
 
-            <div className="h-px bg-border my-3" />
+                {/* Scrollable Content */}
+                <ScrollArea className="flex-1">
+                  <div className="p-4 space-y-6">
+                    {/* Primary Links */}
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">Main</p>
+                      {primaryNavLinks.map((link) => {
+                        const Icon = link.icon;
+                        return (
+                          <Link
+                            key={link.path}
+                            to={link.path}
+                            onClick={() => setIsOpen(false)}
+                            className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                              isActive(link.path)
+                                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-md"
+                                : "text-foreground hover:bg-muted"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Icon className="h-5 w-5" />
+                              <span>{link.name}</span>
+                            </div>
+                            <ChevronRight className="h-4 w-4 opacity-50" />
+                          </Link>
+                        );
+                      })}
+                    </div>
 
-            {/* Bottom Actions */}
-            <div className="space-y-2">
-              <Link to="/about" onClick={() => setIsOpen(false)}>
-                <Button size="sm" variant="ghost" className="w-full rounded-xl">About</Button>
-              </Link>
-              {user ? (
-                <>
-                  <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                    <Button size="sm" variant="outline" className="w-full rounded-xl">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Button>
-                  </Link>
-                  {isAdmin && (
-                    <Link to="/admin" onClick={() => setIsOpen(false)}>
-                      <Button size="sm" variant="outline" className="w-full rounded-xl">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Admin
+                    {/* More Items by Category */}
+                    {moreNavLinks.map((category) => (
+                      <div key={category.category} className="space-y-1">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">
+                          {category.category}
+                        </p>
+                        {category.items.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              onClick={() => setIsOpen(false)}
+                              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
+                                isActive(item.path)
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : "text-foreground hover:bg-muted"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <Icon className="h-4 w-4" />
+                                <span>{item.name}</span>
+                              </div>
+                              <ChevronRight className="h-4 w-4 opacity-50" />
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    ))}
+
+                    {/* About */}
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">Info</p>
+                      <Link
+                        to="/about"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
+                          isActive("/about")
+                            ? "bg-primary/10 text-primary font-medium"
+                            : "text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        <span>About Us</span>
+                        <ChevronRight className="h-4 w-4 opacity-50" />
+                      </Link>
+                    </div>
+                  </div>
+                </ScrollArea>
+
+                {/* Footer Actions */}
+                <div className="p-4 border-t space-y-2 bg-muted/30">
+                  {user ? (
+                    <>
+                      <Link to="/dashboard" onClick={() => setIsOpen(false)} className="block">
+                        <Button variant="outline" className="w-full justify-start rounded-xl">
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          Dashboard
+                        </Button>
+                      </Link>
+                      {isAdmin && (
+                        <Link to="/admin" onClick={() => setIsOpen(false)} className="block">
+                          <Button variant="outline" className="w-full justify-start rounded-xl">
+                            <Settings className="mr-2 h-4 w-4" />
+                            Admin Panel
+                          </Button>
+                        </Link>
+                      )}
+                      <Button variant="outline" className="w-full rounded-xl" onClick={handleSignOut}>
+                        Sign Out
+                      </Button>
+                    </>
+                  ) : (
+                    <Link to="/auth" onClick={() => setIsOpen(false)} className="block">
+                      <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent">
+                        Get Started
                       </Button>
                     </Link>
                   )}
-                  <Button size="sm" variant="outline" className="w-full rounded-xl" onClick={() => supabase.auth.signOut()}>
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button size="sm" className="w-full rounded-xl bg-gradient-to-r from-primary to-accent">
-                    Get Started
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
-        )}
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </nav>
   );

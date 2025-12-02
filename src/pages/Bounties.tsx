@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { AuthModal } from "@/components/AuthModal";
+import { PageBanner, PlaceholderSection } from "@/components/PageBanner";
+import { useSiteContent, usePageBanners } from "@/hooks/useSiteContent";
 import { Trophy, Clock, Users, DollarSign, ArrowRight, Timer } from "lucide-react";
 
 export default function Bounties() {
@@ -17,6 +19,9 @@ export default function Bounties() {
   const [user, setUser] = useState<any>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const navigate = useNavigate();
+  const { getValue } = useSiteContent("bounties");
+  const { banners: topBanners } = usePageBanners("bounties", "top");
+  const { banners: middleBanners } = usePageBanners("bounties", "middle");
 
   useEffect(() => {
     fetchBounties();
@@ -75,11 +80,22 @@ export default function Bounties() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <Trophy className="h-10 w-10 text-primary" />
-          <h1 className="text-4xl font-bold">Earn with Bounties</h1>
+          <h1 className="text-4xl font-bold">
+            {getValue("hero", "title", "Earn with Bounties")}
+          </h1>
         </div>
         <p className="text-muted-foreground text-lg">
-          Complete challenges, showcase your skills, and earn real money
+          {getValue("hero", "subtitle", "Complete challenges, showcase your skills, and earn real money")}
         </p>
+      </div>
+
+      {/* Top Banner/Promo Section */}
+      <div className="mb-8">
+        {topBanners.length > 0 ? (
+          <PageBanner page="bounties" position="top" />
+        ) : (
+          <PlaceholderSection id="bounties-top-banner" />
+        )}
       </div>
 
       <div className="space-y-6 mb-8">
@@ -93,6 +109,15 @@ export default function Bounties() {
           selected={category}
           onSelect={setCategory}
         />
+      </div>
+
+      {/* Middle Banner/Promo Section */}
+      <div className="mb-8">
+        {middleBanners.length > 0 ? (
+          <PageBanner page="bounties" position="middle" />
+        ) : (
+          <PlaceholderSection id="bounties-middle-banner" />
+        )}
       </div>
 
       {loading ? (

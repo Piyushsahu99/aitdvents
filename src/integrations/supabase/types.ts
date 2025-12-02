@@ -777,6 +777,60 @@ export type Database = {
           },
         ]
       }
+      page_banners: {
+        Row: {
+          background_color: string | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          link_text: string | null
+          link_url: string | null
+          order_index: number | null
+          page: string
+          position: string
+          start_date: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          background_color?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_text?: string | null
+          link_url?: string | null
+          order_index?: number | null
+          page: string
+          position?: string
+          start_date?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          background_color?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_text?: string | null
+          link_url?: string | null
+          order_index?: number | null
+          page?: string
+          position?: string
+          start_date?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           converted_at: string | null
@@ -852,6 +906,51 @@ export type Database = {
           status?: Database["public"]["Enums"]["event_status"]
           title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content_key: string
+          content_type: string
+          content_value: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          link_url: string | null
+          order_index: number | null
+          page: string
+          section: string
+          updated_at: string
+        }
+        Insert: {
+          content_key: string
+          content_type?: string
+          content_value?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_url?: string | null
+          order_index?: number | null
+          page: string
+          section: string
+          updated_at?: string
+        }
+        Update: {
+          content_key?: string
+          content_type?: string
+          content_value?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_url?: string | null
+          order_index?: number | null
+          page?: string
+          section?: string
+          updated_at?: string
         }
         Relationships: []
       }

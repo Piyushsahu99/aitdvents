@@ -4,11 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { z } from "zod";
 import logo from "@/assets/aitd-logo.png";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
 
 const authSchema = z.object({
   email: z.string().email("Invalid email address").max(255),
@@ -19,12 +18,12 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("login");
+  const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/");
@@ -32,15 +31,14 @@ export default function Auth() {
     });
   }, [navigate]);
 
-  const handleAuth = async (e: React.FormEvent, type: 'login' | 'signup') => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Validate input
       authSchema.parse({ email, password });
 
-      if (type === 'signup') {
+      if (!isLogin) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -52,8 +50,8 @@ export default function Auth() {
         if (error) throw error;
 
         toast({
-          title: "Success!",
-          description: "Account created successfully. Please check your email to confirm your account.",
+          title: "Account created!",
+          description: "Please check your email to confirm your account.",
         });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -90,92 +88,162 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/30 px-4">
-      <Card className="w-full max-w-md p-8">
-        <div className="flex flex-col items-center mb-6">
-          <img src={logo} alt="AITD Events" className="h-16 w-16 rounded-md mb-4" />
-          <h1 className="text-2xl font-bold">Welcome to AITD Events</h1>
-          <p className="text-muted-foreground text-center mt-2">
-            Your gateway to career opportunities
+    <div className="min-h-screen flex">
+      {/* Left Side - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
+        
+        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
+          <div className="flex items-center gap-3 mb-8">
+            <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
+            <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
+          </div>
+          
+          <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
+            Your Gateway to<br />
+            <span className="text-primary-foreground/90">Career Opportunities</span>
+          </h1>
+          
+          <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
+            Join thousands of tech students discovering hackathons, internships, and events that shape their future.
           </p>
+          
+          <div className="space-y-4">
+            {[
+              "Access 500+ curated opportunities",
+              "Connect with top recruiters",
+              "Join exclusive tech events",
+              "Build your professional network"
+            ].map((feature, i) => (
+              <div key={i} className="flex items-center gap-3 text-primary-foreground/90">
+                <div className="h-2 w-2 rounded-full bg-primary-foreground/60" />
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Floating elements */}
+          <div className="absolute top-20 right-20 animate-float">
+            <Sparkles className="h-8 w-8 text-primary-foreground/30" />
+          </div>
+          <div className="absolute bottom-32 right-32 animate-float-delayed">
+            <div className="h-16 w-16 rounded-2xl bg-primary-foreground/10 backdrop-blur-sm" />
+          </div>
         </div>
+      </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
+      {/* Right Side - Form */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
+            <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
+            <span className="text-2xl font-bold text-primary">AITD Events</span>
+          </div>
 
-          <TabsContent value="login">
-            <form onSubmit={(e) => handleAuth(e, 'login')} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+          <div className="mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              {isLogin ? "Welcome back" : "Create account"}
+            </h2>
+            <p className="text-muted-foreground">
+              {isLogin 
+                ? "Enter your credentials to access your account" 
+                : "Start your journey with AITD Events"}
+            </p>
+          </div>
+
+          <form onSubmit={handleAuth} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email address
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   maxLength={255}
+                  className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">
+                Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
                   maxLength={100}
+                  className="pl-10 pr-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Loading..." : "Login"}
-              </Button>
-            </form>
-          </TabsContent>
-
-          <TabsContent value="signup">
-            <form onSubmit={(e) => handleAuth(e, 'signup')} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  maxLength={255}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-password">Password</Label>
-                <Input
-                  id="signup-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  maxLength={100}
-                />
+              {!isLogin && (
                 <p className="text-xs text-muted-foreground">
-                  Password must be at least 6 characters
+                  Must be at least 6 characters
                 </p>
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating Account..." : "Sign Up"}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
-      </Card>
+              )}
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full h-12 text-base font-semibold group"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  {isLogin ? "Signing in..." : "Creating account..."}
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  {isLogin ? "Sign in" : "Create account"}
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsLogin(!isLogin)}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              {isLogin ? (
+                <>Don't have an account? <span className="font-semibold text-primary">Sign up</span></>
+              ) : (
+                <>Already have an account? <span className="font-semibold text-primary">Sign in</span></>
+              )}
+            </button>
+          </div>
+
+          <p className="mt-8 text-xs text-center text-muted-foreground">
+            By continuing, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

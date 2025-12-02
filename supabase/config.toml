@@ -1,1 +1,10 @@
 project_id = "zogjugtlsfmpxrwbdyfd"
+
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.generate-content]
+verify_jwt = true
+
+[functions.generate-poster]
+verify_jwt = true

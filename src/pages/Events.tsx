@@ -4,11 +4,16 @@ import { SearchBar } from "@/components/SearchBar";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageBanner, PlaceholderSection } from "@/components/PageBanner";
+import { useSiteContent, usePageBanners } from "@/hooks/useSiteContent";
 
 export default function Events() {
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { getValue } = useSiteContent("events");
+  const { banners: topBanners } = usePageBanners("events", "top");
+  const { banners: middleBanners } = usePageBanners("events", "middle");
 
   useEffect(() => {
     fetchEvents();
@@ -59,10 +64,21 @@ export default function Events() {
       {/* Header Section */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Events & Competitions</h1>
+          <h1 className="text-4xl font-bold mb-2">
+            {getValue("hero", "title", "Events & Competitions")}
+          </h1>
           <p className="text-muted-foreground">
-            Explore the Events that are creating a buzz among your peers!
+            {getValue("hero", "subtitle", "Explore the Events that are creating a buzz among your peers!")}
           </p>
+        </div>
+
+        {/* Top Banner/Promo Section */}
+        <div className="mb-8">
+          {topBanners.length > 0 ? (
+            <PageBanner page="events" position="top" />
+          ) : (
+            <PlaceholderSection id="events-top-banner" className="mb-4" />
+          )}
         </div>
 
         {/* Search Bar */}
@@ -106,6 +122,15 @@ export default function Events() {
               </div>
             ) : (
               <>
+                {/* Middle Banner/Promo Section */}
+                {middleBanners.length > 0 ? (
+                  <div className="mb-8">
+                    <PageBanner page="events" position="middle" />
+                  </div>
+                ) : (
+                  <PlaceholderSection id="events-middle-banner" className="mb-8" />
+                )}
+
                 {/* Category-wise horizontal scrolling sections */}
                 {categories.map((cat, catIndex) => {
                   const categoryEvents = events.filter((e) => e.category === cat);

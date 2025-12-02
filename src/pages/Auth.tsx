@@ -39,7 +39,7 @@ export default function Auth() {
       authSchema.parse({ email, password });
 
       if (!isLogin) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -48,6 +48,16 @@ export default function Auth() {
         });
 
         if (error) throw error;
+
+        // Auto-login after signup if session exists (email confirmation disabled)
+        if (data.session) {
+          toast({
+            title: "Welcome to AITD Events!",
+            description: "Your account has been created successfully.",
+          });
+          navigate("/");
+          return;
+        }
 
         toast({
           title: "Account created!",

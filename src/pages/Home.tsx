@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FeatureCard } from "@/components/FeatureCard";
 import { PersonaCard } from "@/components/PersonaCard";
-import { TrustBadge } from "@/components/TrustBadge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FloatingTelegram } from "@/components/FloatingTelegram";
@@ -46,11 +45,25 @@ interface Course {
   price: number;
 }
 
+interface PlatformStats {
+  students: number;
+  events: number;
+  jobs: number;
+  courses: number;
+}
+
 export default function Home() {
   const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [stats, setStats] = useState<PlatformStats>({
+    students: 0,
+    events: 0,
+    jobs: 0,
+    courses: 0,
+  });
 
   useEffect(() => {
     fetchFeaturedCourses();
+    fetchPlatformStats();
   }, []);
 
   const fetchFeaturedCourses = async () => {
@@ -66,6 +79,26 @@ export default function Home() {
       setFeaturedCourses(data || []);
     } catch (error) {
       console.error("Error fetching courses:", error);
+    }
+  };
+
+  const fetchPlatformStats = async () => {
+    try {
+      const [studentsRes, eventsRes, jobsRes, coursesRes] = await Promise.all([
+        supabase.from("student_profiles").select("id", { count: "exact", head: true }),
+        supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("jobs").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("courses").select("id", { count: "exact", head: true }).eq("status", "live"),
+      ]);
+
+      setStats({
+        students: studentsRes.count || 0,
+        events: eventsRes.count || 0,
+        jobs: jobsRes.count || 0,
+        courses: coursesRes.count || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
     }
   };
 
@@ -146,10 +179,6 @@ export default function Home() {
     },
   ];
 
-  const companies = [
-    "Google", "Microsoft", "Amazon", "Flipkart", "Walmart", 
-    "TCS", "Infosys", "Wipro", "Cognizant", "Accenture"
-  ];
 
   return (
     <div className="min-h-screen">
@@ -171,10 +200,12 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div className="animate-fade-in text-center lg:text-left">
-              <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 animate-pulse text-base px-4 py-2">
-                <Zap className="h-4 w-4 mr-2" />
-                Trusted by 10,000+ Students
-              </Badge>
+              {stats.students > 0 && (
+                <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 animate-pulse text-base px-4 py-2">
+                  <Zap className="h-4 w-4 mr-2" />
+                  Join {stats.students.toLocaleString()} Students
+                </Badge>
+              )}
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 Build Your Future,{" "}
                 <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
@@ -347,19 +378,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Indicators */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <h3 className="text-2xl font-bold text-center mb-8">
-            Industry veterans <span className="text-primary">Trust us</span>
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {companies.map((company) => (
-              <TrustBadge key={company} name={company} />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Stats Section with 3D Effect */}
       <section className="py-24 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 relative overflow-hidden">
@@ -380,31 +398,31 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
               <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary to-primary/60 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
-                50K+
+                {stats.students.toLocaleString()}
               </div>
-              <div className="text-muted-foreground font-semibold text-lg">Active Students</div>
+              <div className="text-muted-foreground font-semibold text-lg">Registered Students</div>
               <p className="text-sm text-muted-foreground/70 mt-2">Learning & Growing</p>
             </div>
             <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
               <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-accent to-accent/60 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
-                500+
+                {stats.jobs.toLocaleString()}
               </div>
-              <div className="text-muted-foreground font-semibold text-lg">Partner Companies</div>
-              <p className="text-sm text-muted-foreground/70 mt-2">Hiring Talent</p>
+              <div className="text-muted-foreground font-semibold text-lg">Job Opportunities</div>
+              <p className="text-sm text-muted-foreground/70 mt-2">Active Listings</p>
             </div>
             <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
               <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
-                1000+
+                {stats.events.toLocaleString()}
               </div>
-              <div className="text-muted-foreground font-semibold text-lg">Events Hosted</div>
+              <div className="text-muted-foreground font-semibold text-lg">Live Events</div>
               <p className="text-sm text-muted-foreground/70 mt-2">Hackathons & Workshops</p>
             </div>
             <div className="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 p-6 rounded-2xl hover:bg-background/50 backdrop-blur-sm">
               <div className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-accent to-primary bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
-                200+
+                {stats.courses.toLocaleString()}
               </div>
-              <div className="text-muted-foreground font-semibold text-lg">Expert Mentors</div>
-              <p className="text-sm text-muted-foreground/70 mt-2">Industry Veterans</p>
+              <div className="text-muted-foreground font-semibold text-lg">Courses Available</div>
+              <p className="text-sm text-muted-foreground/70 mt-2">Learn New Skills</p>
             </div>
           </div>
         </div>

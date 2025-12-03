@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 import { z } from "zod";
 import logo from "@/assets/aitd-logo.png";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield } from "lucide-react";
 
 const authSchema = z.object({
   email: z.string().email("Invalid email address").max(255),
@@ -15,21 +16,67 @@ const authSchema = z.object({
 });
 
 export default function Auth() {
+  const [searchParams] = useSearchParams();
+  const adminInviteCode = searchParams.get("admin_invite");
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(!adminInviteCode);
   const [showPassword, setShowPassword] = useState(false);
+  const [isValidAdminInvite, setIsValidAdminInvite] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    checkSession();
+    if (adminInviteCode) {
+      validateAdminInvite();
+    }
+  }, [adminInviteCode]);
+
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      // Check if profile is complete
+      const { data: profile } = await supabase
+        .from("student_profiles")
+        .select("college, phone_verified")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      // Check if user is admin
+      const { data: isAdmin } = await supabase.rpc("is_admin");
+      
+      if (isAdmin) {
+        navigate("/admin");
+      } else if (!profile || !profile.college || !profile.phone_verified) {
+        navigate("/complete-profile");
+      } else {
         navigate("/");
       }
-    });
-  }, [navigate]);
+    }
+  };
+
+  const validateAdminInvite = async () => {
+    if (!adminInviteCode) return;
+    
+    try {
+      const { data } = await supabase.rpc("validate_admin_invite", {
+        invite_code_input: adminInviteCode,
+      });
+      setIsValidAdminInvite(!!data);
+      if (!data) {
+        toast({
+          title: "Invalid Invite",
+          description: "This admin invite link is invalid or expired.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setIsValidAdminInvite(false);
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,12 +97,29 @@ export default function Auth() {
         if (error) throw error;
 
         // Auto-login after signup if session exists (email confirmation disabled)
-        if (data.session) {
+        if (data.session && data.user) {
+          // If admin invite, use it
+          if (adminInviteCode && isValidAdminInvite) {
+            const { data: inviteUsed } = await supabase.rpc("use_admin_invite", {
+              invite_code_input: adminInviteCode,
+              user_id_input: data.user.id,
+            });
+
+            if (inviteUsed) {
+              toast({
+                title: "Welcome, Admin!",
+                description: "Your admin account has been created successfully.",
+              });
+              navigate("/admin");
+              return;
+            }
+          }
+
           toast({
             title: "Welcome to AITD Events!",
-            description: "Your account has been created successfully.",
+            description: "Please complete your profile to continue.",
           });
-          navigate("/");
+          navigate("/complete-profile");
           return;
         }
 
@@ -64,12 +128,40 @@ export default function Auth() {
           description: "Please check your email to confirm your account.",
         });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: signInData, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
+
+        // Check if user is admin
+        const { data: isAdmin } = await supabase.rpc("is_admin");
+        
+        if (isAdmin) {
+          toast({
+            title: "Welcome back, Admin!",
+            description: "You've successfully logged in.",
+          });
+          navigate("/admin");
+          return;
+        }
+
+        // Check if profile is complete
+        const { data: profile } = await supabase
+          .from("student_profiles")
+          .select("college, phone_verified")
+          .eq("user_id", signInData.user.id)
+          .maybeSingle();
+
+        if (!profile || !profile.college || !profile.phone_verified) {
+          toast({
+            title: "Welcome back!",
+            description: "Please complete your profile to continue.",
+          });
+          navigate("/complete-profile");
+          return;
+        }
 
         toast({
           title: "Welcome back!",
@@ -152,13 +244,25 @@ export default function Auth() {
           </div>
 
           <div className="mb-8">
+            {isValidAdminInvite && (
+              <Badge className="mb-4 bg-amber-500/10 text-amber-600 border-amber-500/20">
+                <Shield className="h-3 w-3 mr-1" />
+                Admin Invite
+              </Badge>
+            )}
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              {isLogin ? "Welcome back" : "Create account"}
+              {isValidAdminInvite 
+                ? "Create Admin Account" 
+                : isLogin 
+                  ? "Welcome back" 
+                  : "Create account"}
             </h2>
             <p className="text-muted-foreground">
-              {isLogin 
-                ? "Enter your credentials to access your account" 
-                : "Start your journey with AITD Events"}
+              {isValidAdminInvite
+                ? "You've been invited to become an administrator"
+                : isLogin 
+                  ? "Enter your credentials to access your account" 
+                  : "Start your journey with AITD Events"}
             </p>
           </div>
 

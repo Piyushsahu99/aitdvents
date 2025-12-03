@@ -36,6 +36,7 @@ import Courses from "./pages/Courses";
 import CourseDetails from "./pages/CourseDetails";
 import MyCourses from "./pages/MyCourses";
 import Profile from "./pages/Profile";
+import CompleteProfile from "./pages/CompleteProfile";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,7 @@ const App = () => (
               <Route path="/courses/:id" element={<CourseDetails />} />
               <Route path="/my-courses" element={<MyCourses />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/complete-profile" element={<CompleteProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

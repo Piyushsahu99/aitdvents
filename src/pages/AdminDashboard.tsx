@@ -12,8 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield } from "lucide-react";
 import { ContentManager } from "@/components/admin/ContentManager";
+import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -453,7 +454,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="manage-events" className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-5 mb-6">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-6 mb-6">
             <TabsTrigger value="manage-events" className="gap-2">
               <Calendar className="h-4 w-4" />
               Events
@@ -470,11 +471,19 @@ export default function AdminDashboard() {
               <FileText className="h-4 w-4" />
               CMS
             </TabsTrigger>
+            <TabsTrigger value="admin-invites" className="gap-2">
+              <Shield className="h-4 w-4" />
+              Admins
+            </TabsTrigger>
             <TabsTrigger value="create-event" className="gap-2">
               <Plus className="h-4 w-4" />
               New Event
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="admin-invites">
+            <AdminInviteManager />
+          </TabsContent>
 
           <TabsContent value="cms">
             <Card className="p-6">

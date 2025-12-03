@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_invites: {
+        Row: {
+          created_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invite_code: string
+          invited_by: string | null
+          status: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invite_code?: string
+          invited_by?: string | null
+          status?: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invite_code?: string
+          invited_by?: string | null
+          status?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       assignment_submissions: {
         Row: {
           assignment_id: string
@@ -1093,6 +1126,14 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      use_admin_invite: {
+        Args: { invite_code_input: string; user_id_input: string }
+        Returns: boolean
+      }
+      validate_admin_invite: {
+        Args: { invite_code_input: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import Home from "./pages/Home";
 import Events from "./pages/Events";
 import Sponsors from "./pages/Sponsors";
@@ -48,7 +49,7 @@ const App = () => (
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 pb-20 lg:pb-0">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/events" element={<Events />} />
@@ -66,8 +67,8 @@ const App = () => (
               <Route path="/more" element={<More />} />
               <Route path="/about" element={<About />} />
               <Route path="/scholarships" element={<Scholarships />} />
-          <Route path="/bounties" element={<Bounties />} />
-          <Route path="/hackathons" element={<Hackathons />} />
+              <Route path="/bounties" element={<Bounties />} />
+              <Route path="/hackathons" element={<Hackathons />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/terms" element={<TermsAndConditions />} />
@@ -84,7 +85,10 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
-          <Footer />
+          <div className="hidden lg:block">
+            <Footer />
+          </div>
+          <MobileBottomNav />
         </div>
       </BrowserRouter>
     </TooltipProvider>

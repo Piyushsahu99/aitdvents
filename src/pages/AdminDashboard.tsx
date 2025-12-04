@@ -392,44 +392,68 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Header - Mobile Optimized */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-4xl font-bold mb-1 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Admin Dashboard
             </h1>
-            <p className="text-muted-foreground">Manage all platform content and users</p>
+            <p className="text-sm text-muted-foreground">Manage platform content</p>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
+          <Button variant="outline" size="sm" onClick={handleLogout} className="w-full sm:w-auto">
             <LogOut className="mr-2 h-4 w-4" /> Logout
           </Button>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
-          <Card className="p-4"><div className="text-center"><Calendar className="h-5 w-5 mx-auto text-primary mb-1" /><p className="text-2xl font-bold">{events.length}</p><p className="text-xs text-muted-foreground">Events</p></div></Card>
-          <Card className="p-4"><div className="text-center"><Trophy className="h-5 w-5 mx-auto text-orange-500 mb-1" /><p className="text-2xl font-bold">{bounties.length}</p><p className="text-xs text-muted-foreground">Bounties</p></div></Card>
-          <Card className="p-4"><div className="text-center"><Sparkles className="h-5 w-5 mx-auto text-purple-500 mb-1" /><p className="text-2xl font-bold">{hackathons.length}</p><p className="text-xs text-muted-foreground">Hackathons</p></div></Card>
-          <Card className="p-4"><div className="text-center"><Briefcase className="h-5 w-5 mx-auto text-blue-500 mb-1" /><p className="text-2xl font-bold">{jobs.length}</p><p className="text-xs text-muted-foreground">Jobs</p></div></Card>
-          <Card className="p-4"><div className="text-center"><GraduationCap className="h-5 w-5 mx-auto text-green-500 mb-1" /><p className="text-2xl font-bold">{scholarships.length}</p><p className="text-xs text-muted-foreground">Scholarships</p></div></Card>
-          <Card className="p-4"><div className="text-center"><FileText className="h-5 w-5 mx-auto text-pink-500 mb-1" /><p className="text-2xl font-bold">{courses.length}</p><p className="text-xs text-muted-foreground">Courses</p></div></Card>
-          <Card className="p-4"><div className="text-center"><Users className="h-5 w-5 mx-auto text-cyan-500 mb-1" /><p className="text-2xl font-bold">{users.length}</p><p className="text-xs text-muted-foreground">Users</p></div></Card>
-          <Card className="p-4"><div className="text-center"><FileText className="h-5 w-5 mx-auto text-amber-500 mb-1" /><p className="text-2xl font-bold">{blogs.length}</p><p className="text-xs text-muted-foreground">Blogs</p></div></Card>
+        {/* Stats Overview - Mobile Optimized Grid */}
+        <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-6">
+          <Card className="p-2 sm:p-4">
+            <div className="text-center">
+              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-primary mb-0.5 sm:mb-1" />
+              <p className="text-lg sm:text-2xl font-bold">{events.length}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Events</p>
+            </div>
+          </Card>
+          <Card className="p-2 sm:p-4">
+            <div className="text-center">
+              <Trophy className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-orange-500 mb-0.5 sm:mb-1" />
+              <p className="text-lg sm:text-2xl font-bold">{bounties.length}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Bounties</p>
+            </div>
+          </Card>
+          <Card className="p-2 sm:p-4">
+            <div className="text-center">
+              <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-blue-500 mb-0.5 sm:mb-1" />
+              <p className="text-lg sm:text-2xl font-bold">{jobs.length}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Jobs</p>
+            </div>
+          </Card>
+          <Card className="p-2 sm:p-4">
+            <div className="text-center">
+              <Users className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-cyan-500 mb-0.5 sm:mb-1" />
+              <p className="text-lg sm:text-2xl font-bold">{users.length}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Users</p>
+            </div>
+          </Card>
         </div>
 
-        <Tabs defaultValue="events" className="space-y-6">
-          <TabsList className="flex flex-wrap gap-1">
-            <TabsTrigger value="events"><Calendar className="h-4 w-4 mr-1" />Events</TabsTrigger>
-            <TabsTrigger value="bounties"><Trophy className="h-4 w-4 mr-1" />Bounties</TabsTrigger>
-            <TabsTrigger value="hackathons"><Sparkles className="h-4 w-4 mr-1" />Hackathons</TabsTrigger>
-            <TabsTrigger value="jobs"><Briefcase className="h-4 w-4 mr-1" />Jobs</TabsTrigger>
-            <TabsTrigger value="scholarships"><GraduationCap className="h-4 w-4 mr-1" />Scholarships</TabsTrigger>
-            <TabsTrigger value="reels"><Play className="h-4 w-4 mr-1" />Reels</TabsTrigger>
-            <TabsTrigger value="users"><Users className="h-4 w-4 mr-1" />Users</TabsTrigger>
-            <TabsTrigger value="blogs"><FileText className="h-4 w-4 mr-1" />Blogs</TabsTrigger>
-            <TabsTrigger value="cms"><Database className="h-4 w-4 mr-1" />CMS</TabsTrigger>
-            <TabsTrigger value="admins"><Shield className="h-4 w-4 mr-1" />Admins</TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="events" className="space-y-4 sm:space-y-6">
+          <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex w-max sm:w-auto gap-1 p-1">
+              <TabsTrigger value="events" className="text-xs sm:text-sm px-2 sm:px-3"><Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Events</span><span className="sm:hidden">Event</span></TabsTrigger>
+              <TabsTrigger value="bounties" className="text-xs sm:text-sm px-2 sm:px-3"><Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Bounties</span><span className="sm:hidden">Bounty</span></TabsTrigger>
+              <TabsTrigger value="hackathons" className="text-xs sm:text-sm px-2 sm:px-3"><Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Hackathons</span><span className="sm:hidden">Hack</span></TabsTrigger>
+              <TabsTrigger value="jobs" className="text-xs sm:text-sm px-2 sm:px-3"><Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Jobs</TabsTrigger>
+              <TabsTrigger value="scholarships" className="text-xs sm:text-sm px-2 sm:px-3"><GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Scholarships</span><span className="sm:hidden">Schol</span></TabsTrigger>
+              <TabsTrigger value="reels" className="text-xs sm:text-sm px-2 sm:px-3"><Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Reels</TabsTrigger>
+              <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Users</TabsTrigger>
+              <TabsTrigger value="blogs" className="text-xs sm:text-sm px-2 sm:px-3"><FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Blogs</TabsTrigger>
+              <TabsTrigger value="cms" className="text-xs sm:text-sm px-2 sm:px-3"><Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CMS</TabsTrigger>
+              <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
+            </TabsList>
+          </div>
+
 
           {/* Events Tab */}
           <TabsContent value="events">

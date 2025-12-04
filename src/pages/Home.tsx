@@ -218,13 +218,13 @@ export default function Home() {
     <div className="min-h-screen">
       <FloatingTelegram />
       
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center py-20 px-4 overflow-hidden bg-mesh">
+      {/* Hero Section - Mobile Optimized */}
+      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center py-12 sm:py-20 px-4 overflow-hidden bg-mesh">
         {/* Animated background elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute top-40 right-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float-delayed" />
-          <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-float-slow" />
+          <div className="absolute top-20 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute top-40 right-10 sm:right-20 w-64 sm:w-96 h-64 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float-delayed" />
+          <div className="absolute bottom-20 left-1/3 w-56 sm:w-80 h-56 sm:h-80 bg-primary/10 rounded-full blur-3xl animate-float-slow" />
         </div>
         
         {/* Background Image Overlay */}
@@ -238,112 +238,112 @@ export default function Home() {
         </div>
         
         <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left">
               {stats.students > 0 && (
-                <Badge className="mb-6 px-4 py-2 text-sm animate-fade-in-down bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
-                  <Sparkles className="h-4 w-4 mr-2" />
+                <Badge className="mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm animate-fade-in-down bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
+                  <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                   Join {stats.students.toLocaleString()}+ Students
                 </Badge>
               )}
               
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in-up">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight animate-fade-in-up">
                 Build Your Future,{" "}
                 <span className="text-gradient-primary animate-gradient bg-[length:200%_200%]">
                   One Skill at a Time
                 </span>
               </h1>
               
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-in-up stagger-1">
-                Learn, compete, earn, and connect. Everything you need to launch your dream tech career in one platform.
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-in-up stagger-1">
+                Learn, compete, earn, and connect. Everything you need to launch your dream tech career.
               </p>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up stagger-2">
-                <Link to="/courses">
-                  <Button size="lg" className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 group">
-                    <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+              {/* CTA Buttons - Mobile Optimized */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-in-up stagger-2">
+                <Link to="/courses" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 group">
+                    <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform" />
                     Start Learning Free
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/events">
-                  <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-xl hover:scale-105 transition-all">
+                <Link to="/events" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl hover:scale-105 transition-all">
                     Explore Opportunities
                   </Button>
                 </Link>
               </div>
 
-              {/* Trust indicators */}
-              <div className="flex flex-wrap items-center gap-6 mt-10 justify-center lg:justify-start text-sm text-muted-foreground animate-fade-in-up stagger-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+              {/* Trust indicators - Mobile Optimized */}
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-6 sm:mt-10 justify-center lg:justify-start text-xs sm:text-sm text-muted-foreground animate-fade-in-up stagger-3">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
                   <span>100% Free to Start</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
                   <span>No Credit Card Required</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Content - Feature Cards Grid */}
-            <div className="grid grid-cols-2 gap-4 animate-fade-in">
+            {/* Right Content - Feature Cards Grid - Hidden on small mobile */}
+            <div className="hidden sm:grid grid-cols-2 gap-3 sm:gap-4 animate-fade-in">
               <Link to="/jobs" className="group animate-fade-in-up stagger-1">
-                <div className="relative h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-cyan-500 p-5 text-white hover-lift cursor-pointer">
+                <div className="relative h-36 sm:h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-cyan-500 p-4 sm:p-5 text-white hover-lift cursor-pointer">
                   <img src={internshipImage} alt="Jobs" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity" loading="lazy" />
                   <div className="relative z-10 h-full flex flex-col">
-                    <div className="p-2 bg-white/20 rounded-xl w-fit mb-auto">
-                      <Briefcase className="h-6 w-6" />
+                    <div className="p-1.5 sm:p-2 bg-white/20 rounded-xl w-fit mb-auto">
+                      <Briefcase className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">Jobs</h3>
-                      <p className="text-sm opacity-90">Explore Careers</p>
+                      <h3 className="font-bold text-base sm:text-lg">Jobs</h3>
+                      <p className="text-xs sm:text-sm opacity-90">Explore Careers</p>
                     </div>
                   </div>
                 </div>
               </Link>
               
               <Link to="/mentorship" className="group animate-fade-in-up stagger-2">
-                <div className="relative h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white hover-lift cursor-pointer">
+                <div className="relative h-36 sm:h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-500 to-amber-500 p-4 sm:p-5 text-white hover-lift cursor-pointer">
                   <img src={mentorshipImage} alt="Mentorships" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity" loading="lazy" />
                   <div className="relative z-10 h-full flex flex-col">
-                    <div className="p-2 bg-white/20 rounded-xl w-fit mb-auto">
-                      <MessageCircle className="h-6 w-6" />
+                    <div className="p-1.5 sm:p-2 bg-white/20 rounded-xl w-fit mb-auto">
+                      <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">Mentorship</h3>
-                      <p className="text-sm opacity-90">Expert Guidance</p>
+                      <h3 className="font-bold text-base sm:text-lg">Mentorship</h3>
+                      <p className="text-xs sm:text-sm opacity-90">Expert Guidance</p>
                     </div>
                   </div>
                 </div>
               </Link>
 
               <Link to="/practice" className="group animate-fade-in-up stagger-3">
-                <div className="relative h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-purple-500 p-5 text-white hover-lift cursor-pointer">
+                <div className="relative h-36 sm:h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-purple-500 p-4 sm:p-5 text-white hover-lift cursor-pointer">
                   <img src={practiceImage} alt="Practice" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity" loading="lazy" />
                   <div className="relative z-10 h-full flex flex-col">
-                    <div className="p-2 bg-white/20 rounded-xl w-fit mb-auto">
-                      <Target className="h-6 w-6" />
+                    <div className="p-1.5 sm:p-2 bg-white/20 rounded-xl w-fit mb-auto">
+                      <Target className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">Practice</h3>
-                      <p className="text-sm opacity-90">Build Skills</p>
+                      <h3 className="font-bold text-base sm:text-lg">Practice</h3>
+                      <p className="text-xs sm:text-sm opacity-90">Build Skills</p>
                     </div>
                   </div>
                 </div>
               </Link>
 
               <Link to="/events" className="group animate-fade-in-up stagger-4">
-                <div className="relative h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-rose-500 p-5 text-white hover-lift cursor-pointer">
+                <div className="relative h-36 sm:h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-pink-500 to-rose-500 p-4 sm:p-5 text-white hover-lift cursor-pointer">
                   <div className="relative z-10 h-full flex flex-col">
-                    <div className="p-2 bg-white/20 rounded-xl w-fit mb-auto">
-                      <Calendar className="h-6 w-6" />
+                    <div className="p-1.5 sm:p-2 bg-white/20 rounded-xl w-fit mb-auto">
+                      <Calendar className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">Competitions</h3>
-                      <p className="text-sm opacity-90">Win Prizes</p>
+                      <h3 className="font-bold text-base sm:text-lg">Competitions</h3>
+                      <p className="text-xs sm:text-sm opacity-90">Win Prizes</p>
                     </div>
                   </div>
                 </div>
@@ -353,38 +353,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick Access Features */}
-      <section className="py-16 px-4 bg-muted/30">
+      {/* Quick Access Features - Mobile Optimized */}
+      <section className="py-10 sm:py-16 px-3 sm:px-4 bg-muted/30">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">
-              <Zap className="w-4 h-4 mr-2" />
+          <div className="text-center mb-8 sm:mb-12">
+            <Badge className="mb-3 sm:mb-4 text-xs sm:text-sm">
+              <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
               Quick Access
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">
               Everything You Need in <span className="text-gradient-primary">One Place</span>
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
               From learning to earning, we've got all your career development needs covered
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
                 <Link
                   key={feature.title}
                   to={feature.link}
-                  className="group animate-fade-in-up"
+                  className="group animate-fade-in-up touch-manipulation active:scale-95"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <div className="flex flex-col items-center p-4 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-3 group-hover:scale-110 transition-transform`}>
-                      <Icon className="h-5 w-5" />
+                  <div className="flex flex-col items-center p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-3 group-hover:scale-110 transition-transform`}>
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
-                    <h3 className="font-semibold text-sm text-center">{feature.title}</h3>
-                    <p className="text-xs text-muted-foreground text-center mt-1">{feature.subtitle}</p>
+                    <h3 className="font-semibold text-[10px] sm:text-sm text-center leading-tight">{feature.title}</h3>
+                    <p className="text-[8px] sm:text-xs text-muted-foreground text-center mt-0.5 sm:mt-1 hidden sm:block">{feature.subtitle}</p>
                   </div>
                 </Link>
               );

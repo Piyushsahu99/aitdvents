@@ -297,34 +297,36 @@ export default function Profile() {
   const successfulReferrals = referrals.filter(r => r.status === "converted").length;
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-4 sm:py-8 px-3 sm:px-4">
       <div className="container mx-auto max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+        <div className="mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
             My Profile
           </h1>
-          <p className="text-muted-foreground">Manage your account settings and preferences</p>
+          <p className="text-sm sm:text-base text-muted-foreground">Manage your account settings</p>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="profile">
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </TabsTrigger>
-            <TabsTrigger value="reels">
-              <Play className="h-4 w-4 mr-2" />
-              My Reels
-            </TabsTrigger>
-            <TabsTrigger value="referrals">
-              <Users className="h-4 w-4 mr-2" />
-              Referrals
-            </TabsTrigger>
-            <TabsTrigger value="verification">
-              <Shield className="h-4 w-4 mr-2" />
-              Verification
-            </TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="profile" className="space-y-4 sm:space-y-6">
+          <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex w-max sm:w-full sm:grid sm:grid-cols-4 gap-1 p-1">
+              <TabsTrigger value="profile" className="text-xs sm:text-sm px-3 sm:px-4">
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Profile
+              </TabsTrigger>
+              <TabsTrigger value="reels" className="text-xs sm:text-sm px-3 sm:px-4">
+                <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Reels
+              </TabsTrigger>
+              <TabsTrigger value="referrals" className="text-xs sm:text-sm px-3 sm:px-4">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Referrals
+              </TabsTrigger>
+              <TabsTrigger value="verification" className="text-xs sm:text-sm px-3 sm:px-4">
+                <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Verify
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-6">

@@ -12,9 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play } from "lucide-react";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
+import { ReelsModerationManager } from "@/components/admin/ReelsModerationManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -423,6 +424,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="hackathons"><Sparkles className="h-4 w-4 mr-1" />Hackathons</TabsTrigger>
             <TabsTrigger value="jobs"><Briefcase className="h-4 w-4 mr-1" />Jobs</TabsTrigger>
             <TabsTrigger value="scholarships"><GraduationCap className="h-4 w-4 mr-1" />Scholarships</TabsTrigger>
+            <TabsTrigger value="reels"><Play className="h-4 w-4 mr-1" />Reels</TabsTrigger>
             <TabsTrigger value="users"><Users className="h-4 w-4 mr-1" />Users</TabsTrigger>
             <TabsTrigger value="blogs"><FileText className="h-4 w-4 mr-1" />Blogs</TabsTrigger>
             <TabsTrigger value="cms"><Database className="h-4 w-4 mr-1" />CMS</TabsTrigger>
@@ -720,6 +722,11 @@ export default function AdminDashboard() {
                 </TableBody>
               </Table>
             </Card>
+          </TabsContent>
+
+          {/* Reels Moderation Tab */}
+          <TabsContent value="reels">
+            <ReelsModerationManager />
           </TabsContent>
 
           {/* Users Tab */}

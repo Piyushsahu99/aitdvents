@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { UserReelsSection } from "@/components/profile/UserReelsSection";
+import { MemberCertificate } from "@/components/profile/MemberCertificate";
 import { 
   User, 
   Camera, 
@@ -26,7 +28,11 @@ import {
   Calendar,
   LinkIcon,
   Shield,
-  Play
+  Play,
+  LogOut,
+  Settings,
+  Award,
+  ExternalLink
 } from "lucide-react";
 
 interface ProfileData {
@@ -321,19 +327,39 @@ export default function Profile() {
   return (
     <div className="min-h-screen py-4 sm:py-8 px-3 sm:px-4">
       <div className="container mx-auto max-w-4xl">
-        <div className="mb-4 sm:mb-8">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            My Profile
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Manage your account settings</p>
+        {/* Header with Logout */}
+        <div className="flex items-start justify-between mb-4 sm:mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              My Profile
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Manage your account settings</p>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              toast({ title: "Logged out", description: "See you soon!" });
+              navigate("/");
+            }}
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4 sm:space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex w-max sm:w-full sm:grid sm:grid-cols-4 gap-1 p-1">
+            <TabsList className="inline-flex w-max sm:w-full sm:grid sm:grid-cols-5 gap-1 p-1">
               <TabsTrigger value="profile" className="text-xs sm:text-sm px-3 sm:px-4">
                 <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                 Profile
+              </TabsTrigger>
+              <TabsTrigger value="certificate" className="text-xs sm:text-sm px-3 sm:px-4">
+                <Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Certificate
               </TabsTrigger>
               <TabsTrigger value="reels" className="text-xs sm:text-sm px-3 sm:px-4">
                 <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
@@ -343,9 +369,9 @@ export default function Profile() {
                 <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                 Referrals
               </TabsTrigger>
-              <TabsTrigger value="verification" className="text-xs sm:text-sm px-3 sm:px-4">
-                <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
-                Verify
+              <TabsTrigger value="settings" className="text-xs sm:text-sm px-3 sm:px-4">
+                <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Settings
               </TabsTrigger>
             </TabsList>
           </div>
@@ -765,6 +791,127 @@ export default function Profile() {
                   </div>
                 </div>
                 
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Certificate Tab */}
+          <TabsContent value="certificate" className="space-y-6">
+            {profile && user && (
+              <MemberCertificate
+                userName={profile.full_name}
+                joinDate={profile.created_at || new Date().toISOString()}
+                memberId={user.id}
+              />
+            )}
+            
+            <Card className="bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-orange-500/10 border-amber-500/20">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+                    <Award className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Top 3 Monthly Performers Win Merchandise! 🎁</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Earn points by sharing your certificate, referring friends, and being active on the platform. 
+                      Top 3 performers each month win official AITD Events merchandise!
+                    </p>
+                    <Button variant="outline" size="sm" onClick={() => navigate("/leaderboard")}>
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      View Leaderboard
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Privacy Settings
+                </CardTitle>
+                <CardDescription>Control your profile visibility and preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div>
+                    <Label className="font-medium">Public Profile</Label>
+                    <p className="text-sm text-muted-foreground">Allow others to see your profile on the leaderboard</p>
+                  </div>
+                  <Switch
+                    checked={formData.is_public}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_public: checked })}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div>
+                    <Label className="font-medium">Looking for Team</Label>
+                    <p className="text-sm text-muted-foreground">Show that you're open to team invitations for hackathons</p>
+                  </div>
+                  <Switch
+                    checked={formData.is_looking_for_team}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_looking_for_team: checked })}
+                  />
+                </div>
+                
+                <Button onClick={handleSaveProfile} disabled={saving} className="w-full">
+                  {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                  Save Settings
+                </Button>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5" />
+                  Account Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">{user?.email}</p>
+                      <p className="text-sm text-muted-foreground">Primary email</p>
+                    </div>
+                  </div>
+                  <Badge variant={user?.email_confirmed_at ? "default" : "secondary"}>
+                    {user?.email_confirmed_at ? "Verified" : "Pending"}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-destructive/50">
+              <CardHeader>
+                <CardTitle className="text-destructive flex items-center gap-2">
+                  <LogOut className="h-5 w-5" />
+                  Sign Out
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Sign out of your account on this device
+                </p>
+                <Button 
+                  variant="destructive"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    toast({ title: "Logged out", description: "See you soon!" });
+                    navigate("/");
+                  }}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>

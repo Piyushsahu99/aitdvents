@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -52,6 +52,7 @@ const moreNavLinks = [
   { 
     category: "Tools & Resources",
     items: [
+      { name: "Store", path: "/store", icon: ShoppingBag },
       { name: "AI Chat", path: "/ai-chat", icon: Sparkles },
       { name: "AI Tools", path: "/ai-tools", icon: Wrench },
       { name: "Resume Builder", path: "/resume", icon: FileText },

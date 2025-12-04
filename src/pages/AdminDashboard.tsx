@@ -12,10 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag } from "lucide-react";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
 import { ReelsModerationManager } from "@/components/admin/ReelsModerationManager";
+import { UserManager } from "@/components/admin/UserManager";
+import { MarketplaceManager } from "@/components/admin/MarketplaceManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -447,6 +449,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="jobs" className="text-xs sm:text-sm px-2 sm:px-3"><Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Jobs</TabsTrigger>
               <TabsTrigger value="scholarships" className="text-xs sm:text-sm px-2 sm:px-3"><GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Scholarships</span><span className="sm:hidden">Schol</span></TabsTrigger>
               <TabsTrigger value="reels" className="text-xs sm:text-sm px-2 sm:px-3"><Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Reels</TabsTrigger>
+              <TabsTrigger value="store" className="text-xs sm:text-sm px-2 sm:px-3"><ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Store</TabsTrigger>
               <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Users</TabsTrigger>
               <TabsTrigger value="blogs" className="text-xs sm:text-sm px-2 sm:px-3"><FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Blogs</TabsTrigger>
               <TabsTrigger value="cms" className="text-xs sm:text-sm px-2 sm:px-3"><Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CMS</TabsTrigger>
@@ -753,38 +756,14 @@ export default function AdminDashboard() {
             <ReelsModerationManager />
           </TabsContent>
 
+          {/* Store/Marketplace Tab */}
+          <TabsContent value="store">
+            <MarketplaceManager />
+          </TabsContent>
+
           {/* Users Tab */}
           <TabsContent value="users">
-            <Card>
-              <div className="p-6 border-b">
-                <h2 className="text-2xl font-bold flex items-center gap-2"><Users className="h-6 w-6 text-primary" /> Registered Users ({users.length})</h2>
-              </div>
-              <Table>
-                <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>College</TableHead><TableHead>Graduation</TableHead><TableHead>Skills</TableHead><TableHead>Phone</TableHead><TableHead>Joined</TableHead></TableRow></TableHeader>
-                <TableBody>
-                  {users.map(user => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          {user.avatar_url && <img src={user.avatar_url} className="h-8 w-8 rounded-full" alt="" />}
-                          {user.full_name}
-                        </div>
-                      </TableCell>
-                      <TableCell>{user.college || '-'}</TableCell>
-                      <TableCell>{user.graduation_year || '-'}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {(user.skills || []).slice(0, 3).map((s: string, i: number) => <Badge key={i} variant="secondary" className="text-xs">{s}</Badge>)}
-                          {(user.skills || []).length > 3 && <Badge variant="outline">+{user.skills.length - 3}</Badge>}
-                        </div>
-                      </TableCell>
-                      <TableCell>{user.phone || '-'}</TableCell>
-                      <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
+            <UserManager />
           </TabsContent>
 
           {/* Blogs Tab */}

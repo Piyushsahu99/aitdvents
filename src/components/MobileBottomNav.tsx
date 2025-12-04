@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Trophy, Briefcase, Menu } from "lucide-react";
+import { Home, BookOpen, Trophy, Briefcase, Menu, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -46,6 +46,7 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
   {
     category: "Tools",
     items: [
+      { name: "Store", path: "/store", icon: ShoppingBag },
       { name: "AI Chat", path: "/ai-chat", icon: Menu },
       { name: "AI Tools", path: "/ai-tools", icon: Menu },
       { name: "Reels", path: "/reels", icon: Menu },

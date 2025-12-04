@@ -729,11 +729,17 @@ export default function Profile() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Phone className="h-5 w-5" />
-                  Phone Verification
+                  Phone Number
                 </CardTitle>
-                <CardDescription>Add and verify your phone number with OTP</CardDescription>
+                <CardDescription>Add your phone number for contact purposes</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                  <p className="text-sm text-amber-700 dark:text-amber-400">
+                    <strong>Note:</strong> SMS verification is currently unavailable. You can save your phone number for contact purposes.
+                  </p>
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number (with country code)</Label>
                   <div className="flex gap-3">
@@ -743,7 +749,6 @@ export default function Profile() {
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+919876543210"
                       className="flex-1"
-                      disabled={otpSent}
                     />
                     <Button 
                       variant="outline" 
@@ -752,110 +757,14 @@ export default function Profile() {
                           toast({ title: "Error", description: "Please enter a phone number", variant: "destructive" });
                           return;
                         }
-                        // Format phone number
-                        let phone = formData.phone.replace(/\s/g, '');
-                        if (!phone.startsWith('+')) {
-                          phone = '+91' + phone; // Default to India
-                        }
-                        
-                        setSendingOtp(true);
-                        try {
-                          const { error } = await supabase.auth.signInWithOtp({
-                            phone: phone,
-                          });
-                          
-                          if (error) throw error;
-                          
-                          setOtpSent(true);
-                          toast({ title: "OTP Sent", description: "Check your phone for the verification code" });
-                        } catch (error: any) {
-                          toast({ title: "Error", description: error.message || "Failed to send OTP", variant: "destructive" });
-                        } finally {
-                          setSendingOtp(false);
-                        }
-                      }} 
-                      disabled={sendingOtp || otpSent || !formData.phone}
+                        await handleSaveProfile();
+                      }}
                     >
-                      {sendingOtp ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send OTP"}
+                      Save
                     </Button>
                   </div>
                 </div>
                 
-                {otpSent && (
-                  <div className="space-y-3 p-4 bg-muted rounded-lg">
-                    <Label htmlFor="otp">Enter OTP</Label>
-                    <div className="flex gap-3">
-                      <Input
-                        id="otp"
-                        value={otpCode}
-                        onChange={(e) => setOtpCode(e.target.value)}
-                        placeholder="Enter 6-digit OTP"
-                        maxLength={6}
-                        className="flex-1"
-                      />
-                      <Button 
-                        onClick={async () => {
-                          if (!otpCode || otpCode.length !== 6) {
-                            toast({ title: "Error", description: "Please enter a valid 6-digit OTP", variant: "destructive" });
-                            return;
-                          }
-                          
-                          setVerifyingOtp(true);
-                          try {
-                            let phone = formData.phone.replace(/\s/g, '');
-                            if (!phone.startsWith('+')) {
-                              phone = '+91' + phone;
-                            }
-                            
-                            const { error } = await supabase.auth.verifyOtp({
-                              phone: phone,
-                              token: otpCode,
-                              type: 'sms',
-                            });
-                            
-                            if (error) throw error;
-                            
-                            // Update profile with verified phone
-                            await supabase
-                              .from("student_profiles")
-                              .update({ phone: phone, phone_verified: true })
-                              .eq("user_id", user.id);
-                            
-                            toast({ title: "Success", description: "Phone number verified successfully!" });
-                            setOtpSent(false);
-                            setOtpCode("");
-                            await fetchProfile(user.id);
-                          } catch (error: any) {
-                            toast({ title: "Error", description: error.message || "Invalid OTP", variant: "destructive" });
-                          } finally {
-                            setVerifyingOtp(false);
-                          }
-                        }} 
-                        disabled={verifyingOtp || !otpCode}
-                      >
-                        {verifyingOtp ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify"}
-                      </Button>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => {
-                        setOtpSent(false);
-                        setOtpCode("");
-                      }}
-                    >
-                      Change phone number
-                    </Button>
-                  </div>
-                )}
-                
-                {formData.phone && !otpSent && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Badge variant={(profile as any)?.phone_verified ? "default" : "secondary"}>
-                      {(profile as any)?.phone_verified ? "Verified" : "Not Verified"}
-                    </Badge>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </TabsContent>

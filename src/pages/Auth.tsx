@@ -39,10 +39,10 @@ export default function Auth() {
   const checkSession = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      // Check if profile is complete
+      // Check if profile is complete (phone verification is optional now)
       const { data: profile } = await supabase
         .from("student_profiles")
-        .select("college, phone_verified")
+        .select("college")
         .eq("user_id", session.user.id)
         .maybeSingle();
 
@@ -51,7 +51,7 @@ export default function Auth() {
       
       if (isAdmin) {
         navigate("/admin");
-      } else if (!profile || !profile.college || !profile.phone_verified) {
+      } else if (!profile || !profile.college) {
         navigate("/complete-profile");
       } else {
         navigate("/");
@@ -95,7 +95,19 @@ export default function Auth() {
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          // Handle "user already registered" error - auto switch to login
+          if (error.message?.includes("already registered") || error.status === 422) {
+            setIsLogin(true);
+            toast({
+              title: "Account exists",
+              description: "You already have an account. Please sign in instead.",
+            });
+            setLoading(false);
+            return;
+          }
+          throw error;
+        }
 
         // Auto-login after signup if session exists (email confirmation disabled)
         if (data.session && data.user) {
@@ -170,14 +182,14 @@ export default function Auth() {
           return;
         }
 
-        // Check if profile is complete
+        // Check if profile is complete (phone verification is optional now)
         const { data: profile } = await supabase
           .from("student_profiles")
-          .select("college, phone_verified")
+          .select("college")
           .eq("user_id", signInData.user.id)
           .maybeSingle();
 
-        if (!profile || !profile.college || !profile.phone_verified) {
+        if (!profile || !profile.college) {
           toast({
             title: "Welcome back!",
             description: "Please complete your profile to continue.",

@@ -45,17 +45,29 @@ export const EventCard = ({
   gradientIndex = 0,
 }: EventCardProps) => {
   const gradientClass = gradientClasses[gradientIndex % gradientClasses.length];
+  const hasPoster = poster_url || image;
   
   return (
     <div className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_-12px_hsl(var(--primary)/0.25)] hover:-translate-y-2 h-full flex flex-col">
-      {/* Gradient Header */}
-      <div className={`relative h-36 overflow-hidden bg-gradient-to-br ${gradientClass}`}>
-        {/* Animated background elements */}
-        <div className="absolute inset-0">
-          <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-700" />
-          <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-700 delay-100" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-white/20 group-hover:scale-[3] group-hover:opacity-0 transition-all duration-700" />
-        </div>
+      {/* Header with Poster or Gradient */}
+      <div className={`relative ${hasPoster ? 'h-48' : 'h-32'} overflow-hidden`}>
+        {hasPoster ? (
+          <>
+            <img
+              src={poster_url || image}
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          </>
+        ) : (
+          <div className={`w-full h-full bg-gradient-to-br ${gradientClass}`}>
+            <div className="absolute inset-0">
+              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-700 delay-100" />
+            </div>
+          </div>
+        )}
         
         {/* Status Badges */}
         <div className="absolute top-3 left-3 flex gap-2 z-10">
@@ -77,57 +89,44 @@ export const EventCard = ({
           </Badge>
         </div>
 
-        {/* Event Poster/Logo */}
-        <div className="absolute -bottom-8 left-4 bg-card rounded-xl p-1.5 shadow-xl w-16 h-16 flex items-center justify-center border-2 border-background group-hover:scale-110 transition-transform duration-300 z-20">
-          {poster_url || image ? (
-            <img
-              src={poster_url || image}
-              alt={title}
-              className="w-full h-full object-contain rounded-lg"
-            />
-          ) : (
-            <div className={`w-full h-full bg-gradient-to-br ${gradientClass} rounded-lg flex items-center justify-center`}>
-              <span className="text-xl font-bold text-white">
-                {title.charAt(0)}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* Title overlay for poster images */}
+        {hasPoster && (
+          <div className="absolute bottom-3 left-3 right-3 z-10">
+            <h3 className="font-bold text-white text-lg line-clamp-2 drop-shadow-lg">
+              {title}
+            </h3>
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="p-4 pt-10 flex-1 flex flex-col">
-        <div className="mb-3">
-          <h3 className="font-semibold text-base line-clamp-2 mb-1.5 group-hover:text-primary transition-colors duration-300">
+      <div className="p-4 flex-1 flex flex-col">
+        {!hasPoster && (
+          <h3 className="font-semibold text-base line-clamp-2 mb-2 group-hover:text-primary transition-colors duration-300">
             {title}
           </h3>
-          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-            {description}
-          </p>
-        </div>
+        )}
+        
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+          {description}
+        </p>
 
         {/* Stats */}
         <div className="space-y-2 text-xs mb-4 flex-1">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
-              <Users className="h-3 w-3 text-primary" />
-            </div>
+            <Users className="h-3.5 w-3.5 text-primary" />
             <span className="font-medium">{applied_count || participants || 0} Applied</span>
           </div>
           {days_left !== null && days_left !== undefined && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-accent/10">
-                <Clock className="h-3 w-3 text-accent" />
-              </div>
+              <Clock className="h-3.5 w-3.5 text-accent" />
               <span className="font-medium">{days_left} days left</span>
             </div>
           )}
           {date && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">
-                <Calendar className="h-3 w-3" />
-              </div>
-              <span>{new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <Calendar className="h-3.5 w-3.5" />
+              <span>{new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
             </div>
           )}
         </div>
@@ -136,13 +135,15 @@ export const EventCard = ({
         <Button 
           size="sm" 
           className="w-full group/btn relative overflow-hidden"
-          onClick={() => external_link && window.open(external_link, '_blank')}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (external_link) window.open(external_link, '_blank');
+          }}
         >
           <span className="relative z-10 flex items-center justify-center">
-            {external_link ? 'Register Now' : 'View Details'}
+            View Details
             <ArrowUpRight className="h-4 w-4 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
           </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
         </Button>
       </div>
     </div>

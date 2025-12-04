@@ -53,6 +53,7 @@ interface ProfileData {
   phone: string | null;
   phone_verified: boolean | null;
   email_verified: boolean | null;
+  created_at: string | null;
 }
 
 interface Referral {

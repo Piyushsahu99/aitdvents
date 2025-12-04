@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { UserReelsSection } from "@/components/profile/UserReelsSection";
 import { 
   User, 
   Camera, 
@@ -24,7 +25,8 @@ import {
   School,
   Calendar,
   LinkIcon,
-  Shield
+  Shield,
+  Play
 } from "lucide-react";
 
 interface ProfileData {
@@ -305,10 +307,14 @@ export default function Profile() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile">
               <User className="h-4 w-4 mr-2" />
               Profile
+            </TabsTrigger>
+            <TabsTrigger value="reels">
+              <Play className="h-4 w-4 mr-2" />
+              My Reels
             </TabsTrigger>
             <TabsTrigger value="referrals">
               <Users className="h-4 w-4 mr-2" />
@@ -522,6 +528,11 @@ export default function Profile() {
                 Save Profile
               </Button>
             </div>
+          </TabsContent>
+
+          {/* Reels Tab */}
+          <TabsContent value="reels">
+            {user && <UserReelsSection userId={user.id} />}
           </TabsContent>
 
           {/* Referrals Tab */}

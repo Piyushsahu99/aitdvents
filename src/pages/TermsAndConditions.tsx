@@ -75,7 +75,37 @@ export default function TermsAndConditions() {
       `
     },
     {
-      title: "8. Prohibited Activities",
+      title: "8. Educational Reels Community Guidelines",
+      content: `
+        8.1 Content Requirements: Only educational content is allowed including tutorials, career tips, interview preparation, coding tips, study advice, and tech news.
+        
+        8.2 Acceptable Content:
+        - Educational tutorials and how-to videos
+        - Career advice and interview preparation tips
+        - Programming tutorials and coding tips
+        - Project showcases and demonstrations
+        - Study tips and productivity advice
+        - Tech news and industry insights
+        - Motivational content for students
+        
+        8.3 Prohibited Content:
+        - Spam, misleading, or clickbait content
+        - Adult, violent, or inappropriate content
+        - Harassment, hate speech, or discrimination
+        - Copyright-infringing content
+        - Promotional content without educational value
+        - Political or religious propaganda
+        - Personal attacks or defamation
+        
+        8.4 Moderation: Content is published immediately but monitored by the community. Users can report inappropriate content. Content with 5+ reports is automatically hidden pending review.
+        
+        8.5 Supported Platforms: Only videos from YouTube, Instagram, LinkedIn, Vimeo, and Twitter/X are allowed.
+        
+        8.6 Consequences: Repeated violations will result in account suspension or permanent ban.
+      `
+    },
+    {
+      title: "9. Prohibited Activities",
       content: `
         Users must not:
         - Submit plagiarized or copyrighted content without permission
@@ -84,59 +114,64 @@ export default function TermsAndConditions() {
         - Engage in fraudulent activities
         - Harass or abuse other users
         - Violate any applicable laws or regulations
+        - Post non-educational content in the Reels section
+        - Manipulate likes or views through fake accounts
+        - Share malicious links or phishing attempts
       `
     },
     {
-      title: "9. Data Privacy",
+      title: "10. Data Privacy",
       content: `
-        9.1 We collect and process personal data as described in our Privacy Policy.
+        10.1 We collect and process personal data as described in our Privacy Policy.
         
-        9.2 Your payment information is stored securely and encrypted.
+        10.2 Your payment information is stored securely and encrypted.
         
-        9.3 We do not sell your personal information to third parties.
+        10.3 We do not sell your personal information to third parties.
         
-        9.4 You have the right to request deletion of your data (subject to legal retention requirements).
+        10.4 You have the right to request deletion of your data (subject to legal retention requirements).
       `
     },
     {
-      title: "10. Limitation of Liability",
+      title: "11. Limitation of Liability",
       content: `
-        10.1 AITD Events is not liable for any indirect, incidental, or consequential damages.
+        11.1 AITD Events is not liable for any indirect, incidental, or consequential damages.
         
-        10.2 Our total liability for any claim shall not exceed the amount paid to you in the past 12 months.
+        11.2 Our total liability for any claim shall not exceed the amount paid to you in the past 12 months.
         
-        10.3 We are not responsible for third-party content, links, or services.
+        11.3 We are not responsible for third-party content, links, or services.
         
-        10.4 Technical issues or platform downtime do not constitute grounds for compensation.
+        11.4 Technical issues or platform downtime do not constitute grounds for compensation.
+        
+        11.5 User-generated content in Reels section does not represent the views of AITD Events.
       `
     },
     {
-      title: "11. Dispute Resolution",
+      title: "12. Dispute Resolution",
       content: `
-        11.1 Governing Law: These terms are governed by Indian law.
+        12.1 Governing Law: These terms are governed by Indian law.
         
-        11.2 Jurisdiction: Courts in [Your City], India have exclusive jurisdiction.
+        12.2 Jurisdiction: Courts in [Your City], India have exclusive jurisdiction.
         
-        11.3 Arbitration: Disputes may be referred to arbitration as per the Arbitration and Conciliation Act, 1996.
+        12.3 Arbitration: Disputes may be referred to arbitration as per the Arbitration and Conciliation Act, 1996.
         
-        11.4 Cooling Period: Users must attempt to resolve disputes through our support team before initiating legal proceedings.
+        12.4 Cooling Period: Users must attempt to resolve disputes through our support team before initiating legal proceedings.
       `
     },
     {
-      title: "12. Modifications",
+      title: "13. Modifications",
       content: `
         We reserve the right to modify these terms at any time. Continued use of the Platform after modifications constitutes acceptance of the updated terms. We will notify users of significant changes via email or platform notifications.
       `
     },
     {
-      title: "13. Contact Information",
+      title: "14. Contact Information",
       content: `
         For questions about these terms, contact us at:
         
         Email: legal@aitdevents.com
         Address: [Your Registered Address]
         
-        Last Updated: January 2025
+        Last Updated: December 2024
       `
     }
   ];

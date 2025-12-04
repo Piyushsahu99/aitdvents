@@ -329,12 +329,18 @@ export default function CompleteProfile() {
             </div>
           )}
 
-          {/* Step 2: Phone Verification */}
+          {/* Step 2: Phone (Optional) */}
           {step === 2 && (
             <div className="space-y-4">
+              <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  <strong>Note:</strong> Phone verification via SMS is currently unavailable. You can add your phone number and verify it later, or skip this step.
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="phone" className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" /> Phone Number *
+                  <Phone className="h-4 w-4" /> Phone Number (Optional)
                 </Label>
                 <div className="flex gap-2">
                   <span className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground">
@@ -347,58 +353,25 @@ export default function CompleteProfile() {
                     value={formData.phone.replace(/^\+91/, "")}
                     onChange={(e) => handleInputChange("phone", e.target.value.replace(/\D/g, "").slice(0, 10))}
                     maxLength={10}
-                    disabled={otpSent}
                   />
                 </div>
               </div>
 
-              {!otpSent ? (
+              <div className="flex gap-3">
                 <Button
-                  className="w-full"
-                  onClick={handleSendOtp}
-                  disabled={!canProceedStep2 || verifyingPhone || formData.phone.length !== 10}
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setStep(1)}
                 >
-                  {verifyingPhone ? "Sending..." : "Send OTP"}
+                  ← Back
                 </Button>
-              ) : (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="otp">Enter 6-digit OTP</Label>
-                    <Input
-                      id="otp"
-                      type="text"
-                      placeholder="000000"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                      maxLength={6}
-                      className="text-center text-2xl tracking-widest"
-                    />
-                  </div>
-                  
-                  <Button
-                    className="w-full"
-                    onClick={handleVerifyOtp}
-                    disabled={otp.length !== 6 || verifyingPhone}
-                  >
-                    {verifyingPhone ? "Verifying..." : "Verify OTP"}
-                    <CheckCircle className="ml-2 h-4 w-4" />
-                  </Button>
-
-                  <button
-                    onClick={() => { setOtpSent(false); setOtp(""); }}
-                    className="text-sm text-muted-foreground hover:text-primary w-full text-center"
-                  >
-                    Change phone number
-                  </button>
-                </div>
-              )}
-
-              <button
-                onClick={() => setStep(1)}
-                className="text-sm text-muted-foreground hover:text-primary w-full text-center"
-              >
-                ← Back to previous step
-              </button>
+                <Button
+                  className="flex-1"
+                  onClick={() => setStep(3)}
+                >
+                  {formData.phone ? "Continue" : "Skip"} <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           )}
 

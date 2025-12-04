@@ -224,6 +224,28 @@ export default function Profile() {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
+    // Client-side file validation
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast({ 
+        title: "Invalid file type", 
+        description: "Please upload a JPEG, PNG, GIF, or WebP image", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    if (file.size > MAX_SIZE) {
+      toast({ 
+        title: "File too large", 
+        description: "Please upload an image smaller than 5MB", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     setUploading(true);
     const fileExt = file.name.split(".").pop();
     const filePath = `${user.id}/${Date.now()}.${fileExt}`;

@@ -810,6 +810,72 @@ export type Database = {
           },
         ]
       }
+      marketplace_products: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          category: Database["public"]["Enums"]["product_category"]
+          condition: Database["public"]["Enums"]["product_condition"]
+          contact_info: string | null
+          created_at: string | null
+          description: string
+          id: string
+          images: string[] | null
+          is_admin_product: boolean | null
+          location: string | null
+          price: number
+          rejection_reason: string | null
+          seller_id: string
+          status: Database["public"]["Enums"]["product_status"]
+          subcategory: string | null
+          title: string
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: Database["public"]["Enums"]["product_category"]
+          condition?: Database["public"]["Enums"]["product_condition"]
+          contact_info?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          images?: string[] | null
+          is_admin_product?: boolean | null
+          location?: string | null
+          price?: number
+          rejection_reason?: string | null
+          seller_id: string
+          status?: Database["public"]["Enums"]["product_status"]
+          subcategory?: string | null
+          title: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: Database["public"]["Enums"]["product_category"]
+          condition?: Database["public"]["Enums"]["product_condition"]
+          contact_info?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          images?: string[] | null
+          is_admin_product?: boolean | null
+          location?: string | null
+          price?: number
+          rejection_reason?: string | null
+          seller_id?: string
+          status?: Database["public"]["Enums"]["product_status"]
+          subcategory?: string | null
+          title?: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: []
+      }
       page_banners: {
         Row: {
           background_color: string | null
@@ -863,6 +929,47 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      product_inquiries: {
+        Row: {
+          buyer_id: string
+          created_at: string | null
+          id: string
+          message: string
+          product_id: string
+          responded_at: string | null
+          seller_response: string | null
+          status: string | null
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string | null
+          id?: string
+          message: string
+          product_id: string
+          responded_at?: string | null
+          seller_response?: string | null
+          status?: string | null
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          product_id?: string
+          responded_at?: string | null
+          seller_response?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_inquiries_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reel_likes: {
         Row: {
@@ -1219,6 +1326,48 @@ export type Database = {
         }
         Relationships: []
       }
+      user_points: {
+        Row: {
+          bounties_completed: number | null
+          courses_completed: number | null
+          created_at: string | null
+          id: string
+          last_activity: string | null
+          monthly_points: number | null
+          referrals_count: number | null
+          shares_count: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bounties_completed?: number | null
+          courses_completed?: number | null
+          created_at?: string | null
+          id?: string
+          last_activity?: string | null
+          monthly_points?: number | null
+          referrals_count?: number | null
+          shares_count?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bounties_completed?: number | null
+          courses_completed?: number | null
+          created_at?: string | null
+          id?: string
+          last_activity?: string | null
+          monthly_points?: number | null
+          referrals_count?: number | null
+          shares_count?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -1265,6 +1414,14 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       event_status: "draft" | "live" | "ended"
+      product_category:
+        | "electronics"
+        | "books"
+        | "stationery"
+        | "tasks"
+        | "other"
+      product_condition: "new" | "like_new" | "good" | "fair" | "old"
+      product_status: "pending" | "approved" | "rejected" | "sold" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1394,6 +1551,15 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       event_status: ["draft", "live", "ended"],
+      product_category: [
+        "electronics",
+        "books",
+        "stationery",
+        "tasks",
+        "other",
+      ],
+      product_condition: ["new", "like_new", "good", "fair", "old"],
+      product_status: ["pending", "approved", "rejected", "sold", "archived"],
     },
   },
 } as const

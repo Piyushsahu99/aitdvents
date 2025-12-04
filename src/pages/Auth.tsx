@@ -18,11 +18,12 @@ const authSchema = z.object({
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const adminInviteCode = searchParams.get("admin_invite");
+  const referralCode = searchParams.get("ref");
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(!adminInviteCode);
+  const [isLogin, setIsLogin] = useState(!adminInviteCode && !referralCode);
   const [showPassword, setShowPassword] = useState(false);
   const [isValidAdminInvite, setIsValidAdminInvite] = useState(false);
   const navigate = useNavigate();
@@ -112,6 +113,28 @@ export default function Auth() {
               });
               navigate("/admin");
               return;
+            }
+          }
+
+          // Handle referral code - update existing referral record
+          if (referralCode) {
+            try {
+              await supabase
+                .from("referrals")
+                .update({ 
+                  referred_id: data.user.id, 
+                  status: "converted",
+                  converted_at: new Date().toISOString()
+                })
+                .eq("referral_code", referralCode)
+                .is("referred_id", null);
+              
+              toast({
+                title: "Referral Applied!",
+                description: "You've joined through a referral link.",
+              });
+            } catch (refError) {
+              console.error("Error applying referral:", refError);
             }
           }
 
@@ -260,10 +283,18 @@ export default function Auth() {
             <p className="text-muted-foreground">
               {isValidAdminInvite
                 ? "You've been invited to become an administrator"
-                : isLogin 
-                  ? "Enter your credentials to access your account" 
-                  : "Start your journey with AITD Events"}
+                : referralCode
+                  ? "You've been invited to join AITD Events"
+                  : isLogin 
+                    ? "Enter your credentials to access your account" 
+                    : "Start your journey with AITD Events"}
             </p>
+            {referralCode && !isLogin && (
+              <Badge className="mt-2 bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Referral Code Applied
+              </Badge>
+            )}
           </div>
 
           <form onSubmit={handleAuth} className="space-y-5">

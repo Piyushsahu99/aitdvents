@@ -47,6 +47,21 @@ interface Course {
   price: number;
 }
 
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  category: string;
+  poster_url: string | null;
+  external_link: string | null;
+  is_online: boolean;
+  is_free: boolean;
+  days_left: number | null;
+  applied_count: number;
+}
+
 interface PlatformStats {
   students: number;
   events: number;
@@ -56,6 +71,7 @@ interface PlatformStats {
 
 export default function Home() {
   const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [highlightedEvents, setHighlightedEvents] = useState<Event[]>([]);
   const [stats, setStats] = useState<PlatformStats>({
     students: 0,
     events: 0,
@@ -65,8 +81,25 @@ export default function Home() {
 
   useEffect(() => {
     fetchFeaturedCourses();
+    fetchHighlightedEvents();
     fetchPlatformStats();
   }, []);
+
+  const fetchHighlightedEvents = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .eq("status", "live")
+        .order("applied_count", { ascending: false })
+        .limit(4);
+
+      if (error) throw error;
+      setHighlightedEvents(data || []);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
 
   const fetchFeaturedCourses = async () => {
     try {
@@ -436,6 +469,82 @@ export default function Home() {
               <Link to="/courses">
                 <Button size="lg" variant="outline" className="hover:scale-105 transition-all rounded-xl">
                   View All Courses
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Highlighted Events Section */}
+      {highlightedEvents.length > 0 && (
+        <section className="py-20 px-4 bg-muted/30">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="mb-4">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Trending Events
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Don't Miss <span className="text-gradient-primary">These Events</span>
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Join hackathons, workshops, and competitions happening right now
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {highlightedEvents.map((event, index) => (
+                <Link key={event.id} to="/events" className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50">
+                    <div className="relative h-40 overflow-hidden">
+                      {event.poster_url ? (
+                        <img
+                          src={event.poster_url}
+                          alt={event.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className={`w-full h-full bg-gradient-to-br ${
+                          index % 2 === 0 ? 'from-violet-500 to-purple-600' : 'from-pink-500 to-rose-600'
+                        }`} />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        {event.is_free && (
+                          <Badge className="bg-emerald-500 text-white border-0 text-xs">Free</Badge>
+                        )}
+                        <Badge variant="secondary" className="bg-white/90 text-foreground text-xs">{event.category}</Badge>
+                      </div>
+                      <div className="absolute bottom-3 left-3 right-3">
+                        <h3 className="text-white font-bold text-sm line-clamp-2 drop-shadow-lg">{event.title}</h3>
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          <span>{event.applied_count || 0} joined</span>
+                        </div>
+                        {event.days_left !== null && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>{event.days_left}d left</span>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="text-center">
+              <Link to="/events">
+                <Button size="lg" variant="outline" className="hover:scale-105 transition-all rounded-xl">
+                  View All Events
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>

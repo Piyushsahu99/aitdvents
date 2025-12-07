@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { SearchBar } from "@/components/SearchBar";
-import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building, MapPin, Clock, Banknote, Loader2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthModal } from "@/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
@@ -53,7 +53,7 @@ export default function Jobs() {
     }
   };
 
-  const categories = [...new Set(jobs.map((j: any) => j.category))];
+  const categories = ["All", ...new Set(jobs.map((j: any) => j.category))];
 
   const filteredJobs = jobs.filter(
     (job: any) =>
@@ -73,90 +73,227 @@ export default function Jobs() {
     }
   };
 
+  const typeColors: Record<string, string> = {
+    "Internship": "bg-blue-500",
+    "Full-time": "bg-emerald-500",
+    "Part-time": "bg-amber-500",
+    "Contract": "bg-violet-500",
+    "Remote": "bg-cyan-500",
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Jobs & Internships</h1>
-        <p className="text-muted-foreground">Explore career opportunities at top companies</p>
-      </div>
-
-      <div className="space-y-6 mb-8">
-        <SearchBar
-          placeholder="Search jobs..."
-          value={search}
-          onChange={setSearch}
-        />
-        <CategoryFilter
-          categories={categories}
-          selected={category}
-          onSelect={setCategory}
-        />
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative py-12 sm:py-20 px-4 overflow-hidden bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-yellow-500/10">
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-orange-500/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-amber-500/20 rounded-full blur-3xl animate-float-delayed" />
         </div>
-      ) : (
-        <>
-          <div className="space-y-4">
-            {filteredJobs.map((job) => (
-              <div
-                key={job.id}
-                className="p-6 bg-card rounded-lg border border-border hover:shadow-[var(--shadow-hover)] transition-all"
-              >
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-start gap-2 mb-2">
-                      <h3 className="text-xl font-semibold">{job.title}</h3>
-                      <Badge variant="secondary">{job.type}</Badge>
-                    </div>
-                    
-                    <div className="space-y-2 text-sm mb-4">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Building className="h-4 w-4 text-primary" />
-                        <span className="font-medium">{job.company}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span>{job.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4 text-primary" />
-                        <span>{job.duration}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Banknote className="h-4 w-4 text-primary" />
-                        <span className="font-medium text-primary">{job.stipend}</span>
-                      </div>
-                      {job.apply_by && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock className="h-4 w-4 text-warning" />
-                          <span className="text-sm">Apply by: {job.apply_by}</span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {job.description && (
-                      <p className="text-sm text-muted-foreground mb-3">{job.description}</p>
-                    )}
-                    
-                    <Badge variant="outline">{job.category}</Badge>
-                  </div>
-                  
-                  <Button onClick={handleApply}>Apply Now</Button>
-                </div>
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center mb-10 animate-fade-in-up">
+            <Badge className="mb-4 bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20">
+              <Sparkles className="h-3 w-3 mr-1.5" />
+              Career Opportunities
+            </Badge>
+            <h1 className="text-3xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+              Jobs & Internships
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Launch your career with opportunities from top companies. Find internships, jobs, and more.
+            </p>
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 animate-fade-in-up stagger-1">
+            {[
+              { label: "Open Positions", value: jobs.length, icon: Briefcase },
+              { label: "Companies", value: new Set(jobs.map(j => j.company)).size, icon: Building },
+              { label: "Categories", value: new Set(jobs.map(j => j.category)).size, icon: TrendingUp },
+              { label: "Avg. Stipend", value: "₹15K+", icon: Banknote },
+            ].map((stat, idx) => (
+              <div key={idx} className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 text-center hover:shadow-lg transition-all hover:-translate-y-1">
+                <stat.icon className="h-6 w-6 mx-auto mb-2 text-orange-500" />
+                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {filteredJobs.length === 0 && !loading && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No jobs found matching your criteria</p>
+      {/* Telegram Banner */}
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 py-3 px-4">
+        <div className="container mx-auto max-w-6xl flex items-center justify-center gap-2 text-white text-sm sm:text-base">
+          <Send className="h-4 w-4 animate-pulse" />
+          <span className="font-medium">Join our Telegram for daily job updates!</span>
+          <a 
+            href="https://t.me/aitdevents" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="ml-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-xs font-semibold transition-colors"
+          >
+            Join Now →
+          </a>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <section className="py-8 sm:py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          {/* Search & Filter */}
+          <div className="mb-8 space-y-4 animate-fade-in">
+            <SearchBar
+              placeholder="Search jobs, companies..."
+              value={search}
+              onChange={setSearch}
+            />
+            
+            {/* Category Pills */}
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    category === cat
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg"
+                      : "bg-card border border-border hover:border-orange-500/50 text-foreground"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <>
+              <div className="space-y-4">
+                {filteredJobs.map((job, index) => (
+                  <Card 
+                    key={job.id}
+                    className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in-up"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <CardContent className="p-0">
+                      <div className="flex flex-col lg:flex-row">
+                        {/* Left accent */}
+                        <div className={`w-full lg:w-2 h-2 lg:h-auto ${typeColors[job.type] || 'bg-primary'}`} />
+                        
+                        <div className="flex-1 p-6">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                            <div className="flex-1">
+                              {/* Header */}
+                              <div className="flex flex-wrap items-center gap-2 mb-3">
+                                <h3 className="text-xl font-bold text-foreground group-hover:text-orange-500 transition-colors">
+                                  {job.title}
+                                </h3>
+                                <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0`}>
+                                  {job.type}
+                                </Badge>
+                              </div>
+                              
+                              {/* Details Grid */}
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                                <div className="flex items-center gap-2">
+                                  <div className="p-1.5 rounded-lg bg-orange-500/10">
+                                    <Building className="h-4 w-4 text-orange-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">Company</p>
+                                    <p className="text-sm font-medium">{job.company}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <div className="p-1.5 rounded-lg bg-blue-500/10">
+                                    <MapPin className="h-4 w-4 text-blue-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">Location</p>
+                                    <p className="text-sm font-medium">{job.location}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <div className="p-1.5 rounded-lg bg-violet-500/10">
+                                    <Clock className="h-4 w-4 text-violet-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">Duration</p>
+                                    <p className="text-sm font-medium">{job.duration}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <div className="p-1.5 rounded-lg bg-emerald-500/10">
+                                    <Banknote className="h-4 w-4 text-emerald-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">Stipend</p>
+                                    <p className="text-sm font-bold text-emerald-600">{job.stipend}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {job.description && (
+                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                                  {job.description}
+                                </p>
+                              )}
+                              
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Badge variant="outline" className="rounded-full">
+                                  {job.category}
+                                </Badge>
+                                {job.apply_by && (
+                                  <Badge variant="secondary" className="rounded-full bg-amber-500/10 text-amber-600 border-amber-500/20">
+                                    <Clock className="h-3 w-3 mr-1" />
+                                    Apply by: {job.apply_by}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="flex sm:flex-col gap-2">
+                              <Button 
+                                onClick={handleApply}
+                                className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
+                              >
+                                Apply Now
+                                <ExternalLink className="h-4 w-4 ml-2" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {filteredJobs.length === 0 && !loading && (
+                <Card className="border-dashed border-2">
+                  <CardContent className="flex flex-col items-center justify-center py-16">
+                    <div className="p-4 rounded-full bg-orange-500/10 mb-4">
+                      <Briefcase className="h-12 w-12 text-orange-500" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">No jobs found</h3>
+                    <p className="text-muted-foreground text-center max-w-md">
+                      No jobs match your search criteria. Try adjusting your filters or check back later!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </section>
 
       <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
     </div>

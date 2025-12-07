@@ -26,6 +26,8 @@ import {
   Clock,
   Play,
   CheckCircle2,
+  Send,
+  ShoppingBag,
 } from "lucide-react";
 import heroImage from "@/assets/hero-collaboration.jpg";
 import internshipImage from "@/assets/internship-card.jpg";
@@ -352,6 +354,24 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Telegram Banner */}
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 py-4 px-4">
+        <div className="container mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 text-white">
+          <div className="flex items-center gap-2">
+            <Send className="h-5 w-5 animate-pulse" />
+            <span className="font-semibold text-base sm:text-lg">Join our Telegram group for daily updates!</span>
+          </div>
+          <a 
+            href="https://t.me/aitdevents" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-full text-sm font-semibold transition-all hover:scale-105"
+          >
+            Join Now →
+          </a>
+        </div>
+      </div>
 
       {/* Quick Access Features - Mobile Optimized */}
       <section className="py-10 sm:py-16 px-3 sm:px-4 bg-muted/30">

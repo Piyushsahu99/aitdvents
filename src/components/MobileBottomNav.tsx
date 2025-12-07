@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
-  { icon: BookOpen, label: "Courses", path: "/courses" },
+  { icon: ShoppingBag, label: "Store", path: "/store" },
   { icon: Trophy, label: "Bounties", path: "/bounties" },
   { icon: Briefcase, label: "Jobs", path: "/jobs" },
 ];
@@ -24,6 +24,7 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
     items: [
       { name: "Events", path: "/events", icon: BookOpen },
       { name: "Hackathons", path: "/hackathons", icon: Trophy },
+      { name: "Courses", path: "/courses", icon: BookOpen },
     ],
   },
   {
@@ -46,7 +47,6 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
   {
     category: "Tools",
     items: [
-      { name: "Store", path: "/store", icon: ShoppingBag },
       { name: "AI Chat", path: "/ai-chat", icon: Menu },
       { name: "AI Tools", path: "/ai-tools", icon: Menu },
       { name: "Reels", path: "/reels", icon: Menu },

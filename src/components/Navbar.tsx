@@ -17,7 +17,7 @@ import logo from "@/assets/aitd-logo.png";
 
 // Primary navigation items - shown directly in navbar
 const primaryNavLinks = [
-  { name: "Courses", path: "/courses", icon: BookOpen },
+  { name: "Store", path: "/store", icon: ShoppingBag },
   { name: "Events", path: "/events", icon: Calendar },
   { name: "Bounties", path: "/bounties", icon: DollarSign },
   { name: "Jobs", path: "/jobs", icon: Briefcase },
@@ -28,6 +28,7 @@ const moreNavLinks = [
   { 
     category: "Learning",
     items: [
+      { name: "Courses", path: "/courses", icon: BookOpen },
       { name: "My Courses", path: "/my-courses", icon: GraduationCap },
       { name: "Practice", path: "/practice", icon: Target },
       { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
@@ -52,7 +53,6 @@ const moreNavLinks = [
   { 
     category: "Tools & Resources",
     items: [
-      { name: "Store", path: "/store", icon: ShoppingBag },
       { name: "AI Chat", path: "/ai-chat", icon: Sparkles },
       { name: "AI Tools", path: "/ai-tools", icon: Wrench },
       { name: "Resume Builder", path: "/resume", icon: FileText },

@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -20,15 +19,13 @@ import {
   FileText, 
   Pencil,
   Search,
-  Filter,
-  Clock,
   MapPin,
-  User,
   Loader2,
   IndianRupee,
-  Eye,
-  Heart,
-  MessageCircle
+  Sparkles,
+  TrendingUp,
+  Star,
+  Send
 } from "lucide-react";
 
 type ProductCategory = 'electronics' | 'books' | 'stationery' | 'tasks' | 'other';
@@ -74,6 +71,14 @@ const categoryLabels: Record<ProductCategory, string> = {
   other: "Other",
 };
 
+const categoryGradients: Record<ProductCategory, string> = {
+  electronics: "from-blue-500 to-cyan-500",
+  books: "from-emerald-500 to-teal-500",
+  stationery: "from-orange-500 to-amber-500",
+  tasks: "from-violet-500 to-purple-500",
+  other: "from-pink-500 to-rose-500",
+};
+
 const conditionLabels: Record<ProductCondition, string> = {
   new: "Brand New",
   like_new: "Like New",
@@ -82,13 +87,20 @@ const conditionLabels: Record<ProductCondition, string> = {
   old: "Used",
 };
 
+const conditionColors: Record<ProductCondition, string> = {
+  new: "bg-emerald-500",
+  like_new: "bg-green-500",
+  good: "bg-blue-500",
+  fair: "bg-yellow-500",
+  old: "bg-orange-500",
+};
+
 export default function Store() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedCondition, setSelectedCondition] = useState<string>("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   
@@ -126,7 +138,6 @@ export default function Store() {
 
       if (error) throw error;
 
-      // Fetch seller profiles separately
       const sellerIds = [...new Set((data || []).map(p => p.seller_id))];
       const { data: profiles } = await supabase
         .from("student_profiles")
@@ -174,7 +185,7 @@ export default function Store() {
 
       toast({ 
         title: "Product Submitted!", 
-        description: "Your product is pending admin approval. You'll be notified once approved." 
+        description: "Your product is pending admin approval." 
       });
       setIsDialogOpen(false);
       setFormData({
@@ -199,8 +210,7 @@ export default function Store() {
     const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-    const matchesCondition = selectedCondition === "all" || product.condition === selectedCondition;
-    return matchesSearch && matchesCategory && matchesCondition;
+    return matchesSearch && matchesCategory;
   });
 
   const categories: ProductCategory[] = ['electronics', 'books', 'stationery', 'tasks', 'other'];
@@ -214,274 +224,356 @@ export default function Store() {
   }
 
   return (
-    <div className="min-h-screen py-4 sm:py-8 px-3 sm:px-4">
-      <div className="container mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-bold mb-1 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
-              Student Marketplace
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">Buy and sell books, electronics, notes, and more!</p>
-          </div>
-          
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500">
-                <Plus className="h-4 w-4 mr-2" />
-                Sell Something
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>List a Product</DialogTitle>
-                <DialogDescription>
-                  Your listing will be reviewed by admin before going live.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleCreateProduct} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Title *</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="e.g., Engineering Physics Textbook"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Category *</Label>
-                    <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v as ProductCategory })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map(cat => (
-                          <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="condition">Condition *</Label>
-                    <Select value={formData.condition} onValueChange={(v) => setFormData({ ...formData, condition: v as ProductCondition })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(conditionLabels).map(([key, label]) => (
-                          <SelectItem key={key} value={key}>{label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {formData.category === 'tasks' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="subcategory">Type</Label>
-                    <Select value={formData.subcategory} onValueChange={(v) => setFormData({ ...formData, subcategory: v })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="assignment">Assignment</SelectItem>
-                        <SelectItem value="project">Project</SelectItem>
-                        <SelectItem value="notes">Notes</SelectItem>
-                        <SelectItem value="previous_papers">Previous Papers</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <Label htmlFor="price">Price (₹) *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    placeholder="0 for free"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description *</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Describe your product..."
-                    rows={3}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
-                    <Input
-                      id="location"
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder="City/College"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="contact">Contact Info</Label>
-                    <Input
-                      id="contact"
-                      value={formData.contact_info}
-                      onChange={(e) => setFormData({ ...formData, contact_info: e.target.value })}
-                      placeholder="Phone/WhatsApp"
-                    />
-                  </div>
-                </div>
-
-                <Button type="submit" className="w-full" disabled={submitting}>
-                  {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
-                  Submit for Approval
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative py-12 sm:py-20 px-4 overflow-hidden bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-green-500/10">
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-emerald-500/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-teal-500/20 rounded-full blur-3xl animate-float-delayed" />
         </div>
-
-        {/* Search & Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(cat => (
-                <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={selectedCondition} onValueChange={setSelectedCondition}>
-            <SelectTrigger className="w-full sm:w-[150px]">
-              <SelectValue placeholder="Condition" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Conditions</SelectItem>
-              {Object.entries(conditionLabels).map(([key, label]) => (
-                <SelectItem key={key} value={key}>{label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Category Tabs */}
-        <Tabs defaultValue="all" className="mb-6">
-          <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex w-max sm:w-auto gap-1 p-1">
-              <TabsTrigger value="all" onClick={() => setSelectedCategory("all")} className="text-xs sm:text-sm">
-                <ShoppingBag className="h-4 w-4 mr-1" />
-                All
-              </TabsTrigger>
-              {categories.map(cat => {
-                const Icon = categoryIcons[cat];
-                return (
-                  <TabsTrigger 
-                    key={cat} 
-                    value={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className="text-xs sm:text-sm"
-                  >
-                    <Icon className="h-4 w-4 mr-1" />
-                    {categoryLabels[cat]}
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
-          </div>
-        </Tabs>
-
-        {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground text-center">
-                No products found. Be the first to list something!
+        
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+            <div className="animate-fade-in-up">
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20">
+                <Sparkles className="h-3 w-3 mr-1.5" />
+                Student Marketplace
+              </Badge>
+              <h1 className="text-3xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 bg-clip-text text-transparent">
+                Buy & Sell with Students
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground max-w-xl">
+                The trusted marketplace for books, electronics, notes, and more. Get amazing deals from fellow students!
               </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {filteredProducts.map((product) => {
-              const Icon = categoryIcons[product.category];
-              return (
-                <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-all group">
-                  {/* Product Image/Placeholder */}
-                  <div className="aspect-square bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 relative overflow-hidden">
-                    {product.images && product.images.length > 0 ? (
-                      <img 
-                        src={product.images[0]} 
-                        alt={product.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Icon className="h-16 w-16 text-muted-foreground/30" />
-                      </div>
-                    )}
-                    <Badge className="absolute top-2 left-2 text-xs" variant="secondary">
-                      {categoryLabels[product.category]}
-                    </Badge>
-                    {product.is_admin_product && (
-                      <Badge className="absolute top-2 right-2 text-xs bg-primary">
-                        Official
-                      </Badge>
-                    )}
+            </div>
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg hover:shadow-xl transition-all hover:scale-105 animate-fade-in-up stagger-1">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Sell Something
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <ShoppingBag className="h-5 w-5 text-emerald-500" />
+                    List Your Product
+                  </DialogTitle>
+                  <DialogDescription>
+                    Your listing will be reviewed before going live.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleCreateProduct} className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Title *</Label>
+                    <Input
+                      id="title"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="e.g., Engineering Physics Textbook"
+                      className="rounded-xl"
+                      required
+                    />
                   </div>
-                  
-                  <CardContent className="p-3">
-                    <h3 className="font-semibold text-sm truncate mb-1">{product.title}</h3>
-                    <div className="flex items-center gap-1 text-lg font-bold text-primary mb-2">
-                      <IndianRupee className="h-4 w-4" />
-                      {product.price === 0 ? 'Free' : product.price.toLocaleString()}
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <Badge variant="outline" className="text-xs">
-                        {conditionLabels[product.condition]}
-                      </Badge>
-                      <div className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" />
-                        {product.views_count}
-                      </div>
-                    </div>
 
-                    {product.location && (
-                      <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
-                        <span className="truncate">{product.location}</span>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Category *</Label>
+                      <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v as ProductCategory })}>
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map(cat => (
+                            <SelectItem key={cat} value={cat}>{categoryLabels[cat]}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Condition *</Label>
+                      <Select value={formData.condition} onValueChange={(v) => setFormData({ ...formData, condition: v as ProductCondition })}>
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(conditionLabels).map(([key, label]) => (
+                            <SelectItem key={key} value={key}>{label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {formData.category === 'tasks' && (
+                    <div className="space-y-2">
+                      <Label>Type</Label>
+                      <Select value={formData.subcategory} onValueChange={(v) => setFormData({ ...formData, subcategory: v })}>
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="assignment">Assignment</SelectItem>
+                          <SelectItem value="project">Project</SelectItem>
+                          <SelectItem value="notes">Notes</SelectItem>
+                          <SelectItem value="previous_papers">Previous Papers</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <Label htmlFor="price">Price (₹) *</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      placeholder="0 for free"
+                      className="rounded-xl"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description *</Label>
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder="Describe your product..."
+                      rows={3}
+                      className="rounded-xl"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Input
+                        id="location"
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        placeholder="City/College"
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact">WhatsApp</Label>
+                      <Input
+                        id="contact"
+                        value={formData.contact_info}
+                        onChange={(e) => setFormData({ ...formData, contact_info: e.target.value })}
+                        placeholder="Phone number"
+                        className="rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500" disabled={submitting}>
+                    {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
+                    Submit for Approval
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fade-in-up stagger-2">
+            {[
+              { label: "Total Products", value: products.length, icon: ShoppingBag },
+              { label: "Categories", value: "5+", icon: Package },
+              { label: "Active Sellers", value: new Set(products.map(p => p.seller_id)).size, icon: TrendingUp },
+              { label: "Verified Sellers", value: "100%", icon: Star },
+            ].map((stat, idx) => (
+              <div key={idx} className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 text-center hover:shadow-lg transition-all hover:-translate-y-1">
+                <stat.icon className="h-6 w-6 mx-auto mb-2 text-emerald-500" />
+                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Telegram Banner */}
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 py-3 px-4">
+        <div className="container mx-auto max-w-7xl flex items-center justify-center gap-2 text-white text-sm sm:text-base">
+          <Send className="h-4 w-4 animate-pulse" />
+          <span className="font-medium">Join our Telegram group for daily updates and exclusive deals!</span>
+          <a 
+            href="https://t.me/aitdevents" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="ml-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-xs font-semibold transition-colors"
+          >
+            Join Now →
+          </a>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <section className="py-8 sm:py-12 px-4">
+        <div className="container mx-auto max-w-7xl">
+          {/* Search & Filter Bar */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-12 rounded-2xl text-base border-2 focus:border-emerald-500/50 bg-card"
+              />
+            </div>
+          </div>
+
+          {/* Category Pills */}
+          <div className="flex flex-wrap gap-2 mb-8 animate-fade-in stagger-1">
+            <button
+              onClick={() => setSelectedCategory("all")}
+              className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
+                selectedCategory === "all"
+                  ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg"
+                  : "bg-card border border-border hover:border-emerald-500/50 text-foreground"
+              }`}
+            >
+              <ShoppingBag className="h-4 w-4 inline-block mr-1.5" />
+              All Products
+            </button>
+            {categories.map(cat => {
+              const Icon = categoryIcons[cat];
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
+                    selectedCategory === cat
+                      ? `bg-gradient-to-r ${categoryGradients[cat]} text-white shadow-lg`
+                      : "bg-card border border-border hover:border-primary/50 text-foreground"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 inline-block mr-1.5" />
+                  {categoryLabels[cat]}
+                </button>
               );
             })}
           </div>
-        )}
-      </div>
+
+          {/* Products Grid */}
+          {filteredProducts.length === 0 ? (
+            <Card className="border-dashed border-2">
+              <CardContent className="flex flex-col items-center justify-center py-16">
+                <div className="p-4 rounded-full bg-emerald-500/10 mb-4">
+                  <ShoppingBag className="h-12 w-12 text-emerald-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">No products found</h3>
+                <p className="text-muted-foreground text-center max-w-md mb-6">
+                  Be the first to list something in this category! Click "Sell Something" to get started.
+                </p>
+                <Button onClick={() => setIsDialogOpen(true)} className="bg-gradient-to-r from-emerald-500 to-teal-500">
+                  <Plus className="h-4 w-4 mr-2" />
+                  List Your First Product
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {filteredProducts.map((product, index) => {
+                const Icon = categoryIcons[product.category];
+                const gradient = categoryGradients[product.category];
+                return (
+                  <Card 
+                    key={product.id} 
+                    className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-border/50 animate-fade-in-up"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    {/* Product Image/Placeholder */}
+                    <div className={`aspect-square bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+                      {product.images && product.images.length > 0 ? (
+                        <img 
+                          src={product.images[0]} 
+                          alt={product.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-transparent">
+                          <Icon className="h-20 w-20 text-white/40" />
+                        </div>
+                      )}
+                      
+                      {/* Condition Badge */}
+                      <div className="absolute top-3 left-3">
+                        <span className={`px-2.5 py-1 ${conditionColors[product.condition]} text-white text-xs font-medium rounded-full shadow-lg`}>
+                          {conditionLabels[product.condition]}
+                        </span>
+                      </div>
+                      
+                      {product.is_admin_product && (
+                        <div className="absolute top-3 right-3">
+                          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg">
+                            <Star className="h-3 w-3 mr-1" />
+                            Official
+                          </Badge>
+                        </div>
+                      )}
+
+                      {/* Price Tag */}
+                      <div className="absolute bottom-3 right-3">
+                        <div className="bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-lg">
+                          <div className="flex items-center gap-0.5 text-lg font-bold text-foreground">
+                            <IndianRupee className="h-4 w-4" />
+                            {product.price === 0 ? "Free" : product.price.toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-2 group-hover:text-emerald-500 transition-colors">
+                        {product.title}
+                      </h3>
+                      
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                        {product.description}
+                      </p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          {product.location && (
+                            <>
+                              <MapPin className="h-3.5 w-3.5" />
+                              <span className="truncate max-w-[100px]">{product.location}</span>
+                            </>
+                          )}
+                        </div>
+                        
+                        <Badge variant="outline" className="text-xs">
+                          {categoryLabels[product.category]}
+                        </Badge>
+                      </div>
+
+                      {product.seller && (
+                        <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs font-medium">
+                            {product.seller.full_name?.charAt(0) || "U"}
+                          </div>
+                          <span className="text-xs text-muted-foreground truncate">
+                            {product.seller.full_name || "Anonymous"}
+                          </span>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

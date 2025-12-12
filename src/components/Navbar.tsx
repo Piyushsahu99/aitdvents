@@ -38,7 +38,7 @@ const moreNavLinks = [
     category: "Compete",
     items: [
       { name: "Hackathons", path: "/hackathons", icon: Code },
-      { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
+      { name: "Rewards", path: "/rewards", icon: Trophy },
     ]
   },
   { 

@@ -28,7 +28,7 @@ import Bounties from "./pages/Bounties";
 import Hackathons from "./pages/Hackathons";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Dashboard from "./pages/Dashboard";
-import Leaderboard from "./pages/Leaderboard";
+import Rewards from "./pages/Rewards";
 import NotFound from "./pages/NotFound";
 import Community from "./pages/Community";
 import Network from "./pages/Network";
@@ -74,7 +74,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/rewards" element={<Rewards />} />
               <Route path="/community" element={<Community />} />
               <Route path="/network" element={<Network />} />
               <Route path="/groups" element={<Groups />} />

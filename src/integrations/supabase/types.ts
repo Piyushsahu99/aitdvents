@@ -1128,6 +1128,48 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_redemptions: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          id: string
+          points_spent: number
+          processed_at: string | null
+          processed_by: string | null
+          reward_description: string | null
+          reward_name: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          points_spent: number
+          processed_at?: string | null
+          processed_by?: string | null
+          reward_description?: string | null
+          reward_name: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          points_spent?: number
+          processed_at?: string | null
+          processed_by?: string | null
+          reward_description?: string | null
+          reward_name?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       scholarships: {
         Row: {
           amount: string

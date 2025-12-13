@@ -12,12 +12,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift } from "lucide-react";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
 import { ReelsModerationManager } from "@/components/admin/ReelsModerationManager";
 import { UserManager } from "@/components/admin/UserManager";
 import { MarketplaceManager } from "@/components/admin/MarketplaceManager";
+import { PointsManager } from "@/components/admin/PointsManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -450,6 +451,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="scholarships" className="text-xs sm:text-sm px-2 sm:px-3"><GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Scholarships</span><span className="sm:hidden">Schol</span></TabsTrigger>
               <TabsTrigger value="reels" className="text-xs sm:text-sm px-2 sm:px-3"><Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Reels</TabsTrigger>
               <TabsTrigger value="store" className="text-xs sm:text-sm px-2 sm:px-3"><ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Store</TabsTrigger>
+              <TabsTrigger value="points" className="text-xs sm:text-sm px-2 sm:px-3"><Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Points</TabsTrigger>
               <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Users</TabsTrigger>
               <TabsTrigger value="blogs" className="text-xs sm:text-sm px-2 sm:px-3"><FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Blogs</TabsTrigger>
               <TabsTrigger value="cms" className="text-xs sm:text-sm px-2 sm:px-3"><Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CMS</TabsTrigger>
@@ -759,6 +761,11 @@ export default function AdminDashboard() {
           {/* Store/Marketplace Tab */}
           <TabsContent value="store">
             <MarketplaceManager />
+          </TabsContent>
+
+          {/* Points & Rewards Tab */}
+          <TabsContent value="points">
+            <PointsManager />
           </TabsContent>
 
           {/* Users Tab */}

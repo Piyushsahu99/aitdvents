@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/hooks/useCart";
 import { 
   ShoppingBag, 
   Plus, 
@@ -126,6 +127,7 @@ export default function Store() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addToCart } = useCart();
 
   const UPI_ID = "9919562443-0@airtel";
 
@@ -757,14 +759,24 @@ export default function Store() {
                             </span>
                           </div>
                         )}
-                        <Button 
-                          onClick={() => handleBuyNow(product)}
-                          size="sm"
-                          className="rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-xs px-3"
-                        >
-                          <ShoppingCart className="h-3 w-3 mr-1" />
-                          Buy
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => addToCart(product.id)}
+                            size="sm"
+                            variant="outline"
+                            className="rounded-lg text-xs px-2"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            onClick={() => handleBuyNow(product)}
+                            size="sm"
+                            className="rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-xs px-3"
+                          >
+                            <ShoppingCart className="h-3 w-3 mr-1" />
+                            Buy
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

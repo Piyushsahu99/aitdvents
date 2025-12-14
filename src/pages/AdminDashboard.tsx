@@ -12,7 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image } from "lucide-react";
+import { EventEditor } from "@/components/admin/EventEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
 import { ReelsModerationManager } from "@/components/admin/ReelsModerationManager";
@@ -34,6 +35,8 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
   const [blogs, setBlogs] = useState<any[]>([]);
+  const [editingEvent, setEditingEvent] = useState<any>(null);
+  const [eventEditorOpen, setEventEditorOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -503,6 +506,7 @@ export default function AdminDashboard() {
                       <TableCell>{item.date}</TableCell>
                       <TableCell>{getStatusBadge(item.status)}</TableCell>
                       <TableCell className="flex gap-1">
+                        <Button size="sm" variant="ghost" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }}><Edit className="h-4 w-4 text-blue-500" /></Button>
                         {item.status === 'draft' && <Button size="sm" variant="ghost" onClick={() => updateEventStatus(item.id, 'live')}><CheckCircle className="h-4 w-4 text-green-500" /></Button>}
                         {item.status === 'live' && <Button size="sm" variant="ghost" onClick={() => updateEventStatus(item.id, 'ended')}><XCircle className="h-4 w-4 text-yellow-500" /></Button>}
                         <Button size="sm" variant="ghost" onClick={() => deleteEvent(item.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
@@ -512,7 +516,16 @@ export default function AdminDashboard() {
                 </TableBody>
               </Table>
             </Card>
+            
+            {/* Event Editor Modal */}
+            <EventEditor
+              event={editingEvent}
+              open={eventEditorOpen}
+              onOpenChange={setEventEditorOpen}
+              onSave={fetchEvents}
+            />
           </TabsContent>
+
 
           {/* Bounties Tab */}
           <TabsContent value="bounties">

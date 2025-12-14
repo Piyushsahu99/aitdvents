@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
+import { useImageUpload } from "@/hooks/useImageUpload";
 import { 
   ShoppingBag, 
   Plus, 
@@ -31,7 +32,10 @@ import {
   Copy,
   Check,
   Smartphone,
-  Zap
+  Zap,
+  Upload,
+  X,
+  Image as ImageIcon
 } from "lucide-react";
 
 type ProductCategory = 'electronics' | 'books' | 'stationery' | 'tasks' | 'other';
@@ -119,11 +123,13 @@ export default function Store() {
     condition: "good" as ProductCondition,
     location: "",
     contact_info: "",
+    images: [] as string[],
   });
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { uploadImage, uploading } = useImageUpload({ bucket: 'product-images' });
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -191,6 +197,7 @@ export default function Store() {
         condition: formData.condition,
         location: formData.location || null,
         contact_info: formData.contact_info || null,
+        images: formData.images,
         status: "pending",
       }]);
 
@@ -210,6 +217,7 @@ export default function Store() {
         condition: "good",
         location: "",
         contact_info: "",
+        images: [],
       });
       fetchProducts();
     } catch (error: any) {
@@ -407,7 +415,56 @@ export default function Store() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500" disabled={submitting}>
+                  {/* Image Upload Section */}
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <ImageIcon className="h-4 w-4" />
+                      Product Images ({formData.images.length}/3)
+                    </Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {formData.images.map((img, idx) => (
+                        <div key={idx} className="relative group">
+                          <img src={img} alt={`Product ${idx + 1}`} className="w-full h-20 object-cover rounded-lg border" />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => setFormData({ ...formData, images: formData.images.filter((_, i) => i !== idx) })}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                      {formData.images.length < 3 && (
+                        <label className="flex flex-col items-center justify-center h-20 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary transition-colors">
+                          {uploading ? (
+                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                          ) : (
+                            <>
+                              <Upload className="h-5 w-5 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground mt-1">Add</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            className="hidden"
+                            disabled={uploading}
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const url = await uploadImage(file);
+                                if (url) setFormData({ ...formData, images: [...formData.images, url] });
+                              }
+                            }}
+                          />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500" disabled={submitting || uploading}>
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
                     Submit for Approval
                   </Button>

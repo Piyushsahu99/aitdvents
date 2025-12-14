@@ -25,7 +25,12 @@ import {
   Sparkles,
   TrendingUp,
   Star,
-  Send
+  Send,
+  ShoppingCart,
+  Copy,
+  Check,
+  Smartphone,
+  Zap
 } from "lucide-react";
 
 type ProductCategory = 'electronics' | 'books' | 'stationery' | 'tasks' | 'other';
@@ -115,8 +120,14 @@ export default function Store() {
     contact_info: "",
   });
 
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const UPI_ID = "9919562443-0@airtel";
 
   useEffect(() => {
     checkUser();
@@ -213,7 +224,29 @@ export default function Store() {
     return matchesSearch && matchesCategory;
   });
 
+  const featuredProducts = products.filter(p => p.is_admin_product);
   const categories: ProductCategory[] = ['electronics', 'books', 'stationery', 'tasks', 'other'];
+
+  const handleBuyNow = (product: Product) => {
+    if (!user) {
+      toast({ title: "Please login", description: "You need to login to make a purchase", variant: "destructive" });
+      return;
+    }
+    setSelectedProduct(product);
+    setIsPaymentOpen(true);
+  };
+
+  const copyUPI = () => {
+    navigator.clipboard.writeText(UPI_ID);
+    setCopied(true);
+    toast({ title: "UPI ID Copied!", description: "Paste it in your payment app" });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const openUPIApp = (product: Product) => {
+    const upiLink = `upi://pay?pa=${UPI_ID}&pn=AITD%20Store&am=${product.price}&cu=INR&tn=Purchase%20${encodeURIComponent(product.title)}`;
+    window.location.href = upiLink;
+  };
 
   if (loading) {
     return (
@@ -399,6 +432,78 @@ export default function Store() {
         </div>
       </section>
 
+      {/* Payment Dialog */}
+      <Dialog open={isPaymentOpen} onOpenChange={setIsPaymentOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 text-emerald-500" />
+              Complete Your Purchase
+            </DialogTitle>
+            <DialogDescription>
+              Pay via UPI to complete your order
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedProduct && (
+            <div className="space-y-6 mt-4">
+              {/* Product Summary */}
+              <div className="bg-muted/50 rounded-xl p-4 flex gap-4">
+                <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${categoryGradients[selectedProduct.category]} flex items-center justify-center`}>
+                  {(() => { const Icon = categoryIcons[selectedProduct.category]; return <Icon className="h-8 w-8 text-white/60" />; })()}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold line-clamp-1">{selectedProduct.title}</h4>
+                  <p className="text-sm text-muted-foreground">{conditionLabels[selectedProduct.condition]}</p>
+                  <div className="flex items-center gap-1 text-xl font-bold text-emerald-500 mt-1">
+                    <IndianRupee className="h-5 w-5" />
+                    {selectedProduct.price.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              {/* UPI Payment Section */}
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-2">Pay to this UPI ID</p>
+                  <div className="bg-card border-2 border-dashed border-emerald-500/50 rounded-xl p-4">
+                    <p className="text-lg font-mono font-bold text-foreground">{UPI_ID}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    onClick={copyUPI}
+                    variant="outline"
+                    className="rounded-xl"
+                  >
+                    {copied ? <Check className="h-4 w-4 mr-2 text-emerald-500" /> : <Copy className="h-4 w-4 mr-2" />}
+                    {copied ? "Copied!" : "Copy UPI"}
+                  </Button>
+                  <Button
+                    onClick={() => openUPIApp(selectedProduct)}
+                    className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500"
+                  >
+                    <Smartphone className="h-4 w-4 mr-2" />
+                    Open UPI App
+                  </Button>
+                </div>
+
+                <div className="text-center text-xs text-muted-foreground space-y-1">
+                  <p>Scan QR or use UPI ID in any payment app</p>
+                  <p className="font-medium">GPay • PhonePe • Paytm • BHIM</p>
+                </div>
+
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-sm text-amber-700 dark:text-amber-400">
+                  <p className="font-medium">After payment:</p>
+                  <p>Contact the seller with your payment screenshot to receive your product.</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Telegram Banner */}
       <div className="bg-gradient-to-r from-blue-500 to-cyan-500 py-3 px-4">
         <div className="container mx-auto max-w-7xl flex items-center justify-center gap-2 text-white text-sm sm:text-base">
@@ -414,6 +519,91 @@ export default function Store() {
           </a>
         </div>
       </div>
+
+      {/* Featured Products Section */}
+      {featuredProducts.length > 0 && (
+        <section className="py-8 px-4 bg-gradient-to-r from-amber-500/5 via-orange-500/5 to-yellow-500/5">
+          <div className="container mx-auto max-w-7xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500">
+                <Zap className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Featured Products</h2>
+                <p className="text-sm text-muted-foreground">Official store picks</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {featuredProducts.map((product) => {
+                const Icon = categoryIcons[product.category];
+                const gradient = categoryGradients[product.category];
+                return (
+                  <Card 
+                    key={product.id} 
+                    className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-2 border-amber-500/30 ring-2 ring-amber-500/20 animate-fade-in-up"
+                  >
+                    <div className={`aspect-square bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+                      {product.images && product.images.length > 0 ? (
+                        <img 
+                          src={product.images[0]} 
+                          alt={product.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-transparent">
+                          <Icon className="h-20 w-20 text-white/40" />
+                        </div>
+                      )}
+                      
+                      <div className="absolute top-3 left-3">
+                        <span className={`px-2.5 py-1 ${conditionColors[product.condition]} text-white text-xs font-medium rounded-full shadow-lg`}>
+                          {conditionLabels[product.condition]}
+                        </span>
+                      </div>
+                      
+                      <div className="absolute top-3 right-3">
+                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg animate-pulse">
+                          <Star className="h-3 w-3 mr-1" />
+                          Featured
+                        </Badge>
+                      </div>
+
+                      <div className="absolute bottom-3 right-3">
+                        <div className="bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-lg">
+                          <div className="flex items-center gap-0.5 text-lg font-bold text-foreground">
+                            <IndianRupee className="h-4 w-4" />
+                            {product.price === 0 ? "Free" : product.price.toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-2 group-hover:text-emerald-500 transition-colors">
+                        {product.title}
+                      </h3>
+                      
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                        {product.description}
+                      </p>
+                      
+                      <Button 
+                        onClick={() => handleBuyNow(product)}
+                        className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        size="sm"
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Buy Now
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Main Content */}
       <section className="py-8 sm:py-12 px-4">
@@ -556,16 +746,26 @@ export default function Store() {
                         </Badge>
                       </div>
 
-                      {product.seller && (
-                        <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs font-medium">
-                            {product.seller.full_name?.charAt(0) || "U"}
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
+                        {product.seller && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs font-medium">
+                              {product.seller.full_name?.charAt(0) || "U"}
+                            </div>
+                            <span className="text-xs text-muted-foreground truncate max-w-[60px]">
+                              {product.seller.full_name || "Anonymous"}
+                            </span>
                           </div>
-                          <span className="text-xs text-muted-foreground truncate">
-                            {product.seller.full_name || "Anonymous"}
-                          </span>
-                        </div>
-                      )}
+                        )}
+                        <Button 
+                          onClick={() => handleBuyNow(product)}
+                          size="sm"
+                          className="rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-xs px-3"
+                        >
+                          <ShoppingCart className="h-3 w-3 mr-1" />
+                          Buy
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 );

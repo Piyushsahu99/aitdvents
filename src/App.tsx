@@ -39,6 +39,8 @@ import MyCourses from "./pages/MyCourses";
 import Profile from "./pages/Profile";
 import CompleteProfile from "./pages/CompleteProfile";
 import Store from "./pages/Store";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +86,8 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/complete-profile" element={<CompleteProfile />} />
               <Route path="/store" element={<Store />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

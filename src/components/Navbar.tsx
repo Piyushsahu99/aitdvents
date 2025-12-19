@@ -49,6 +49,7 @@ const moreNavLinks = [
       { name: "Groups", path: "/groups", icon: Users },
       { name: "Community", path: "/community", icon: MessageCircle },
       { name: "Mentorship", path: "/mentorship", icon: MessageCircle },
+      { name: "Campus Ambassador", path: "/campus-ambassador", icon: Users },
     ]
   },
   { 

@@ -28,6 +28,8 @@ import {
   CheckCircle2,
   Send,
   ShoppingBag,
+  Gift,
+  Megaphone,
 } from "lucide-react";
 import heroImage from "@/assets/hero-collaboration.jpg";
 import internshipImage from "@/assets/internship-card.jpg";
@@ -572,6 +574,89 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* Campus Ambassador Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float-delayed" />
+        </div>
+        
+        <div className="container mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30">
+                <Users className="w-4 h-4 mr-2" />
+                Campus Ambassador Program
+              </Badge>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                Represent AITD at Your College
+              </h2>
+              <p className="text-lg opacity-90 mb-6">
+                Join our campus ambassador program and earn amazing rewards while helping 
+                fellow students from your college discover career opportunities!
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Gift className="h-5 w-5" />
+                  </div>
+                  <span>Exclusive Goodies</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Trophy className="h-5 w-5" />
+                  </div>
+                  <span>Cash Rewards</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Star className="h-5 w-5" />
+                  </div>
+                  <span>Certificates</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Megaphone className="h-5 w-5" />
+                  </div>
+                  <span>Build Network</span>
+                </div>
+              </div>
+
+              <Link to="/campus-ambassador">
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-6 rounded-xl hover:scale-105 transition-all">
+                  Apply Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="hidden lg:grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                  <div className="text-4xl font-bold mb-2">500+</div>
+                  <div className="opacity-90">Campus Ambassadors</div>
+                </div>
+                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                  <div className="text-4xl font-bold mb-2">100+</div>
+                  <div className="opacity-90">Colleges</div>
+                </div>
+              </div>
+              <div className="space-y-4 mt-8">
+                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                  <div className="text-4xl font-bold mb-2">₹50K+</div>
+                  <div className="opacity-90">Rewards Given</div>
+                </div>
+                <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                  <div className="text-4xl font-bold mb-2">20+</div>
+                  <div className="opacity-90">Cities</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Who's Using Section */}
       <section className="py-20 px-4 bg-muted/30">

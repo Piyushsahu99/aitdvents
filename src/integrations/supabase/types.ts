@@ -354,6 +354,72 @@ export type Database = {
           },
         ]
       }
+      campus_ambassadors: {
+        Row: {
+          admin_notes: string | null
+          city: string
+          college: string
+          course: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          instagram_url: string | null
+          linkedin_url: string | null
+          phone: string
+          previous_experience: string | null
+          skills: string[] | null
+          state: string
+          status: string
+          updated_at: string
+          user_id: string | null
+          why_ambassador: string
+          year_of_study: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          city: string
+          college: string
+          course: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          phone: string
+          previous_experience?: string | null
+          skills?: string[] | null
+          state: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          why_ambassador: string
+          year_of_study: string
+        }
+        Update: {
+          admin_notes?: string | null
+          city?: string
+          college?: string
+          course?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          phone?: string
+          previous_experience?: string | null
+          skills?: string[] | null
+          state?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          why_ambassador?: string
+          year_of_study?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string

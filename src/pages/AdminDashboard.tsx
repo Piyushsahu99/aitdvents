@@ -22,6 +22,7 @@ import { MarketplaceManager } from "@/components/admin/MarketplaceManager";
 import { PointsManager } from "@/components/admin/PointsManager";
 import { CouponManager } from "@/components/admin/CouponManager";
 import { OrderManager } from "@/components/admin/OrderManager";
+import { AmbassadorManager } from "@/components/admin/AmbassadorManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -462,6 +463,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Users</TabsTrigger>
               <TabsTrigger value="blogs" className="text-xs sm:text-sm px-2 sm:px-3"><FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Blogs</TabsTrigger>
               <TabsTrigger value="cms" className="text-xs sm:text-sm px-2 sm:px-3"><Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CMS</TabsTrigger>
+              <TabsTrigger value="ambassadors" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Ambassadors</span><span className="sm:hidden">Amb</span></TabsTrigger>
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
             </TabsList>
           </div>
@@ -827,6 +829,11 @@ export default function AdminDashboard() {
           {/* Coupons Tab */}
           <TabsContent value="coupons">
             <CouponManager />
+          </TabsContent>
+
+          {/* Ambassadors Tab */}
+          <TabsContent value="ambassadors">
+            <AmbassadorManager />
           </TabsContent>
 
           {/* Admins Tab */}

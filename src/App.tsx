@@ -43,6 +43,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import CampusAmbassador from "./pages/CampusAmbassador";
 import AmbassadorDashboard from "./pages/AmbassadorDashboard";
+import StudyMaterials from "./pages/StudyMaterials";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/campus-ambassador" element={<CampusAmbassador />} />
               <Route path="/ambassador-dashboard" element={<AmbassadorDashboard />} />
+              <Route path="/study-materials" element={<StudyMaterials />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

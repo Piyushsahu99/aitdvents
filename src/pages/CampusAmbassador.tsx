@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,12 +30,14 @@ import {
   Building,
   Rocket,
   Heart,
+  LayoutDashboard,
 } from "lucide-react";
 
 export default function CampusAmbassador() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [isApprovedAmbassador, setIsApprovedAmbassador] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -50,6 +52,25 @@ export default function CampusAmbassador() {
     why_ambassador: "",
     previous_experience: "",
   });
+
+  useEffect(() => {
+    checkAmbassadorStatus();
+  }, []);
+
+  const checkAmbassadorStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase
+        .from('campus_ambassadors')
+        .select('status')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data?.status === 'approved') {
+        setIsApprovedAmbassador(true);
+      }
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -181,14 +202,25 @@ export default function CampusAmbassador() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button 
-                size="lg" 
-                className="text-lg px-8 py-6 rounded-xl hover:scale-105 transition-all"
-                onClick={() => setShowForm(true)}
-              >
-                Apply Now
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              {isApprovedAmbassador ? (
+                <Button 
+                  size="lg" 
+                  className="text-lg px-8 py-6 rounded-xl hover:scale-105 transition-all"
+                  onClick={() => navigate('/ambassador-dashboard')}
+                >
+                  <LayoutDashboard className="mr-2 h-5 w-5" />
+                  Go to Dashboard
+                </Button>
+              ) : (
+                <Button 
+                  size="lg" 
+                  className="text-lg px-8 py-6 rounded-xl hover:scale-105 transition-all"
+                  onClick={() => setShowForm(true)}
+                >
+                  Apply Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              )}
               <Button 
                 size="lg" 
                 variant="outline" 

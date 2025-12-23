@@ -42,6 +42,7 @@ import Store from "./pages/Store";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import CampusAmbassador from "./pages/CampusAmbassador";
+import AmbassadorDashboard from "./pages/AmbassadorDashboard";
 
 const queryClient = new QueryClient();
 
@@ -90,6 +91,7 @@ const App = () => (
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/campus-ambassador" element={<CampusAmbassador />} />
+              <Route path="/ambassador-dashboard" element={<AmbassadorDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

@@ -1651,6 +1651,96 @@ export type Database = {
         }
         Relationships: []
       }
+      study_materials: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          category: string
+          city: string | null
+          college: string | null
+          course: string | null
+          created_at: string | null
+          description: string | null
+          downloads_count: number | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          is_admin_upload: boolean | null
+          rejection_reason: string | null
+          semester: string | null
+          state: string | null
+          status: string
+          subject: string
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string
+          university: string | null
+          updated_at: string | null
+          uploaded_by: string
+          views_count: number | null
+          year: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          city?: string | null
+          college?: string | null
+          course?: string | null
+          created_at?: string | null
+          description?: string | null
+          downloads_count?: number | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          is_admin_upload?: boolean | null
+          rejection_reason?: string | null
+          semester?: string | null
+          state?: string | null
+          status?: string
+          subject: string
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+          university?: string | null
+          updated_at?: string | null
+          uploaded_by: string
+          views_count?: number | null
+          year?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          city?: string | null
+          college?: string | null
+          course?: string | null
+          created_at?: string | null
+          description?: string | null
+          downloads_count?: number | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          is_admin_upload?: boolean | null
+          rejection_reason?: string | null
+          semester?: string | null
+          state?: string | null
+          status?: string
+          subject?: string
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+          university?: string | null
+          updated_at?: string | null
+          uploaded_by?: string
+          views_count?: number | null
+          year?: string | null
+        }
+        Relationships: []
+      }
       user_points: {
         Row: {
           bounties_completed: number | null

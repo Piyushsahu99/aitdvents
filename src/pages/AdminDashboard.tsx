@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
@@ -23,6 +23,7 @@ import { PointsManager } from "@/components/admin/PointsManager";
 import { CouponManager } from "@/components/admin/CouponManager";
 import { OrderManager } from "@/components/admin/OrderManager";
 import { AmbassadorManager } from "@/components/admin/AmbassadorManager";
+import StudyMaterialsManager from "@/components/admin/StudyMaterialsManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -464,6 +465,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="blogs" className="text-xs sm:text-sm px-2 sm:px-3"><FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Blogs</TabsTrigger>
               <TabsTrigger value="cms" className="text-xs sm:text-sm px-2 sm:px-3"><Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CMS</TabsTrigger>
               <TabsTrigger value="ambassadors" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Ambassadors</span><span className="sm:hidden">Amb</span></TabsTrigger>
+              <TabsTrigger value="study-materials" className="text-xs sm:text-sm px-2 sm:px-3"><BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Materials</span><span className="sm:hidden">Mat</span></TabsTrigger>
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
             </TabsList>
           </div>
@@ -834,6 +836,11 @@ export default function AdminDashboard() {
           {/* Ambassadors Tab */}
           <TabsContent value="ambassadors">
             <AmbassadorManager />
+          </TabsContent>
+
+          {/* Study Materials Tab */}
+          <TabsContent value="study-materials">
+            <StudyMaterialsManager />
           </TabsContent>
 
           {/* Admins Tab */}

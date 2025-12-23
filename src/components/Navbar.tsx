@@ -30,6 +30,7 @@ const moreNavLinks = [
     category: "Learning",
     items: [
       { name: "Courses", path: "/courses", icon: BookOpen },
+      { name: "Study Materials", path: "/study-materials", icon: FileText },
       { name: "My Courses", path: "/my-courses", icon: GraduationCap },
       { name: "Practice", path: "/practice", icon: Target },
       { name: "Scholarships", path: "/scholarships", icon: GraduationCap },

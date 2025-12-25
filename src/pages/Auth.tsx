@@ -8,11 +8,68 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { z } from "zod";
 import logo from "@/assets/aitd-logo.png";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield, ArrowLeft } from "lucide-react";
+
+// List of common disposable/temporary email domains to block
+const disposableEmailDomains = [
+  "tempmail.com", "temp-mail.org", "guerrillamail.com", "10minutemail.com",
+  "mailinator.com", "throwaway.email", "fakeinbox.com", "trashmail.com",
+  "tempail.com", "getnada.com", "mohmal.com", "emailondeck.com",
+  "dispostable.com", "yopmail.com", "maildrop.cc", "mailnesia.com",
+  "tempr.email", "discard.email", "fakemailgenerator.com", "tempinbox.com",
+  "spamgourmet.com", "mytemp.email", "throwawaymail.com", "mintemail.com",
+  "tempmailo.com", "burnermail.io", "mailcatch.com", "mailsac.com"
+];
+
+// List of valid/common email domains (for educational/professional use)
+const trustedEmailDomains = [
+  "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "live.com",
+  "icloud.com", "protonmail.com", "zoho.com", "aol.com", "mail.com",
+  "edu", "ac.in", "edu.in", "org", "gov.in"
+];
+
+const isDisposableEmail = (email: string): boolean => {
+  const domain = email.split("@")[1]?.toLowerCase();
+  if (!domain) return true;
+  return disposableEmailDomains.some(d => domain.includes(d));
+};
+
+const isValidEmailDomain = (email: string): boolean => {
+  const domain = email.split("@")[1]?.toLowerCase();
+  if (!domain) return false;
+  
+  // Check for educational domains
+  if (domain.endsWith(".edu") || domain.endsWith(".ac.in") || domain.endsWith(".edu.in")) {
+    return true;
+  }
+  
+  // Check trusted domains
+  return trustedEmailDomains.some(d => domain.endsWith(d));
+};
 
 const authSchema = z.object({
-  email: z.string().email("Invalid email address").max(255),
+  email: z.string()
+    .email("Invalid email address")
+    .max(255)
+    .refine(email => !isDisposableEmail(email), {
+      message: "Temporary/disposable emails are not allowed. Please use a valid email."
+    })
+    .refine(email => isValidEmailDomain(email), {
+      message: "Please use a valid email from a trusted provider (Gmail, Outlook, Yahoo, etc.)"
+    }),
   password: z.string().min(6, "Password must be at least 6 characters").max(100),
+});
+
+const emailOnlySchema = z.object({
+  email: z.string()
+    .email("Invalid email address")
+    .max(255)
+    .refine(email => !isDisposableEmail(email), {
+      message: "Temporary/disposable emails are not allowed."
+    })
+    .refine(email => isValidEmailDomain(email), {
+      message: "Please use a valid email from a trusted provider."
+    }),
 });
 
 export default function Auth() {
@@ -26,6 +83,8 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(!adminInviteCode && !referralCode);
   const [showPassword, setShowPassword] = useState(false);
   const [isValidAdminInvite, setIsValidAdminInvite] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -39,14 +98,12 @@ export default function Auth() {
   const checkSession = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      // Check if profile is complete (phone verification is optional now)
       const { data: profile } = await supabase
         .from("student_profiles")
         .select("college")
         .eq("user_id", session.user.id)
         .maybeSingle();
 
-      // Check if user is admin
       const { data: isAdmin } = await supabase.rpc("is_admin");
       
       if (isAdmin) {
@@ -79,6 +136,43 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      emailOnlySchema.parse({ email });
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) throw error;
+
+      setResetEmailSent(true);
+      toast({
+        title: "Reset email sent!",
+        description: "Check your inbox for the password reset link.",
+      });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Invalid Email",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to send reset email",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -96,7 +190,6 @@ export default function Auth() {
         });
 
         if (error) {
-          // Handle "user already registered" error - auto switch to login
           if (error.message?.includes("already registered") || error.status === 422) {
             setIsLogin(true);
             toast({
@@ -109,9 +202,7 @@ export default function Auth() {
           throw error;
         }
 
-        // Auto-login after signup if session exists (email confirmation disabled)
         if (data.session && data.user) {
-          // If admin invite, use it
           if (adminInviteCode && isValidAdminInvite) {
             const { data: inviteUsed } = await supabase.rpc("use_admin_invite", {
               invite_code_input: adminInviteCode,
@@ -128,7 +219,6 @@ export default function Auth() {
             }
           }
 
-          // Handle referral code - update existing referral record
           if (referralCode) {
             try {
               await supabase
@@ -170,7 +260,6 @@ export default function Auth() {
 
         if (error) throw error;
 
-        // Check if user is admin
         const { data: isAdmin } = await supabase.rpc("is_admin");
         
         if (isAdmin) {
@@ -182,7 +271,6 @@ export default function Auth() {
           return;
         }
 
-        // Check if profile is complete (phone verification is optional now)
         const { data: profile } = await supabase
           .from("student_profiles")
           .select("college")
@@ -223,6 +311,135 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  // Forgot Password View
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen flex">
+        {/* Left Side - Branding */}
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
+          
+          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
+            <div className="flex items-center gap-3 mb-8">
+              <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
+              <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
+            </div>
+            
+            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
+              Reset Your<br />
+              <span className="text-primary-foreground/90">Password</span>
+            </h1>
+            
+            <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
+              Don't worry, it happens to the best of us. Enter your email and we'll send you a reset link.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side - Form */}
+        <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
+          <div className="w-full max-w-md">
+            {/* Mobile Logo */}
+            <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
+              <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
+              <span className="text-2xl font-bold text-primary">AITD Events</span>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowForgotPassword(false);
+                setResetEmailSent(false);
+              }}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to login
+            </button>
+
+            <div className="mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                Forgot password?
+              </h2>
+              <p className="text-muted-foreground">
+                {resetEmailSent 
+                  ? "We've sent a password reset link to your email"
+                  : "Enter your email address and we'll send you a link to reset your password"}
+              </p>
+            </div>
+
+            {resetEmailSent ? (
+              <div className="space-y-6">
+                <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-emerald-600" />
+                    <div>
+                      <p className="font-medium text-emerald-700">Check your email</p>
+                      <p className="text-sm text-emerald-600/80">
+                        We've sent a password reset link to <strong>{email}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-muted-foreground text-center">
+                  Didn't receive the email?{" "}
+                  <button
+                    onClick={() => setResetEmailSent(false)}
+                    className="text-primary font-medium hover:underline"
+                  >
+                    Try again
+                  </button>
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email" className="text-sm font-medium">
+                    Email address
+                  </Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      maxLength={255}
+                      className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-base font-semibold group"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Send reset link
+                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  )}
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex">
@@ -327,12 +544,28 @@ export default function Auth() {
                   className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
                 />
               </div>
+              {!isLogin && (
+                <p className="text-xs text-muted-foreground">
+                  Use your college email or a trusted provider (Gmail, Outlook, etc.)
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Password
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
+                {isLogin && (
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassword(true)}
+                    className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input

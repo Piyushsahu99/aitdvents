@@ -5,6 +5,7 @@ import { PersonaCard } from "@/components/PersonaCard";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FloatingTelegram } from "@/components/FloatingTelegram";
+import { ProfileCompletionPopup } from "@/components/ProfileCompletionPopup";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -168,6 +169,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ProfileCompletionPopup />
       <FloatingTelegram />
       
       {/* Hero Section - Optimized for all devices */}

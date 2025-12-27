@@ -7,11 +7,13 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Target, Zap, Award, TrendingUp, Calendar, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [isEmailVerified, setIsEmailVerified] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function Dashboard() {
     }
 
     setUser(session.user);
+    setIsEmailVerified(!!session.user.email_confirmed_at);
     await fetchUserData(session.user.id);
   };
 
@@ -87,6 +90,13 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Email Verification Banner */}
+      {!isEmailVerified && user?.email && (
+        <div className="mb-6">
+          <EmailVerificationBanner email={user.email} />
+        </div>
+      )}
+
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
           Student Dashboard

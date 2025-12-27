@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { UserReelsSection } from "@/components/profile/UserReelsSection";
 import { MemberCertificate } from "@/components/profile/MemberCertificate";
+import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { 
   User, 
   Camera, 
@@ -78,6 +79,7 @@ export default function Profile() {
   const [otpCode, setOtpCode] = useState("");
   const [sendingOtp, setSendingOtp] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -110,6 +112,7 @@ export default function Profile() {
     }
 
     setUser(session.user);
+    setIsEmailVerified(!!session.user.email_confirmed_at);
     await Promise.all([
       fetchProfile(session.user.id),
       fetchReferrals(session.user.id),
@@ -350,6 +353,13 @@ export default function Profile() {
             Logout
           </Button>
         </div>
+
+        {/* Email Verification Banner */}
+        {!isEmailVerified && user?.email && (
+          <div className="mb-4 sm:mb-6">
+            <EmailVerificationBanner email={user.email} />
+          </div>
+        )}
 
         <Tabs defaultValue="profile" className="space-y-4 sm:space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">

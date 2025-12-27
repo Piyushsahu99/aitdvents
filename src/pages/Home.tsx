@@ -207,7 +207,7 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0 animate-fade-in-up stagger-2">
-              <Link to="/courses" className="w-full sm:w-auto">
+              <Link to="/auth" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-6 py-4 sm:py-5 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group bg-primary hover:bg-primary/90">
                   <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
                   Start Learning Free

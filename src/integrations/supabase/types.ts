@@ -643,6 +643,7 @@ export type Database = {
           participants: number | null
           poster_url: string | null
           status: Database["public"]["Enums"]["event_status"]
+          submitted_by_user: boolean | null
           title: string
           updated_at: string | null
         }
@@ -663,6 +664,7 @@ export type Database = {
           participants?: number | null
           poster_url?: string | null
           status?: Database["public"]["Enums"]["event_status"]
+          submitted_by_user?: boolean | null
           title: string
           updated_at?: string | null
         }
@@ -683,6 +685,7 @@ export type Database = {
           participants?: number | null
           poster_url?: string | null
           status?: Database["public"]["Enums"]["event_status"]
+          submitted_by_user?: boolean | null
           title?: string
           updated_at?: string | null
         }

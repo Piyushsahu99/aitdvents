@@ -499,15 +499,44 @@ export default function AdminDashboard() {
                 </div>
               </form>
             </Card>
+            {/* Pending User Submissions */}
+            {events.filter(e => e.submitted_by_user && e.status === 'draft').length > 0 && (
+              <Card className="p-4 mb-6 border-orange-500/50 bg-orange-500/5">
+                <h4 className="font-semibold mb-3 flex items-center gap-2 text-orange-600">
+                  <Users className="h-5 w-5" />
+                  Pending User Submissions ({events.filter(e => e.submitted_by_user && e.status === 'draft').length})
+                </h4>
+                <Table>
+                  <TableHeader><TableRow><TableHead>Title</TableHead><TableHead>Category</TableHead><TableHead>Date</TableHead><TableHead>Location</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {events.filter(e => e.submitted_by_user && e.status === 'draft').map(item => (
+                      <TableRow key={item.id}>
+                        <TableCell className="font-medium">{item.title}</TableCell>
+                        <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
+                        <TableCell>{item.date}</TableCell>
+                        <TableCell>{item.location}</TableCell>
+                        <TableCell className="flex gap-1">
+                          <Button size="sm" variant="ghost" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }} title="Edit"><Edit className="h-4 w-4 text-blue-500" /></Button>
+                          <Button size="sm" variant="ghost" onClick={() => updateEventStatus(item.id, 'live')} title="Approve"><CheckCircle className="h-4 w-4 text-green-500" /></Button>
+                          <Button size="sm" variant="ghost" onClick={() => deleteEvent(item.id)} title="Reject"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            )}
+
             <Card>
               <Table>
-                <TableHeader><TableRow><TableHead>Title</TableHead><TableHead>Category</TableHead><TableHead>Date</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Title</TableHead><TableHead>Category</TableHead><TableHead>Date</TableHead><TableHead>Source</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {events.map(item => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">{item.title}</TableCell>
                       <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
                       <TableCell>{item.date}</TableCell>
+                      <TableCell><Badge variant={item.submitted_by_user ? "secondary" : "default"}>{item.submitted_by_user ? 'User' : 'Admin'}</Badge></TableCell>
                       <TableCell>{getStatusBadge(item.status)}</TableCell>
                       <TableCell className="flex gap-1">
                         <Button size="sm" variant="ghost" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }}><Edit className="h-4 w-4 text-blue-500" /></Button>

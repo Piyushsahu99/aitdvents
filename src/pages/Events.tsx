@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { EventCard } from "@/components/EventCard";
 import { EventDetailModal } from "@/components/EventDetailModal";
 import { SearchBar } from "@/components/SearchBar";
+import { EventSubmissionModal } from "@/components/EventSubmissionModal";
 import { supabase } from "@/integrations/supabase/client";
 import { Calendar, Sparkles, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,10 +14,17 @@ export default function Events() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     fetchEvents();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setIsLoggedIn(!!user);
+  };
 
   const fetchEvents = async () => {
     try {
@@ -66,9 +74,16 @@ export default function Events() {
               Events & <span className="text-gradient-primary">Competitions</span>
             </h1>
             
-            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+            <p className="text-muted-foreground mb-4 max-w-xl mx-auto">
               Explore hackathons, workshops, and competitions happening around you.
             </p>
+
+            {/* Submit Event Button */}
+            {isLoggedIn && (
+              <div className="mb-6">
+                <EventSubmissionModal onSuccess={fetchEvents} />
+              </div>
+            )}
 
             {/* Search Bar */}
             <div className="max-w-xl mx-auto">

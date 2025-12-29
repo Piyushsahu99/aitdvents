@@ -97,6 +97,7 @@ export default function Profile() {
     interests: "",
     is_public: false,
     is_looking_for_team: false,
+    share_phone_publicly: false,
   });
 
   useEffect(() => {
@@ -147,6 +148,7 @@ export default function Profile() {
         interests: data.interests?.join(", ") || "",
         is_public: data.is_public || false,
         is_looking_for_team: data.is_looking_for_team || false,
+        share_phone_publicly: (data as any).share_phone_publicly || false,
       });
     }
   };
@@ -200,6 +202,7 @@ export default function Profile() {
       interests: formData.interests ? formData.interests.split(",").map(s => s.trim()).filter(Boolean) : null,
       is_public: formData.is_public,
       is_looking_for_team: formData.is_looking_for_team,
+      share_phone_publicly: formData.share_phone_publicly,
     };
 
     if (profile) {
@@ -868,6 +871,17 @@ export default function Profile() {
                   <Switch
                     checked={formData.is_looking_for_team}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_looking_for_team: checked })}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div>
+                    <Label className="font-medium">Share Phone Number Publicly</Label>
+                    <p className="text-sm text-muted-foreground">Allow others to see your phone number on your public profile</p>
+                  </div>
+                  <Switch
+                    checked={formData.share_phone_publicly}
+                    onCheckedChange={(checked) => setFormData({ ...formData, share_phone_publicly: checked })}
                   />
                 </div>
                 

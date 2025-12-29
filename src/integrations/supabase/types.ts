@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          is_active: boolean | null
+          name: string
+          points_reward: number
+          requirement_type: string
+          requirement_value: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          description: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          points_reward?: number
+          requirement_type: string
+          requirement_value: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          points_reward?: number
+          requirement_type?: string
+          requirement_value?: number
+        }
+        Relationships: []
+      }
       admin_invites: {
         Row: {
           created_at: string | null
@@ -625,6 +664,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_login_rewards: {
+        Row: {
+          bonus_description: string | null
+          created_at: string | null
+          day_number: number
+          id: string
+          points_reward: number
+        }
+        Insert: {
+          bonus_description?: string | null
+          created_at?: string | null
+          day_number: number
+          id?: string
+          points_reward: number
+        }
+        Update: {
+          bonus_description?: string | null
+          created_at?: string | null
+          day_number?: number
+          id?: string
+          points_reward?: number
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           applied_count: number | null
@@ -1046,6 +1109,116 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_sessions: {
+        Row: {
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          meeting_link: string | null
+          mentor_id: string
+          notes: string | null
+          points_cost: number
+          scheduled_at: string
+          status: string
+          student_id: string
+          student_rating: number | null
+          student_review: string | null
+          topic: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          meeting_link?: string | null
+          mentor_id: string
+          notes?: string | null
+          points_cost: number
+          scheduled_at: string
+          status?: string
+          student_id: string
+          student_rating?: number | null
+          student_review?: string | null
+          topic: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          meeting_link?: string | null
+          mentor_id?: string
+          notes?: string | null
+          points_cost?: number
+          scheduled_at?: string
+          status?: string
+          student_id?: string
+          student_rating?: number | null
+          student_review?: string | null
+          topic?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_sessions_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentors: {
+        Row: {
+          availability: Json | null
+          bio: string | null
+          created_at: string | null
+          expertise: string[]
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          rate_per_session: number
+          rating: number | null
+          sessions_completed: number | null
+          title: string
+          total_reviews: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          availability?: Json | null
+          bio?: string | null
+          created_at?: string | null
+          expertise: string[]
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          rate_per_session?: number
+          rating?: number | null
+          sessions_completed?: number | null
+          title: string
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          availability?: Json | null
+          bio?: string | null
+          created_at?: string | null
+          expertise?: string[]
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          rate_per_session?: number
+          rating?: number | null
+          sessions_completed?: number | null
+          title?: string
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -1213,6 +1386,36 @@ export type Database = {
           start_date?: string | null
           title?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      points_transactions: {
+        Row: {
+          action_type: string
+          amount: number
+          created_at: string | null
+          description: string | null
+          id: string
+          reference_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          amount: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          amount?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -1453,6 +1656,51 @@ export type Database = {
           status?: string
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      rewards_catalog: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string
+          points_cost: number
+          stock_quantity: number | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name: string
+          points_cost: number
+          stock_quantity?: number | null
+          type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name?: string
+          points_cost?: number
+          stock_quantity?: number | null
+          type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1747,45 +1995,110 @@ export type Database = {
         }
         Relationships: []
       }
-      user_points: {
+      user_achievements: {
         Row: {
-          bounties_completed: number | null
-          courses_completed: number | null
-          created_at: string | null
+          achievement_id: string
           id: string
-          last_activity: string | null
-          monthly_points: number | null
-          referrals_count: number | null
-          shares_count: number | null
-          total_points: number | null
-          updated_at: string | null
+          unlocked_at: string | null
           user_id: string
         }
         Insert: {
-          bounties_completed?: number | null
-          courses_completed?: number | null
-          created_at?: string | null
+          achievement_id: string
           id?: string
-          last_activity?: string | null
-          monthly_points?: number | null
-          referrals_count?: number | null
-          shares_count?: number | null
-          total_points?: number | null
-          updated_at?: string | null
+          unlocked_at?: string | null
           user_id: string
         }
         Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_points: {
+        Row: {
+          bounties_completed: number | null
+          connections_count: number | null
+          courses_completed: number | null
+          created_at: string | null
+          daily_login_streak: number | null
+          events_submitted: number | null
+          id: string
+          last_activity: string | null
+          last_login_date: string | null
+          level: number | null
+          lifetime_points: number | null
+          mentor_sessions_booked: number | null
+          monthly_points: number | null
+          profile_completeness: number | null
+          reels_uploaded: number | null
+          referrals_count: number | null
+          resumes_created: number | null
+          shares_count: number | null
+          study_materials_uploaded: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+          xp: number | null
+        }
+        Insert: {
           bounties_completed?: number | null
+          connections_count?: number | null
           courses_completed?: number | null
           created_at?: string | null
+          daily_login_streak?: number | null
+          events_submitted?: number | null
           id?: string
           last_activity?: string | null
+          last_login_date?: string | null
+          level?: number | null
+          lifetime_points?: number | null
+          mentor_sessions_booked?: number | null
           monthly_points?: number | null
+          profile_completeness?: number | null
+          reels_uploaded?: number | null
           referrals_count?: number | null
+          resumes_created?: number | null
           shares_count?: number | null
+          study_materials_uploaded?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+          xp?: number | null
+        }
+        Update: {
+          bounties_completed?: number | null
+          connections_count?: number | null
+          courses_completed?: number | null
+          created_at?: string | null
+          daily_login_streak?: number | null
+          events_submitted?: number | null
+          id?: string
+          last_activity?: string | null
+          last_login_date?: string | null
+          level?: number | null
+          lifetime_points?: number | null
+          mentor_sessions_booked?: number | null
+          monthly_points?: number | null
+          profile_completeness?: number | null
+          reels_uploaded?: number | null
+          referrals_count?: number | null
+          resumes_created?: number | null
+          shares_count?: number | null
+          study_materials_uploaded?: number | null
           total_points?: number | null
           updated_at?: string | null
           user_id?: string
+          xp?: number | null
         }
         Relationships: []
       }
@@ -1815,6 +2128,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_points: {
+        Args: {
+          p_action_type: string
+          p_amount: number
+          p_description?: string
+          p_reference_id?: string
+          p_user_id: string
+        }
+        Returns: number
+      }
+      check_daily_login: { Args: { p_user_id: string }; Returns: Json }
       get_public_profile: {
         Args: { profile_user_id: string }
         Returns: {
@@ -1845,6 +2169,16 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      spend_points: {
+        Args: {
+          p_action_type: string
+          p_amount: number
+          p_description?: string
+          p_reference_id?: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
       use_admin_invite: {
         Args: { invite_code_input: string; user_id_input: string }
         Returns: boolean

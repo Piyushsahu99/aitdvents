@@ -1606,6 +1606,7 @@ export type Database = {
           phone: string | null
           phone_verified: boolean | null
           portfolio_url: string | null
+          share_phone_publicly: boolean | null
           skills: string[] | null
           updated_at: string | null
           user_id: string
@@ -1627,6 +1628,7 @@ export type Database = {
           phone?: string | null
           phone_verified?: boolean | null
           portfolio_url?: string | null
+          share_phone_publicly?: boolean | null
           skills?: string[] | null
           updated_at?: string | null
           user_id: string
@@ -1648,6 +1650,7 @@ export type Database = {
           phone?: string | null
           phone_verified?: boolean | null
           portfolio_url?: string | null
+          share_phone_publicly?: boolean | null
           skills?: string[] | null
           updated_at?: string | null
           user_id?: string
@@ -1812,6 +1815,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_profile: {
+        Args: { profile_user_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          college: string
+          created_at: string
+          full_name: string
+          github_url: string
+          graduation_year: number
+          id: string
+          interests: string[]
+          is_looking_for_team: boolean
+          is_public: boolean
+          linkedin_url: string
+          phone: string
+          portfolio_url: string
+          skills: string[]
+          updated_at: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -227,10 +227,6 @@ export default function Mentorship() {
 
   return (
     <>
-      <Helmet>
-        <title>Mentorship - AITD Events</title>
-        <meta name="description" content="Connect with industry experts and get personalized career guidance. Book mentorship sessions using AITD Coins." />
-      </Helmet>
       <Navbar />
       
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/20">

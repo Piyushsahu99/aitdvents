@@ -22,6 +22,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { useEarnCoins } from '@/hooks/useEarnCoins';
 import {
   Search,
   Upload,
@@ -41,6 +42,7 @@ import {
   FileQuestion,
   Notebook,
   Library,
+  Coins,
 } from 'lucide-react';
 
 interface StudyMaterial {
@@ -100,6 +102,7 @@ export default function StudyMaterials() {
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [myUploads, setMyUploads] = useState<StudyMaterial[]>([]);
+  const { earnCoins, POINT_VALUES } = useEarnCoins();
   
   const [uploadForm, setUploadForm] = useState({
     title: '',
@@ -228,7 +231,8 @@ export default function StudyMaterials() {
 
       if (insertError) throw insertError;
 
-      toast.success('Material uploaded successfully! It will be visible after admin approval.');
+      // Earn coins for uploading material (will be credited when approved)
+      toast.success('Material uploaded successfully! You will earn ' + POINT_VALUES.STUDY_MATERIAL_UPLOAD + ' coins when approved.');
       setIsUploadOpen(false);
       setUploadForm({
         title: '',
@@ -297,6 +301,10 @@ export default function StudyMaterials() {
               <p className="text-muted-foreground mt-1">
                 Free books, question papers, notes & more for students
               </p>
+              <Badge className="mt-2 bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                <Coins className="w-3 h-3 mr-1" />
+                Earn {POINT_VALUES.STUDY_MATERIAL_UPLOAD} coins per upload!
+              </Badge>
             </div>
             {user && (
               <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>

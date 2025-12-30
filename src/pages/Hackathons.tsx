@@ -4,13 +4,14 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, MapPin, Users, Trophy, Clock, Zap, Globe, User } from "lucide-react";
+import { Calendar, MapPin, Users, Trophy, Clock, Zap, Globe, User, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AuthModal } from "@/components/AuthModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import hackathonBanner from "@/assets/hackathon-banner.jpg";
+import { POINT_VALUES } from "@/hooks/useEarnCoins";
 
 export default function Hackathons() {
   const [hackathons, setHackathons] = useState<any[]>([]);
@@ -122,9 +123,13 @@ export default function Hackathons() {
               <span className="text-sm font-medium">Build. Compete. Win.</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-3">Hackathons</h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-3">
               Join exciting hackathons, collaborate with talented developers, and bring your innovative ideas to life
             </p>
+            <Badge className="bg-yellow-500/90 text-white border-0">
+              <Coins className="w-4 h-4 mr-2" />
+              Earn {POINT_VALUES.HACKATHON_REGISTER} coins per registration!
+            </Badge>
           </div>
         </div>
       </div>

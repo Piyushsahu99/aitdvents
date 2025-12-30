@@ -12,10 +12,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { SearchBar } from "@/components/SearchBar";
 import { useToast } from "@/hooks/use-toast";
+import { useEarnCoins } from "@/hooks/useEarnCoins";
 import { 
   Play, Heart, Flag, Plus, ExternalLink, Film, Youtube, Instagram, 
   Linkedin, Share2, Eye, AlertTriangle, Loader2, Trash2, CheckCircle,
-  Shield, FileText
+  Shield, FileText, Coins
 } from "lucide-react";
 import { z } from "zod";
 
@@ -105,6 +106,7 @@ export default function Reels() {
   
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { earnCoins, POINT_VALUES } = useEarnCoins();
 
   useEffect(() => {
     fetchReels();
@@ -196,6 +198,9 @@ export default function Reels() {
       });
 
       if (error) throw error;
+
+      // Earn coins for sharing a reel
+      await earnCoins(POINT_VALUES.REEL_UPLOAD, "reel_upload", "Shared an educational reel");
 
       toast({ 
         title: "Reel shared!", 
@@ -332,9 +337,13 @@ export default function Reels() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Share & Discover Educational Content
           </h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-6">
+          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-2">
             Share your educational videos, tutorials, and career tips with the community
           </p>
+          <Badge className="bg-yellow-500/20 text-yellow-200 border-yellow-500/30 mb-6">
+            <Coins className="w-4 h-4 mr-2" />
+            Earn {POINT_VALUES.REEL_UPLOAD} coins per reel shared!
+          </Badge>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Dialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
               <DialogTrigger asChild>

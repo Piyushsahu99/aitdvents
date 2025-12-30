@@ -14,6 +14,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { CartIcon } from "@/components/CartIcon";
+import { PointsWidget } from "@/components/PointsWidget";
 import logo from "@/assets/aitd-logo.png";
 
 // Primary navigation items - shown directly in navbar
@@ -214,6 +215,9 @@ export const Navbar = () => {
 
             {/* Cart Icon */}
             <CartIcon />
+
+            {/* Points Widget - Only show when logged in */}
+            {user && <PointsWidget />}
 
             <div className="h-6 w-px bg-border mx-1 xl:mx-2" />
 

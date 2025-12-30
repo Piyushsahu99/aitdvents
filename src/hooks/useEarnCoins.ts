@@ -1,0 +1,71 @@
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+// Points awarded for various actions
+export const POINT_VALUES = {
+  EVENT_REGISTER: 5,
+  REEL_UPLOAD: 10,
+  REEL_LIKE: 1,
+  STUDY_MATERIAL_UPLOAD: 15,
+  COURSE_ENROLL: 10,
+  COURSE_COMPLETE: 25,
+  PROFILE_COMPLETE: 15,
+  REFERRAL: 25,
+  DAILY_LOGIN: 5,
+  PRODUCT_LIST: 5,
+  BOUNTY_SUBMIT: 20,
+  HACKATHON_REGISTER: 10,
+};
+
+export function useEarnCoins() {
+  const { toast } = useToast();
+
+  const earnCoins = async (
+    amount: number,
+    actionType: string,
+    description: string,
+    referenceId?: string
+  ): Promise<boolean> => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      // Check if this action was already rewarded (for unique actions)
+      if (referenceId) {
+        const { data: existing } = await supabase
+          .from("points_transactions")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("action_type", actionType)
+          .eq("reference_id", referenceId)
+          .single();
+        
+        if (existing) return false; // Already earned for this action
+      }
+
+      // Use the award_points RPC function
+      const { error } = await supabase.rpc("award_points", {
+        p_user_id: user.id,
+        p_amount: amount,
+        p_action_type: actionType,
+        p_description: description,
+        p_reference_id: referenceId || null,
+      });
+
+      if (error) throw error;
+
+      // Show success toast with coin animation effect
+      toast({
+        title: `+${amount} AITD Coins! 🪙`,
+        description: description,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error earning coins:", error);
+      return false;
+    }
+  };
+
+  return { earnCoins, POINT_VALUES };
+}

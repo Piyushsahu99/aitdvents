@@ -4,9 +4,10 @@ import { EventDetailModal } from "@/components/EventDetailModal";
 import { SearchBar } from "@/components/SearchBar";
 import { EventSubmissionModal } from "@/components/EventSubmissionModal";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Sparkles, Filter } from "lucide-react";
+import { Calendar, Sparkles, Filter, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useEarnCoins } from "@/hooks/useEarnCoins";
 
 export default function Events() {
   const [search, setSearch] = useState("");

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/SearchBar";
 import { AuthModal } from "@/components/AuthModal";
+import { POINT_VALUES } from "@/hooks/useEarnCoins";
 import { 
   Trophy, 
   Clock, 
@@ -15,7 +16,8 @@ import {
   Filter,
   Grid3X3,
   List,
-  Award
+  Award,
+  Coins
 } from "lucide-react";
 
 interface Bounty {
@@ -124,9 +126,13 @@ export default function Bounties() {
             <Trophy className="h-10 w-10 text-primary" />
             <h1 className="text-4xl font-bold">Bounties</h1>
           </div>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-lg mb-3">
             Participate in existing challenges and earn rewards for your efforts.
           </p>
+          <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+            <Coins className="h-4 w-4 mr-2" />
+            Earn {POINT_VALUES.BOUNTY_SUBMIT} coins per submission!
+          </Badge>
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Users, Clock, ArrowUpRight, Sparkles } from "lucide-react";
+import { Calendar, MapPin, Users, Clock, ArrowUpRight, Sparkles, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -82,10 +82,14 @@ export const EventCard = ({
           )}
         </div>
 
-        {/* Category Badge */}
-        <div className="absolute top-3 right-3 z-10">
+        {/* Coins Badge */}
+        <div className="absolute top-3 right-3 z-10 flex flex-col gap-1">
           <Badge variant="secondary" className="bg-black/20 text-white border-0 backdrop-blur-sm text-xs">
             {category}
+          </Badge>
+          <Badge className="bg-yellow-500/90 text-white border-0 text-xs">
+            <Coins className="w-3 h-3 mr-1" />
+            +5 Coins
           </Badge>
         </div>
 

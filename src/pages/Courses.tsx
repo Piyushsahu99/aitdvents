@@ -6,8 +6,9 @@ import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Clock, Users, Star, GraduationCap, Loader2 } from "lucide-react";
+import { BookOpen, Clock, Users, Star, GraduationCap, Loader2, Coins } from "lucide-react";
 import lmsHero from "@/assets/lms-hero.jpg";
+import { POINT_VALUES } from "@/hooks/useEarnCoins";
 
 interface Course {
   id: string;
@@ -119,9 +120,13 @@ export default function Courses() {
             <h1 className="text-5xl font-bold text-white mb-4 animate-fade-in">
               Explore Our Courses
             </h1>
-            <p className="text-xl text-white/90 animate-fade-in">
+            <p className="text-xl text-white/90 animate-fade-in mb-4">
               Master new skills with expert-led courses designed for your success
             </p>
+            <Badge className="bg-yellow-500/90 text-white border-0">
+              <Coins className="w-4 h-4 mr-2" />
+              Earn {POINT_VALUES.COURSE_ENROLL} coins on enroll, {POINT_VALUES.COURSE_COMPLETE} on completion!
+            </Badge>
           </div>
         </div>
       </div>

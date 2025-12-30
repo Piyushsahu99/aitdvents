@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useEarnCoins } from "@/hooks/useEarnCoins";
 import {
   BookOpen,
   Clock,
@@ -17,6 +18,7 @@ import {
   ArrowLeft,
   Loader2,
   Award,
+  Coins,
 } from "lucide-react";
 
 interface Course {
@@ -55,6 +57,7 @@ export default function CourseDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { earnCoins, POINT_VALUES } = useEarnCoins();
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
@@ -138,6 +141,9 @@ export default function CourseDetails() {
         });
 
       if (error) throw error;
+
+      // Earn coins for enrolling
+      await earnCoins(POINT_VALUES.COURSE_ENROLL, "course_enroll", `Enrolled in course: ${course?.title}`, id);
 
       toast({
         title: "Success!",

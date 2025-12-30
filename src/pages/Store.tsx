@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useEarnCoins } from "@/hooks/useEarnCoins";
 import { 
   ShoppingBag, 
   Plus, 
@@ -35,7 +36,8 @@ import {
   Zap,
   Upload,
   X,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Coins
 } from "lucide-react";
 
 type ProductCategory = 'electronics' | 'books' | 'stationery' | 'tasks' | 'other';
@@ -134,6 +136,7 @@ export default function Store() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const { earnCoins, POINT_VALUES } = useEarnCoins();
 
   const UPI_ID = "9919562443-0@airtel";
 
@@ -202,6 +205,9 @@ export default function Store() {
       }]);
 
       if (error) throw error;
+
+      // Earn coins for listing a product
+      await earnCoins(POINT_VALUES.PRODUCT_LIST, "product_list", "Listed a product on the marketplace");
 
       toast({ 
         title: "Product Submitted!", 
@@ -288,6 +294,10 @@ export default function Store() {
               <p className="text-base sm:text-lg text-muted-foreground max-w-xl">
                 The trusted marketplace for books, electronics, notes, and more. Get amazing deals from fellow students!
               </p>
+              <Badge className="mt-3 bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                <Coins className="h-3 w-3 mr-1" />
+                Earn {POINT_VALUES.PRODUCT_LIST} coins per listing!
+              </Badge>
             </div>
             
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

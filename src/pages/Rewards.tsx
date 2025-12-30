@@ -133,10 +133,6 @@ export default function Rewards() {
   if (!userId) {
     return (
       <>
-        <Helmet>
-          <title>Rewards - AITD Events</title>
-          <meta name="description" content="Earn AITD Coins and redeem exciting rewards including merchandise, gift cards, and premium services." />
-        </Helmet>
         <Navbar />
         <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
           <div className="relative mb-6">
@@ -161,10 +157,6 @@ export default function Rewards() {
 
   return (
     <>
-      <Helmet>
-        <title>Rewards - AITD Events</title>
-        <meta name="description" content="Earn AITD Coins and redeem exciting rewards including merchandise, gift cards, and premium services." />
-      </Helmet>
       <Navbar />
       
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/20">

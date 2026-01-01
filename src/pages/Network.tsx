@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { SearchBar } from "@/components/SearchBar";
+import { POINT_VALUES } from "@/hooks/useEarnCoins";
 import { 
   Users, 
   Linkedin, 
@@ -13,7 +15,10 @@ import {
   Globe, 
   Loader2,
   UserPlus,
-  Search
+  Search,
+  Coins,
+  Gift,
+  Sparkles
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -102,21 +107,43 @@ export default function Network() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-16 px-4 overflow-hidden bg-gradient-to-br from-background via-accent/5 to-primary/5">
+      <section className="relative py-12 sm:py-16 px-4 overflow-hidden bg-gradient-to-br from-background via-accent/5 to-primary/5">
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float-delayed" />
+        </div>
+        
         <div className="container mx-auto text-center relative z-10">
-          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-lg px-6 py-2">
+          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-base sm:text-lg px-4 sm:px-6 py-2">
             <Users className="h-4 w-4 mr-2" />
             Student Network
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             CONNECT WITH{" "}
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               FELLOW STUDENTS
             </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Build your network, find teammates, and collaborate on projects
           </p>
+
+          {/* Coin Earning Info */}
+          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20">
+            <div className="p-2 rounded-full bg-yellow-500/20">
+              <Coins className="h-4 w-4 text-yellow-500" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-sm">Earn +{POINT_VALUES.REFERRAL} coins per referral!</p>
+              <p className="text-xs text-muted-foreground">Invite friends and grow together</p>
+            </div>
+            <Link to="/profile">
+              <Button size="sm" variant="outline" className="border-yellow-500/30 text-yellow-600 hover:bg-yellow-500/10">
+                <Gift className="h-3.5 w-3.5 mr-1.5" />
+                Refer
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

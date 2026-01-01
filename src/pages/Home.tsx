@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FloatingTelegram } from "@/components/FloatingTelegram";
 import { ProfileCompletionPopup } from "@/components/ProfileCompletionPopup";
+import { CoinBadge } from "@/components/CoinBadge";
+import { POINT_VALUES } from "@/hooks/useEarnCoins";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -31,6 +33,7 @@ import {
   FileText,
   Rocket,
   TrendingUp,
+  Coins,
 } from "lucide-react";
 
 interface Course {
@@ -139,14 +142,14 @@ export default function Home() {
   };
 
   const features = [
-    { icon: BookOpen, title: "Courses", link: "/courses", gradient: "from-blue-500 to-cyan-400" },
-    { icon: Trophy, title: "Bounties", link: "/bounties", gradient: "from-emerald-500 to-teal-400" },
-    { icon: Calendar, title: "Events", link: "/events", gradient: "from-violet-500 to-purple-400" },
-    { icon: Briefcase, title: "Jobs", link: "/jobs", gradient: "from-orange-500 to-amber-400" },
-    { icon: MessageCircle, title: "Mentors", link: "/mentorship", gradient: "from-yellow-500 to-orange-400" },
-    { icon: Target, title: "Practice", link: "/practice", gradient: "from-pink-500 to-rose-400" },
-    { icon: GraduationCap, title: "Scholarships", link: "/scholarships", gradient: "from-cyan-500 to-blue-400" },
-    { icon: FileText, title: "Study Materials", link: "/study-materials", gradient: "from-indigo-500 to-violet-400" },
+    { icon: BookOpen, title: "Courses", link: "/courses", gradient: "from-blue-500 to-cyan-400", coins: POINT_VALUES.COURSE_ENROLL },
+    { icon: Trophy, title: "Bounties", link: "/bounties", gradient: "from-emerald-500 to-teal-400", coins: POINT_VALUES.BOUNTY_SUBMIT },
+    { icon: Calendar, title: "Events", link: "/events", gradient: "from-violet-500 to-purple-400", coins: POINT_VALUES.EVENT_REGISTER },
+    { icon: Briefcase, title: "Jobs", link: "/jobs", gradient: "from-orange-500 to-amber-400", coins: 0 },
+    { icon: MessageCircle, title: "Mentors", link: "/mentorship", gradient: "from-yellow-500 to-orange-400", coins: 0 },
+    { icon: Target, title: "Practice", link: "/practice", gradient: "from-pink-500 to-rose-400", coins: 0 },
+    { icon: GraduationCap, title: "Scholarships", link: "/scholarships", gradient: "from-cyan-500 to-blue-400", coins: 0 },
+    { icon: FileText, title: "Study Materials", link: "/study-materials", gradient: "from-indigo-500 to-violet-400", coins: POINT_VALUES.STUDY_MATERIAL_UPLOAD },
   ];
 
   const personas = [
@@ -284,7 +287,13 @@ export default function Home() {
                   className="group animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <div className="flex flex-col items-center p-2 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                  <div className="relative flex flex-col items-center p-2 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                    {feature.coins > 0 && (
+                      <div className="absolute -top-1.5 -right-1.5 bg-yellow-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                        <Coins className="h-2.5 w-2.5" />
+                        +{feature.coins}
+                      </div>
+                    )}
                     <div className={`p-2 sm:p-2.5 lg:p-3 rounded-lg bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 group-hover:scale-110 transition-transform shadow-sm`}>
                       <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-5 lg:w-5" />
                     </div>

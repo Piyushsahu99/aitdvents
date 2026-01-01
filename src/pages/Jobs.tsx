@@ -3,10 +3,11 @@ import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send } from "lucide-react";
+import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthModal } from "@/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 export default function Jobs() {
   const [search, setSearch] = useState("");
@@ -105,7 +106,7 @@ export default function Jobs() {
           </div>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 animate-fade-in-up stagger-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 animate-fade-in-up stagger-1">
             {[
               { label: "Open Positions", value: jobs.length, icon: Briefcase },
               { label: "Companies", value: new Set(jobs.map(j => j.company)).size, icon: Building },
@@ -118,6 +119,25 @@ export default function Jobs() {
                 <div className="text-xs text-muted-foreground">{stat.label}</div>
               </div>
             ))}
+          </div>
+
+          {/* Coin Earning Banner */}
+          <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in-up stagger-2">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-yellow-500/20">
+                <Coins className="h-5 w-5 text-yellow-500" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">Earn AITD Coins while job hunting!</p>
+                <p className="text-sm text-muted-foreground">Complete bounties, courses & events to earn rewards</p>
+              </div>
+            </div>
+            <Link to="/rewards">
+              <Button variant="outline" className="border-yellow-500/30 text-yellow-600 hover:bg-yellow-500/10">
+                <Gift className="h-4 w-4 mr-2" />
+                View Rewards
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

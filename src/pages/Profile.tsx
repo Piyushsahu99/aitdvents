@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { UserReelsSection } from "@/components/profile/UserReelsSection";
 import { MemberCertificate } from "@/components/profile/MemberCertificate";
@@ -33,7 +34,12 @@ import {
   LogOut,
   Settings,
   Award,
-  ExternalLink
+  ExternalLink,
+  Coins,
+  TrendingUp,
+  Flame,
+  Gift,
+  Trophy
 } from "lucide-react";
 
 interface ProfileData {
@@ -66,11 +72,20 @@ interface Referral {
   converted_at: string | null;
 }
 
+interface UserPointsData {
+  total_points: number;
+  lifetime_points: number;
+  daily_login_streak: number;
+  level: number;
+  xp: number;
+}
+
 export default function Profile() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [referralCode, setReferralCode] = useState<string>("");
+  const [userPoints, setUserPoints] = useState<UserPointsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -117,8 +132,19 @@ export default function Profile() {
     await Promise.all([
       fetchProfile(session.user.id),
       fetchReferrals(session.user.id),
+      fetchUserPoints(session.user.id),
     ]);
     setLoading(false);
+  };
+
+  const fetchUserPoints = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_points")
+      .select("total_points, lifetime_points, daily_login_streak, level, xp")
+      .eq("user_id", userId)
+      .maybeSingle();
+    
+    if (data) setUserPoints(data);
   };
 
   const fetchProfile = async (userId: string) => {
@@ -334,28 +360,85 @@ export default function Profile() {
   return (
     <div className="min-h-screen py-4 sm:py-8 px-3 sm:px-4">
       <div className="container mx-auto max-w-4xl">
-        {/* Header with Logout */}
-        <div className="flex items-start justify-between mb-4 sm:mb-8">
+        {/* Header with Coins and Logout */}
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4 sm:mb-8">
           <div>
             <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
               My Profile
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground">Manage your account settings</p>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              toast({ title: "Logged out", description: "See you soon!" });
-              navigate("/");
-            }}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-3">
+            {/* Coins Card */}
+            {userPoints && (
+              <Link to="/rewards">
+                <Card className="flex items-center gap-3 p-3 hover:shadow-md transition-all cursor-pointer border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-amber-500/5">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-full bg-yellow-500/20">
+                      <Coins className="h-4 w-4 text-yellow-500" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold">{userPoints.total_points?.toLocaleString() || 0}</p>
+                      <p className="text-xs text-muted-foreground">AITD Coins</p>
+                    </div>
+                  </div>
+                  <div className="h-8 w-px bg-border" />
+                  <div className="flex items-center gap-1.5">
+                    <Flame className="h-4 w-4 text-orange-500" />
+                    <span className="text-sm font-medium">{userPoints.daily_login_streak || 0}</span>
+                  </div>
+                </Card>
+              </Link>
+            )}
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                toast({ title: "Logged out", description: "See you soon!" });
+                navigate("/");
+              }}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
+
+        {/* Quick Stats */}
+        {userPoints && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            <Card className="p-3 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Trophy className="h-4 w-4 text-primary" />
+                <span className="text-lg font-bold">Lvl {userPoints.level || 1}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Current Level</p>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <TrendingUp className="h-4 w-4 text-emerald-500" />
+                <span className="text-lg font-bold">{userPoints.xp?.toLocaleString() || 0}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Total XP</p>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Coins className="h-4 w-4 text-yellow-500" />
+                <span className="text-lg font-bold">{userPoints.lifetime_points?.toLocaleString() || 0}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Lifetime Coins</p>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Flame className="h-4 w-4 text-orange-500" />
+                <span className="text-lg font-bold">{userPoints.daily_login_streak || 0} days</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Login Streak</p>
+            </Card>
+          </div>
+        )}
 
         {/* Email Verification Banner */}
         {!isEmailVerified && user?.email && (

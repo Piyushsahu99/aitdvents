@@ -175,109 +175,149 @@ export default function Home() {
       <ProfileCompletionPopup />
       <FloatingTelegram />
       
-      {/* Hero Section - Optimized for all devices */}
-      <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[85vh] flex items-center py-8 sm:py-12 lg:py-16 px-4 overflow-hidden">
+      {/* Hero Section - Student Focused Mobile First */}
+      <section className="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] flex items-center py-6 sm:py-10 lg:py-16 px-4 overflow-hidden">
         {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-background to-pink-500/10" />
         
-        {/* Animated orbs */}
+        {/* Animated orbs - smaller on mobile */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[10%] left-[5%] w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-primary/15 rounded-full blur-3xl animate-float" />
-          <div className="absolute top-[20%] right-[5%] w-40 sm:w-56 lg:w-80 h-40 sm:h-56 lg:h-80 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
-          <div className="absolute bottom-[15%] left-[20%] w-36 sm:w-52 lg:w-72 h-36 sm:h-52 lg:h-72 bg-blue-500/10 rounded-full blur-3xl animate-float-slow" />
+          <div className="absolute top-[5%] left-[5%] w-24 sm:w-40 lg:w-56 h-24 sm:h-40 lg:h-56 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute top-[15%] right-[5%] w-28 sm:w-48 lg:w-72 h-28 sm:h-48 lg:h-72 bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-full blur-3xl animate-float-delayed" />
+          <div className="absolute bottom-[10%] left-[15%] w-20 sm:w-36 lg:w-56 h-20 sm:h-36 lg:h-56 bg-gradient-to-br from-cyan-500/15 to-blue-500/15 rounded-full blur-3xl animate-float-slow" />
         </div>
         
         <div className="container mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            {/* Student count badge */}
-            {stats.students > 0 && (
-              <Badge className="mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 animate-fade-in-down">
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
-                Join {stats.students.toLocaleString()}+ Students
-              </Badge>
-            )}
+            {/* Animated student count badge */}
+            <Badge className="mb-3 sm:mb-5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-gradient-to-r from-violet-500/20 to-pink-500/20 text-foreground border-violet-500/30 hover:from-violet-500/30 hover:to-pink-500/30 animate-fade-in-down shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 text-violet-500 animate-pulse" />
+              {stats.students > 0 ? `${stats.students.toLocaleString()}+ Students Growing` : "Join Our Community"}
+            </Badge>
             
-            {/* Main heading */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 leading-tight animate-fade-in-up">
-              Your Career Journey{" "}
-              <span className="text-gradient-primary">Starts Here</span>
+            {/* Main heading - optimized for mobile */}
+            <h1 className="text-[1.75rem] leading-[1.2] sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-5 animate-fade-in-up">
+              <span className="block sm:inline">Learn.</span>{" "}
+              <span className="block sm:inline text-gradient-primary">Earn.</span>{" "}
+              <span className="block sm:inline">Grow.</span>
             </h1>
             
-            {/* Subheading */}
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-2 animate-fade-in-up stagger-1">
-              Learn skills, earn money, win competitions & land your dream job — all in one platform built for students.
+            {/* Subheading - mobile optimized */}
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-5 sm:mb-7 leading-relaxed max-w-xl mx-auto px-1 animate-fade-in-up stagger-1">
+              India's #1 platform for students to learn skills, win bounties & land dream jobs
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0 animate-fade-in-up stagger-2">
+            {/* Mobile-first CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center animate-fade-in-up stagger-2">
               <Link to="/auth" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-6 py-4 sm:py-5 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group bg-primary hover:bg-primary/90">
-                  <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                  Start Learning Free
+                <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 border-0">
+                  <Rocket className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:animate-bounce" />
+                  Start Free - Earn Coins
                 </Button>
               </Link>
-              <Link to="/events" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-6 py-4 sm:py-5 rounded-xl hover:scale-[1.02] transition-all border-border hover:border-primary/50 hover:bg-primary/5">
-                  Explore Opportunities
-                  <ArrowRight className="ml-2 h-4 w-4" />
+              <Link to="/bounties" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl hover:scale-[1.02] transition-all border-2 border-emerald-500/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500">
+                  <Trophy className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  Win Money
                 </Button>
               </Link>
             </div>
 
-            {/* Trust indicators */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-6 sm:mt-8 justify-center text-xs sm:text-sm text-muted-foreground animate-fade-in-up stagger-3">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                <span>100% Free to Start</span>
+            {/* Quick stats for mobile - compact row */}
+            <div className="flex items-center justify-center gap-4 sm:gap-8 mt-5 sm:mt-7 animate-fade-in-up stagger-3">
+              <div className="text-center">
+                <div className="text-lg sm:text-xl font-bold text-primary">{stats.courses || 50}+</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">Courses</div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                <span>No Credit Card Required</span>
+              <div className="w-px h-8 bg-border" />
+              <div className="text-center">
+                <div className="text-lg sm:text-xl font-bold text-emerald-500">₹10K+</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">In Bounties</div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                <span>Community Support</span>
+              <div className="w-px h-8 bg-border" />
+              <div className="text-center">
+                <div className="text-lg sm:text-xl font-bold text-violet-500">{stats.jobs || 25}+</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">Jobs</div>
+              </div>
+            </div>
+
+            {/* Trust indicators - simplified for mobile */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-4 sm:mt-6 justify-center text-[10px] sm:text-xs text-muted-foreground animate-fade-in-up stagger-3">
+              <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
+                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                <span>Free Forever</span>
+              </div>
+              <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
+                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                <span>Earn While Learning</span>
+              </div>
+              <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
+                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                <span>Real Opportunities</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Telegram Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-cyan-500 py-3 sm:py-4 px-4">
-        <div className="container mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-white">
-          <div className="flex items-center gap-2">
-            <Send className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
-            <span className="font-medium text-sm sm:text-base">Join our Telegram for daily updates!</span>
+      {/* Earning Opportunities Banner */}
+      <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 py-2.5 sm:py-3 px-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 text-white">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Coins className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
+              <span className="font-semibold text-xs sm:text-sm">Earn Coins</span>
+            </div>
+            <span className="text-white/60 hidden sm:inline">|</span>
+            <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs">
+              <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full">
+                <BookOpen className="h-3 w-3" /> +{POINT_VALUES.COURSE_ENROLL} Enroll
+              </span>
+              <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full">
+                <Trophy className="h-3 w-3" /> +{POINT_VALUES.BOUNTY_SUBMIT} Bounty
+              </span>
+              <span className="hidden sm:flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full">
+                <FileText className="h-3 w-3" /> +{POINT_VALUES.STUDY_MATERIAL_UPLOAD} Upload
+              </span>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Telegram Banner - More compact on mobile */}
+      <div className="bg-gradient-to-r from-blue-600 to-cyan-500 py-2 sm:py-3 px-4">
+        <div className="container mx-auto flex items-center justify-center gap-2 sm:gap-3 text-white">
+          <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-pulse" />
+          <span className="font-medium text-xs sm:text-sm">Join Telegram for updates & gifts!</span>
           <a 
             href="https://t.me/aitdevents" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/20 hover:bg-white/30 rounded-full text-xs sm:text-sm font-medium transition-all hover:scale-105"
+            className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white/20 hover:bg-white/30 rounded-full text-[10px] sm:text-xs font-medium transition-all hover:scale-105"
           >
-            Join Now →
+            Join →
           </a>
         </div>
       </div>
 
-      {/* Quick Access Features */}
-      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-muted/30">
+      {/* Quick Access Features - Mobile Optimized */}
+      <section className="py-6 sm:py-10 lg:py-14 px-3 sm:px-4 bg-muted/30">
         <div className="container mx-auto">
-          <div className="text-center mb-6 sm:mb-10">
-            <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
-              <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
-              Quick Access
+          <div className="text-center mb-5 sm:mb-8">
+            <Badge className="mb-2 text-xs sm:text-sm bg-violet-500/10 text-violet-600 border-violet-500/20">
+              <Zap className="w-3 h-3 mr-1" />
+              Explore
             </Badge>
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
-              Everything You Need in <span className="text-gradient-primary">One Place</span>
+            <h2 className="text-lg sm:text-2xl md:text-3xl font-bold mb-1.5 sm:mb-2">
+              What do you want to <span className="text-gradient-primary">do today?</span>
             </h2>
-            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
-              From learning to earning, we've got all your career needs covered
+            <p className="text-[11px] sm:text-sm text-muted-foreground">
+              Tap to explore opportunities
             </p>
           </div>
 
-          <div className="grid grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3 lg:gap-4">
+          {/* Mobile: 2x4 grid, Desktop: 1x8 row */}
+          <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -285,17 +325,17 @@ export default function Home() {
                   key={feature.title}
                   to={feature.link}
                   className="group animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
+                  style={{ animationDelay: `${index * 0.03}s` }}
                 >
-                  <div className="relative flex flex-col items-center p-2 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-lg transition-all duration-300 active:scale-95 hover:-translate-y-1">
                     {feature.coins > 0 && (
-                      <div className="absolute -top-1.5 -right-1.5 bg-yellow-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
-                        <Coins className="h-2.5 w-2.5" />
+                      <div className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
+                        <Coins className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
                         +{feature.coins}
                       </div>
                     )}
-                    <div className={`p-2 sm:p-2.5 lg:p-3 rounded-lg bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 group-hover:scale-110 transition-transform shadow-sm`}>
-                      <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-5 lg:w-5" />
+                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 group-hover:scale-110 group-active:scale-95 transition-transform shadow-md`}>
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <span className="font-medium text-[10px] sm:text-xs lg:text-sm text-center leading-tight text-foreground">
                       {feature.title}

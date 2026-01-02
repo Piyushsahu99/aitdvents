@@ -17,9 +17,13 @@ import {
   Medal,
   Linkedin,
   Twitter,
-  Instagram
+  Instagram,
+  Handshake,
+  UserCircle
 } from "lucide-react";
 import piyushSahuImg from "@/assets/piyush-sahu-director.png";
+import companyMitraLogo from "@/assets/company-mitra-logo.jpg";
+import step2getherLogo from "@/assets/step2gether-logo.jpg";
 
 export default function About() {
   const stats = [
@@ -103,6 +107,43 @@ export default function About() {
       icon: Trophy,
       title: "Excellence",
       description: "Promoting quality opportunities and recognizing outstanding talent",
+    },
+  ];
+
+  const supportingCompanies = [
+    {
+      name: "Company Mitra",
+      logo: companyMitraLogo,
+      description: "Business consulting & support partner",
+    },
+    {
+      name: "Raktchain",
+      logo: null,
+      description: "Blockchain innovation partner",
+    },
+    {
+      name: "Step2gether Social Foundation",
+      logo: step2getherLogo,
+      description: "Social impact & community partner",
+    },
+  ];
+
+  const mentors = [
+    {
+      name: "Hrishique Munshi",
+      title: "Mentor",
+    },
+    {
+      name: "Sandesh",
+      title: "Mentor",
+    },
+    {
+      name: "Prasenjit Gautam",
+      title: "Mentor",
+    },
+    {
+      name: "Pradeep Gupta",
+      title: "Mentor",
     },
   ];
 
@@ -200,6 +241,66 @@ export default function About() {
                 </Card>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Supporting Companies Section */}
+      <section className="py-16 md:py-20 px-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Handshake className="h-8 w-8 text-primary" />
+            <h2 className="text-3xl md:text-5xl font-bold text-center">
+              SUPPORTING PARTNERS
+            </h2>
+          </div>
+          <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+            Organizations that believe in our mission and support student growth
+          </p>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {supportingCompanies.map((company, index) => (
+              <Card key={index} className="p-6 hover:shadow-lg transition-all border-primary/10 hover:border-primary/30 group text-center">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-xl overflow-hidden bg-muted flex items-center justify-center">
+                  {company.logo ? (
+                    <img 
+                      src={company.logo} 
+                      alt={company.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Building className="h-10 w-10 text-primary" />
+                  )}
+                </div>
+                <h3 className="text-lg font-bold mb-2">{company.name}</h3>
+                <p className="text-muted-foreground text-sm">{company.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mentors Section */}
+      <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-accent/5 to-primary/5">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <UserCircle className="h-8 w-8 text-primary" />
+            <h2 className="text-3xl md:text-5xl font-bold text-center">
+              OUR MENTORS
+            </h2>
+          </div>
+          <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+            Industry experts guiding the next generation of talent
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {mentors.map((mentor, index) => (
+              <Card key={index} className="p-6 hover:shadow-lg transition-all border-primary/10 hover:border-primary/30 group text-center">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                  <UserCircle className="h-12 w-12 text-primary" />
+                </div>
+                <h3 className="font-bold mb-1">{mentor.name}</h3>
+                <p className="text-primary text-sm font-medium">{mentor.title}</p>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

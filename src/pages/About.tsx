@@ -19,7 +19,8 @@ import {
   Twitter,
   Instagram,
   Handshake,
-  UserCircle
+  UserCircle,
+  ExternalLink
 } from "lucide-react";
 import piyushSahuImg from "@/assets/piyush-sahu-director.png";
 import companyMitraLogo from "@/assets/company-mitra-logo.jpg";
@@ -34,6 +35,14 @@ export default function About() {
   ];
 
   const achievements = [
+    {
+      icon: Rocket,
+      title: "CodeMatrix: Genesis Hackathon",
+      description: "Our first community-organized hackathon with $500+ prize pool, hosted by GDG on Campus - Dr. AITD, Kanpur. 40+ teams participated in AI, Web & Cloud, and Blockchain tracks.",
+      date: "Dec 2025",
+      link: "https://codematrix-genesis-site.lovable.app",
+      highlight: true,
+    },
     {
       icon: Users,
       title: "50,000+ Community Members",
@@ -225,21 +234,31 @@ export default function About() {
           <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
             Milestones that mark our journey in empowering students across India
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
             {achievements.map((achievement, index) => {
               const Icon = achievement.icon;
-              return (
-                <Card key={index} className="p-6 hover:shadow-lg transition-all border-primary/10 hover:border-primary/30 group">
+              const isHighlight = 'highlight' in achievement && achievement.highlight;
+              const hasLink = 'link' in achievement && achievement.link;
+              
+              const cardContent = (
+                <Card key={index} className={`p-6 hover:shadow-lg transition-all group ${isHighlight ? 'border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 md:col-span-2 lg:col-span-1' : 'border-primary/10 hover:border-primary/30'}`}>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <div className={`p-3 rounded-lg group-hover:bg-primary/20 transition-colors ${isHighlight ? 'bg-primary/20' : 'bg-primary/10'}`}>
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <Badge variant="secondary" className="text-xs">{achievement.date}</Badge>
+                    <Badge variant={isHighlight ? "default" : "secondary"} className="text-xs">{achievement.date}</Badge>
+                    {hasLink && <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />}
                   </div>
                   <h3 className="text-lg font-bold mb-2">{achievement.title}</h3>
                   <p className="text-muted-foreground text-sm">{achievement.description}</p>
                 </Card>
               );
+              
+              return hasLink ? (
+                <a key={index} href={(achievement as any).link} target="_blank" rel="noopener noreferrer" className="block">
+                  {cardContent}
+                </a>
+              ) : cardContent;
             })}
           </div>
         </div>

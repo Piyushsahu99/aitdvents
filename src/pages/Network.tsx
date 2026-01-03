@@ -128,6 +128,16 @@ export default function Network() {
             Build your network, find teammates, and collaborate on projects
           </p>
 
+          {/* Action Buttons */}
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
+            <Link to="/profile">
+              <Button variant="outline" className="gap-2">
+                <UserPlus className="h-4 w-4" />
+                Edit My Profile
+              </Button>
+            </Link>
+          </div>
+
           {/* Coin Earning Info */}
           <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20">
             <div className="p-2 rounded-full bg-yellow-500/20">

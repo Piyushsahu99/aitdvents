@@ -4,18 +4,31 @@ import { EventDetailModal } from "@/components/EventDetailModal";
 import { SearchBar } from "@/components/SearchBar";
 import { EventSubmissionModal } from "@/components/EventSubmissionModal";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Sparkles, Filter, Coins } from "lucide-react";
+import { Calendar, Sparkles, Filter, Clock, CheckCircle, XCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useEarnCoins } from "@/hooks/useEarnCoins";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+interface UserEvent {
+  id: string;
+  title: string;
+  date: string;
+  category: string;
+  status: string;
+  location: string;
+  created_at: string;
+}
 
 export default function Events() {
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState<any[]>([]);
+  const [myEvents, setMyEvents] = useState<UserEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -25,6 +38,10 @@ export default function Events() {
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setIsLoggedIn(!!user);
+    setUser(user);
+    if (user) {
+      fetchMyEvents(user.id);
+    }
   };
 
   const fetchEvents = async () => {
@@ -44,6 +61,22 @@ export default function Events() {
     }
   };
 
+  const fetchMyEvents = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("events")
+        .select("id, title, date, category, status, location, created_at")
+        .eq("created_by", userId)
+        .eq("submitted_by_user", true)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setMyEvents(data || []);
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+    }
+  };
+
   const categories = [...new Set(events.map((e: any) => e.category))];
 
   const filteredEvents = events.filter((event: any) => {
@@ -56,6 +89,19 @@ export default function Events() {
       : true;
     return matchesSearch && matchesCategory;
   });
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'live':
+        return <Badge className="bg-green-500"><CheckCircle className="w-3 h-3 mr-1" /> Live</Badge>;
+      case 'ended':
+        return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" /> Ended</Badge>;
+      case 'draft':
+        return <Badge variant="outline"><Clock className="w-3 h-3 mr-1" /> Pending Review</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-mesh">
@@ -82,7 +128,7 @@ export default function Events() {
             {/* Submit Event Button */}
             {isLoggedIn && (
               <div className="mb-6">
-                <EventSubmissionModal onSuccess={fetchEvents} />
+                <EventSubmissionModal onSuccess={() => { fetchEvents(); if (user) fetchMyEvents(user.id); }} />
               </div>
             )}
 
@@ -99,71 +145,134 @@ export default function Events() {
       </section>
 
       <div className="container mx-auto px-4 pb-12">
-        {/* Category Filter */}
-        {categories.length > 0 && (
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Filter className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">Filter by category</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={selectedCategory === null ? "default" : "outline"}
-                size="sm"
-                className="rounded-full"
-                onClick={() => setSelectedCategory(null)}
-              >
-                All Events
-              </Button>
-              {categories.map((cat) => (
-                <Button
-                  key={cat}
-                  variant={selectedCategory === cat ? "default" : "outline"}
-                  size="sm"
-                  className="rounded-full"
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  {cat}
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
+        <Tabs defaultValue="browse" className="space-y-6">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="browse" className="flex-1 sm:flex-none">Browse Events</TabsTrigger>
+            {isLoggedIn && <TabsTrigger value="my-events" className="flex-1 sm:flex-none">My Submissions</TabsTrigger>}
+          </TabsList>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-card rounded-2xl border border-border overflow-hidden animate-pulse">
-                <div className="h-36 bg-muted" />
-                <div className="p-4 pt-10 space-y-3">
-                  <div className="h-4 bg-muted rounded w-3/4" />
-                  <div className="h-3 bg-muted rounded w-full" />
-                  <div className="h-9 bg-muted rounded mt-4" />
+          <TabsContent value="browse">
+            {/* Category Filter */}
+            {categories.length > 0 && (
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Filter className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-muted-foreground">Filter by category</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={selectedCategory === null ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() => setSelectedCategory(null)}
+                  >
+                    All Events
+                  </Button>
+                  {categories.map((cat) => (
+                    <Button
+                      key={cat}
+                      variant={selectedCategory === cat ? "default" : "outline"}
+                      size="sm"
+                      className="rounded-full"
+                      onClick={() => setSelectedCategory(cat)}
+                    >
+                      {cat}
+                    </Button>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
-        ) : filteredEvents.length === 0 ? (
-          <div className="text-center py-16 bg-muted/30 rounded-2xl border border-dashed">
-            <Calendar className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-            <p className="text-muted-foreground text-lg font-medium">No events found</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {search || selectedCategory ? "Try adjusting your search or filter" : "Check back soon for new events!"}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredEvents.map((event: any, index: number) => (
-              <div 
-                key={event.id} 
-                onClick={() => setSelectedEvent(event)}
-                className="cursor-pointer"
-              >
-                <EventCard {...event} gradientIndex={index % 6} />
+            )}
+
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="bg-card rounded-2xl border border-border overflow-hidden animate-pulse">
+                    <div className="h-36 bg-muted" />
+                    <div className="p-4 pt-10 space-y-3">
+                      <div className="h-4 bg-muted rounded w-3/4" />
+                      <div className="h-3 bg-muted rounded w-full" />
+                      <div className="h-9 bg-muted rounded mt-4" />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            ) : filteredEvents.length === 0 ? (
+              <div className="text-center py-16 bg-muted/30 rounded-2xl border border-dashed">
+                <Calendar className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+                <p className="text-muted-foreground text-lg font-medium">No events found</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {search || selectedCategory ? "Try adjusting your search or filter" : "Check back soon for new events!"}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredEvents.map((event: any, index: number) => (
+                  <div 
+                    key={event.id} 
+                    onClick={() => setSelectedEvent(event)}
+                    className="cursor-pointer"
+                  >
+                    <EventCard {...event} gradientIndex={index % 6} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {isLoggedIn && (
+            <TabsContent value="my-events">
+              {myEvents.length === 0 ? (
+                <div className="text-center py-16 bg-muted/30 rounded-2xl border border-dashed">
+                  <Calendar className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+                  <p className="text-muted-foreground text-lg font-medium">No events submitted yet</p>
+                  <p className="text-sm text-muted-foreground mt-1 mb-4">
+                    Submit your first event and earn coins!
+                  </p>
+                  <EventSubmissionModal onSuccess={() => { fetchEvents(); if (user) fetchMyEvents(user.id); }} />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {myEvents.map((event) => (
+                    <Card key={event.id} className="hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-base line-clamp-1">{event.title}</CardTitle>
+                          {getStatusBadge(event.status)}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          <span>{new Date(event.date).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">{event.category}</Badge>
+                        </div>
+                        <p className="text-xs">
+                          Submitted: {new Date(event.created_at).toLocaleDateString()}
+                        </p>
+                        {event.status === 'live' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full mt-2"
+                            onClick={() => {
+                              const fullEvent = events.find(e => e.id === event.id);
+                              if (fullEvent) setSelectedEvent(fullEvent);
+                            }}
+                          >
+                            <Eye className="w-4 h-4 mr-1" />
+                            View Event
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          )}
+        </Tabs>
       </div>
 
       {/* Event Detail Modal */}

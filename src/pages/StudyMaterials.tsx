@@ -30,7 +30,6 @@ import {
   FileText,
   Download,
   Eye,
-  Filter,
   GraduationCap,
   Building,
   MapPin,
@@ -43,6 +42,10 @@ import {
   Notebook,
   Library,
   Coins,
+  PenTool,
+  Sparkles,
+  TrendingUp,
+  School,
 } from 'lucide-react';
 
 interface StudyMaterial {
@@ -70,9 +73,29 @@ interface StudyMaterial {
 const categories = [
   { value: 'books', label: 'Books', icon: BookOpen },
   { value: 'question_papers', label: 'Question Papers', icon: FileQuestion },
+  { value: 'pyq', label: 'PYQ (Previous Year)', icon: Calendar },
   { value: 'notes', label: 'Notes', icon: Notebook },
+  { value: 'handwritten_notes', label: 'Handwritten Notes', icon: PenTool },
   { value: 'syllabus', label: 'Syllabus', icon: FileText },
   { value: 'other', label: 'Other', icon: Library },
+];
+
+const universities = [
+  { value: 'AKTU', label: 'AKTU (Dr. APJ Abdul Kalam Technical University)', state: 'Uttar Pradesh' },
+  { value: 'UPTU', label: 'UPTU', state: 'Uttar Pradesh' },
+  { value: 'DTU', label: 'DTU (Delhi Technological University)', state: 'Delhi' },
+  { value: 'IPU', label: 'IP University', state: 'Delhi' },
+  { value: 'RGPV', label: 'RGPV', state: 'Madhya Pradesh' },
+  { value: 'VTU', label: 'VTU', state: 'Karnataka' },
+  { value: 'Anna', label: 'Anna University', state: 'Tamil Nadu' },
+  { value: 'Mumbai', label: 'Mumbai University', state: 'Maharashtra' },
+  { value: 'Pune', label: 'Pune University', state: 'Maharashtra' },
+  { value: 'JNTU', label: 'JNTU', state: 'Telangana' },
+  { value: 'Other', label: 'Other University', state: '' },
+];
+
+const branches = [
+  'CSE', 'ECE', 'EE', 'ME', 'CE', 'IT', 'AIML', 'DS', 'IoT', 'Other'
 ];
 
 const indianStates = [
@@ -91,13 +114,17 @@ const courses = [
 
 const semesters = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
 
+const years = ['2024', '2023', '2022', '2021', '2020', '2019', '2018'];
+
 export default function StudyMaterials() {
   const [materials, setMaterials] = useState<StudyMaterial[]>([]);
+  const [popularMaterials, setPopularMaterials] = useState<StudyMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedState, setSelectedState] = useState<string>('all');
   const [selectedCourse, setSelectedCourse] = useState<string>('all');
+  const [selectedUniversity, setSelectedUniversity] = useState<string>('all');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -109,6 +136,7 @@ export default function StudyMaterials() {
     description: '',
     category: 'notes',
     subject: '',
+    branch: '',
     course: '',
     semester: '',
     year: '',
@@ -121,8 +149,9 @@ export default function StudyMaterials() {
 
   useEffect(() => {
     fetchMaterials();
+    fetchPopularMaterials();
     checkUser();
-  }, [selectedCategory, selectedState, selectedCourse]);
+  }, [selectedCategory, selectedState, selectedCourse, selectedUniversity]);
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -150,6 +179,9 @@ export default function StudyMaterials() {
       if (selectedCourse !== 'all') {
         query = query.eq('course', selectedCourse);
       }
+      if (selectedUniversity !== 'all') {
+        query = query.eq('university', selectedUniversity);
+      }
 
       const { data, error } = await query;
       if (error) throw error;
@@ -158,6 +190,22 @@ export default function StudyMaterials() {
       console.error('Error fetching materials:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPopularMaterials = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('study_materials')
+        .select('*')
+        .eq('status', 'approved')
+        .order('downloads_count', { ascending: false })
+        .limit(4);
+      
+      if (error) throw error;
+      setPopularMaterials(data || []);
+    } catch (error) {
+      console.error('Error fetching popular materials:', error);
     }
   };
 
@@ -181,6 +229,15 @@ export default function StudyMaterials() {
     }
   };
 
+  const handleUniversityChange = (value: string) => {
+    const uni = universities.find(u => u.value === value);
+    setUploadForm(prev => ({ 
+      ...prev, 
+      university: value,
+      state: uni?.state || prev.state 
+    }));
+  };
+
   const handleUpload = async () => {
     if (!user) {
       toast.error('Please login to upload materials');
@@ -194,7 +251,6 @@ export default function StudyMaterials() {
 
     setUploading(true);
     try {
-      // Upload file to storage
       const fileExt = uploadForm.file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
@@ -208,12 +264,11 @@ export default function StudyMaterials() {
         .from('study-materials')
         .getPublicUrl(fileName);
 
-      // Insert material record
       const { error: insertError } = await supabase
         .from('study_materials')
         .insert({
           title: uploadForm.title,
-          description: uploadForm.description,
+          description: uploadForm.description || (uploadForm.branch ? `Branch: ${uploadForm.branch}` : null),
           category: uploadForm.category,
           subject: uploadForm.subject,
           course: uploadForm.course || null,
@@ -231,7 +286,6 @@ export default function StudyMaterials() {
 
       if (insertError) throw insertError;
 
-      // Earn coins for uploading material (will be credited when approved)
       toast.success('Material uploaded successfully! You will earn ' + POINT_VALUES.STUDY_MATERIAL_UPLOAD + ' coins when approved.');
       setIsUploadOpen(false);
       setUploadForm({
@@ -239,6 +293,7 @@ export default function StudyMaterials() {
         description: '',
         category: 'notes',
         subject: '',
+        branch: '',
         course: '',
         semester: '',
         year: '',
@@ -258,7 +313,6 @@ export default function StudyMaterials() {
   };
 
   const handleDownload = async (material: StudyMaterial) => {
-    // Increment download count
     await supabase
       .from('study_materials')
       .update({ downloads_count: (material.downloads_count || 0) + 1 })
@@ -290,36 +344,58 @@ export default function StudyMaterials() {
     }
   };
 
+  // Quick filter for AKTU PYQs
+  const handleAktuPyqFilter = () => {
+    setSelectedUniversity('AKTU');
+    setSelectedCategory('pyq');
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20">
       <main className="container mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Hero Section */}
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Study Materials</h1>
-              <p className="text-muted-foreground mt-1">
-                Free books, question papers, notes & more for students
+              <div className="flex items-center gap-2 mb-2">
+                <Badge className="bg-violet-500/10 text-violet-600 border-violet-500/20">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  Student Resources
+                </Badge>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Study Materials</h1>
+              <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                Free books, question papers, handwritten notes & PYQs for students
               </p>
               <Badge className="mt-2 bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
                 <Coins className="w-3 h-3 mr-1" />
                 Earn {POINT_VALUES.STUDY_MATERIAL_UPLOAD} coins per upload!
               </Badge>
             </div>
+            
             {user && (
               <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
                 <DialogTrigger asChild>
-                  <Button>
-                    <Upload className="w-4 h-4 mr-2" />
+                  <Button className="gap-2">
+                    <Upload className="w-4 h-4" />
                     Upload Material
+                    <Badge variant="secondary" className="ml-1 bg-yellow-500/20 text-yellow-600">
+                      +{POINT_VALUES.STUDY_MATERIAL_UPLOAD}
+                    </Badge>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Upload Study Material</DialogTitle>
+                    <DialogTitle className="flex items-center gap-2">
+                      Upload Study Material
+                      <Badge className="bg-yellow-500/10 text-yellow-600">
+                        <Coins className="w-3 h-3 mr-1" />
+                        +{POINT_VALUES.STUDY_MATERIAL_UPLOAD} coins
+                      </Badge>
+                    </DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Title *</Label>
                         <Input
@@ -338,9 +414,17 @@ export default function StudyMaterials() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {categories.map(cat => (
-                              <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
-                            ))}
+                            {categories.map(cat => {
+                              const Icon = cat.icon;
+                              return (
+                                <SelectItem key={cat.value} value={cat.value}>
+                                  <div className="flex items-center gap-2">
+                                    <Icon className="w-4 h-4" />
+                                    {cat.label}
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -355,7 +439,30 @@ export default function StudyMaterials() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* University Quick Select */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <School className="w-4 h-4" />
+                        University (Quick Select)
+                      </Label>
+                      <Select
+                        value={uploadForm.university}
+                        onValueChange={handleUniversityChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select university" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {universities.map(uni => (
+                            <SelectItem key={uni.value} value={uni.value}>
+                              {uni.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Subject *</Label>
                         <Input
@@ -364,6 +471,25 @@ export default function StudyMaterials() {
                           onChange={(e) => setUploadForm(prev => ({ ...prev, subject: e.target.value }))}
                         />
                       </div>
+                      <div className="space-y-2">
+                        <Label>Branch</Label>
+                        <Select
+                          value={uploadForm.branch}
+                          onValueChange={(value) => setUploadForm(prev => ({ ...prev, branch: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select branch" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {branches.map(b => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label>Course</Label>
                         <Select
@@ -380,9 +506,6 @@ export default function StudyMaterials() {
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Semester</Label>
                         <Select
@@ -390,26 +513,34 @@ export default function StudyMaterials() {
                           onValueChange={(value) => setUploadForm(prev => ({ ...prev, semester: value }))}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select semester" />
+                            <SelectValue placeholder="Semester" />
                           </SelectTrigger>
                           <SelectContent>
                             {semesters.map(s => (
-                              <SelectItem key={s} value={s}>{s} Semester</SelectItem>
+                              <SelectItem key={s} value={s}>{s}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Year (for question papers)</Label>
-                        <Input
-                          placeholder="e.g., 2024"
+                        <Label>Year (for PYQ)</Label>
+                        <Select
                           value={uploadForm.year}
-                          onChange={(e) => setUploadForm(prev => ({ ...prev, year: e.target.value }))}
-                        />
+                          onValueChange={(value) => setUploadForm(prev => ({ ...prev, year: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {years.map(y => (
+                              <SelectItem key={y} value={y}>{y}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>College Name</Label>
                         <Input
@@ -418,17 +549,6 @@ export default function StudyMaterials() {
                           onChange={(e) => setUploadForm(prev => ({ ...prev, college: e.target.value }))}
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label>University</Label>
-                        <Input
-                          placeholder="e.g., Delhi University"
-                          value={uploadForm.university}
-                          onChange={(e) => setUploadForm(prev => ({ ...prev, university: e.target.value }))}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>State</Label>
                         <Select
@@ -444,14 +564,6 @@ export default function StudyMaterials() {
                             ))}
                           </SelectContent>
                         </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>City</Label>
-                        <Input
-                          placeholder="e.g., Mumbai"
-                          value={uploadForm.city}
-                          onChange={(e) => setUploadForm(prev => ({ ...prev, city: e.target.value }))}
-                        />
                       </div>
                     </div>
 
@@ -469,8 +581,15 @@ export default function StudyMaterials() {
                       )}
                     </div>
 
-                    <Button onClick={handleUpload} disabled={uploading}>
-                      {uploading ? 'Uploading...' : 'Upload Material'}
+                    <Button onClick={handleUpload} disabled={uploading} className="w-full">
+                      {uploading ? 'Uploading...' : (
+                        <>
+                          Upload Material
+                          <Badge variant="secondary" className="ml-2 bg-yellow-500/20 text-yellow-600">
+                            +{POINT_VALUES.STUDY_MATERIAL_UPLOAD} coins
+                          </Badge>
+                        </>
+                      )}
                     </Button>
                   </div>
                 </DialogContent>
@@ -479,39 +598,124 @@ export default function StudyMaterials() {
           </div>
         </div>
 
-        {/* Categories Quick Links */}
-        <div className="flex flex-wrap gap-3 mb-6">
+        {/* Popular Materials Section */}
+        {popularMaterials.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-semibold">Popular Downloads</h2>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {popularMaterials.map((material) => {
+                const CategoryIcon = getCategoryIcon(material.category);
+                return (
+                  <Card 
+                    key={material.id} 
+                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => handleDownload(material)}
+                  >
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                          <CategoryIcon className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm line-clamp-1">{material.title}</p>
+                          <p className="text-xs text-muted-foreground">{material.subject}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Download className="w-3 h-3" />
+                        {material.downloads_count || 0} downloads
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Quick Filters - AKTU PYQs */}
+        <div className="mb-6">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-violet-500/10 border-violet-500/30 hover:bg-violet-500/20"
+              onClick={handleAktuPyqFilter}
+            >
+              <School className="w-4 h-4" />
+              AKTU PYQs
+            </Button>
+            <Button
+              variant={selectedCategory === 'handwritten_notes' ? 'default' : 'outline'}
+              size="sm"
+              className="gap-2"
+              onClick={() => setSelectedCategory(selectedCategory === 'handwritten_notes' ? 'all' : 'handwritten_notes')}
+            >
+              <PenTool className="w-4 h-4" />
+              Handwritten Notes
+            </Button>
+            <Button
+              variant={selectedCategory === 'pyq' ? 'default' : 'outline'}
+              size="sm"
+              className="gap-2"
+              onClick={() => setSelectedCategory(selectedCategory === 'pyq' ? 'all' : 'pyq')}
+            >
+              <Calendar className="w-4 h-4" />
+              PYQs
+            </Button>
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 overflow-x-auto pb-2">
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (
               <Button
                 key={cat.value}
                 variant={selectedCategory === cat.value ? 'default' : 'outline'}
+                size="sm"
                 onClick={() => setSelectedCategory(selectedCategory === cat.value ? 'all' : cat.value)}
-                className="gap-2"
+                className="gap-1.5 shrink-0"
               >
-                <Icon className="w-4 h-4" />
-                {cat.label}
+                <Icon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{cat.label}</span>
+                <span className="sm:hidden">{cat.label.split(' ')[0]}</span>
               </Button>
             );
           })}
         </div>
 
         {/* Search and Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="md:col-span-2 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="sm:col-span-2 lg:col-span-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by title, subject, college..."
+              placeholder="Search..."
               className="pl-10"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+            <SelectTrigger>
+              <School className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="University" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Universities</SelectItem>
+              {universities.map(u => (
+                <SelectItem key={u.value} value={u.value}>{u.value}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={selectedState} onValueChange={setSelectedState}>
             <SelectTrigger>
               <MapPin className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="Filter by State" />
+              <SelectValue placeholder="State" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All States</SelectItem>
@@ -523,7 +727,7 @@ export default function StudyMaterials() {
           <Select value={selectedCourse} onValueChange={setSelectedCourse}>
             <SelectTrigger>
               <GraduationCap className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="Filter by Course" />
+              <SelectValue placeholder="Course" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Courses</SelectItem>
@@ -535,17 +739,17 @@ export default function StudyMaterials() {
         </div>
 
         <Tabs defaultValue="browse" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="browse">Browse Materials</TabsTrigger>
-            {user && <TabsTrigger value="my-uploads">My Uploads</TabsTrigger>}
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="browse" className="flex-1 sm:flex-none">Browse</TabsTrigger>
+            {user && <TabsTrigger value="my-uploads" className="flex-1 sm:flex-none">My Uploads</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="browse">
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {[1, 2, 3, 4, 5, 6].map(i => (
                   <Card key={i} className="animate-pulse">
-                    <CardContent className="p-6">
+                    <CardContent className="p-4 sm:p-6">
                       <div className="h-6 bg-muted rounded mb-4" />
                       <div className="h-4 bg-muted rounded mb-2 w-3/4" />
                       <div className="h-4 bg-muted rounded w-1/2" />
@@ -554,11 +758,11 @@ export default function StudyMaterials() {
                 ))}
               </div>
             ) : filteredMaterials.length === 0 ? (
-              <div className="text-center py-16">
-                <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">No materials found</h3>
-                <p className="text-muted-foreground mb-4">
-                  Be the first to upload study materials for your college!
+              <div className="text-center py-12 sm:py-16">
+                <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">No materials found</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Be the first to upload study materials!
                 </p>
                 {user && (
                   <Button onClick={() => setIsUploadOpen(true)}>
@@ -568,75 +772,80 @@ export default function StudyMaterials() {
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {filteredMaterials.map((material) => {
                   const CategoryIcon = getCategoryIcon(material.category);
                   return (
-                    <Card key={material.id} className="hover:shadow-lg transition-shadow">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                              <CategoryIcon className="w-5 h-5 text-primary" />
-                            </div>
-                            <div>
-                              <CardTitle className="text-lg line-clamp-1">{material.title}</CardTitle>
-                              <Badge variant="secondary" className="mt-1">
-                                {categories.find(c => c.value === material.category)?.label}
-                              </Badge>
-                            </div>
+                    <Card key={material.id} className="hover:shadow-lg transition-shadow group">
+                      <CardHeader className="pb-2 sm:pb-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <CategoryIcon className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <CardTitle className="text-base sm:text-lg line-clamp-1">{material.title}</CardTitle>
+                            <Badge variant="secondary" className="mt-1 text-xs">
+                              {categories.find(c => c.value === material.category)?.label}
+                            </Badge>
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-2 sm:space-y-3">
                         {material.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                             {material.description}
                           </p>
                         )}
                         
-                        <div className="space-y-2 text-sm">
+                        <div className="space-y-1.5 text-xs sm:text-sm">
                           <div className="flex items-center gap-2 text-muted-foreground">
-                            <BookOpen className="w-4 h-4" />
-                            <span>{material.subject}</span>
-                            {material.course && <span>• {material.course}</span>}
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span className="line-clamp-1">{material.subject}</span>
+                            {material.course && <span className="shrink-0">• {material.course}</span>}
                           </div>
+                          
+                          {material.university && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <School className="w-3.5 h-3.5" />
+                              <span className="line-clamp-1">{material.university}</span>
+                            </div>
+                          )}
                           
                           {material.college && (
                             <div className="flex items-center gap-2 text-muted-foreground">
-                              <Building className="w-4 h-4" />
+                              <Building className="w-3.5 h-3.5" />
                               <span className="line-clamp-1">{material.college}</span>
                             </div>
                           )}
                           
                           {(material.state || material.city) && (
                             <div className="flex items-center gap-2 text-muted-foreground">
-                              <MapPin className="w-4 h-4" />
+                              <MapPin className="w-3.5 h-3.5" />
                               <span>{[material.city, material.state].filter(Boolean).join(', ')}</span>
                             </div>
                           )}
                           
                           {material.year && (
                             <div className="flex items-center gap-2 text-muted-foreground">
-                              <Calendar className="w-4 h-4" />
+                              <Calendar className="w-3.5 h-3.5" />
                               <span>Year: {material.year}</span>
                             </div>
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between pt-3 border-t">
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center justify-between pt-2 sm:pt-3 border-t">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
-                              <Download className="w-4 h-4" />
+                              <Download className="w-3.5 h-3.5" />
                               {material.downloads_count || 0}
                             </span>
                             <span className="flex items-center gap-1">
-                              <Eye className="w-4 h-4" />
+                              <Eye className="w-3.5 h-3.5" />
                               {material.views_count || 0}
                             </span>
                           </div>
                           <Button size="sm" onClick={() => handleDownload(material)}>
-                            <Download className="w-4 h-4 mr-1" />
+                            <Download className="w-3.5 h-3.5 mr-1" />
                             Download
                           </Button>
                         </div>
@@ -651,11 +860,11 @@ export default function StudyMaterials() {
           {user && (
             <TabsContent value="my-uploads">
               {myUploads.length === 0 ? (
-                <div className="text-center py-16">
-                  <Upload className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">No uploads yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Share study materials with fellow students!
+                <div className="text-center py-12 sm:py-16">
+                  <Upload className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">No uploads yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Share study materials and earn coins!
                   </p>
                   <Button onClick={() => setIsUploadOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
@@ -663,26 +872,24 @@ export default function StudyMaterials() {
                   </Button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {myUploads.map((material) => {
                     const CategoryIcon = getCategoryIcon(material.category);
                     return (
                       <Card key={material.id}>
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                                <CategoryIcon className="w-5 h-5 text-primary" />
-                              </div>
-                              <div>
-                                <CardTitle className="text-lg line-clamp-1">{material.title}</CardTitle>
-                                {getStatusBadge(material.status)}
-                              </div>
+                        <CardHeader className="pb-2 sm:pb-3">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                              <CategoryIcon className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <CardTitle className="text-base sm:text-lg line-clamp-1">{material.title}</CardTitle>
+                              {getStatusBadge(material.status)}
                             </div>
                           </div>
                         </CardHeader>
                         <CardContent>
-                          <div className="space-y-2 text-sm text-muted-foreground">
+                          <div className="space-y-1.5 text-xs sm:text-sm text-muted-foreground">
                             <p>Subject: {material.subject}</p>
                             <p>Category: {categories.find(c => c.value === material.category)?.label}</p>
                             <p>Uploaded: {new Date(material.created_at || '').toLocaleDateString()}</p>

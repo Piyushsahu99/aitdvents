@@ -1,0 +1,332 @@
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, Briefcase, Building, MapPin, Clock, Banknote, Send, CheckCircle2 } from "lucide-react";
+
+interface JobSubmissionModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
+}
+
+export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmissionModalProps) {
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const { toast } = useToast();
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    company: "",
+    location: "",
+    type: "",
+    duration: "",
+    stipend: "",
+    category: "",
+    description: "",
+    requirements: "",
+    apply_by: "",
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.company || !formData.location || !formData.type || !formData.category) {
+      toast({
+        title: "Missing Fields",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Not Authenticated",
+          description: "Please log in to submit a job",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase.from("jobs").insert({
+        title: formData.title,
+        company: formData.company,
+        location: formData.location,
+        type: formData.type,
+        duration: formData.duration || "Not specified",
+        stipend: formData.stipend || "Not disclosed",
+        category: formData.category,
+        description: formData.description,
+        requirements: formData.requirements,
+        apply_by: formData.apply_by || null,
+        status: "draft", // Needs admin approval
+        created_by: user.id,
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      
+      // Reset form after delay
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({
+          title: "",
+          company: "",
+          location: "",
+          type: "",
+          duration: "",
+          stipend: "",
+          category: "",
+          description: "",
+          requirements: "",
+          apply_by: "",
+        });
+        onOpenChange(false);
+        onSuccess?.();
+      }, 2000);
+
+    } catch (error: any) {
+      console.error("Error submitting job:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit job",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-md">
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="p-4 rounded-full bg-emerald-500/10 mb-4">
+              <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Job Submitted!</h3>
+            <p className="text-muted-foreground">
+              Your job listing has been submitted for review. It will be visible once approved by our team.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Briefcase className="h-5 w-5 text-orange-500" />
+            Post a Job / Internship
+          </DialogTitle>
+          <p className="text-sm text-muted-foreground">
+            Share job opportunities with the student community. All submissions are reviewed before publishing.
+          </p>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          {/* Job Title */}
+          <div className="space-y-2">
+            <Label htmlFor="title" className="flex items-center gap-2">
+              <Briefcase className="h-4 w-4 text-muted-foreground" />
+              Job Title *
+            </Label>
+            <Input
+              id="title"
+              placeholder="e.g., Frontend Developer Intern"
+              value={formData.title}
+              onChange={(e) => handleInputChange("title", e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Company & Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="company" className="flex items-center gap-2">
+                <Building className="h-4 w-4 text-muted-foreground" />
+                Company Name *
+              </Label>
+              <Input
+                id="company"
+                placeholder="e.g., Google"
+                value={formData.company}
+                onChange={(e) => handleInputChange("company", e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location" className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                Location *
+              </Label>
+              <Input
+                id="location"
+                placeholder="e.g., Remote / Bangalore"
+                value={formData.location}
+                onChange={(e) => handleInputChange("location", e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Type & Category */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Job Type *</Label>
+              <Select value={formData.type} onValueChange={(v) => handleInputChange("type", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Internship">Internship</SelectItem>
+                  <SelectItem value="Full-time">Full-time</SelectItem>
+                  <SelectItem value="Part-time">Part-time</SelectItem>
+                  <SelectItem value="Contract">Contract</SelectItem>
+                  <SelectItem value="Remote">Remote</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Category *</Label>
+              <Select value={formData.category} onValueChange={(v) => handleInputChange("category", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Tech">Tech</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Design">Design</SelectItem>
+                  <SelectItem value="Finance">Finance</SelectItem>
+                  <SelectItem value="Operations">Operations</SelectItem>
+                  <SelectItem value="HR">HR</SelectItem>
+                  <SelectItem value="Sales">Sales</SelectItem>
+                  <SelectItem value="Content">Content</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Duration & Stipend */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="duration" className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                Duration
+              </Label>
+              <Input
+                id="duration"
+                placeholder="e.g., 3 months / Full-time"
+                value={formData.duration}
+                onChange={(e) => handleInputChange("duration", e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="stipend" className="flex items-center gap-2">
+                <Banknote className="h-4 w-4 text-muted-foreground" />
+                Stipend / Salary
+              </Label>
+              <Input
+                id="stipend"
+                placeholder="e.g., ₹15,000/month"
+                value={formData.stipend}
+                onChange={(e) => handleInputChange("stipend", e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Apply By */}
+          <div className="space-y-2">
+            <Label htmlFor="apply_by">Application Deadline</Label>
+            <Input
+              id="apply_by"
+              placeholder="e.g., 15th Jan 2026"
+              value={formData.apply_by}
+              onChange={(e) => handleInputChange("apply_by", e.target.value)}
+            />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Job Description</Label>
+            <Textarea
+              id="description"
+              placeholder="Describe the role, responsibilities, and what you're looking for..."
+              value={formData.description}
+              onChange={(e) => handleInputChange("description", e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          {/* Requirements */}
+          <div className="space-y-2">
+            <Label htmlFor="requirements">Requirements / Skills</Label>
+            <Textarea
+              id="requirements"
+              placeholder="List required skills, qualifications, or experience..."
+              value={formData.requirements}
+              onChange={(e) => handleInputChange("requirements", e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          {/* Info Banner */}
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-sm">
+            <p className="text-amber-700 dark:text-amber-400">
+              <strong>Note:</strong> All job submissions are reviewed by our team before being published to ensure quality and authenticity.
+            </p>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex gap-3 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Submit Job
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

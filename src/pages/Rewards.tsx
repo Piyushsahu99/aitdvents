@@ -12,8 +12,6 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { useGamification } from "@/hooks/useGamification";
 import React from "react";
 
@@ -121,44 +119,35 @@ export default function Rewards() {
 
   if (loading) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-        </div>
-      </>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
     );
   }
 
   if (!userId) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-yellow-400/30 rounded-full blur-xl" />
-            <Coins className="h-20 w-20 text-yellow-500 relative" />
-          </div>
-          <h1 className="text-3xl font-bold mb-4">Earn & Redeem Rewards</h1>
-          <p className="text-muted-foreground mb-8 max-w-md">
-            Join AITD to start earning coins through daily activities, completing bounties, and more!
-          </p>
-          <Link to="/auth">
-            <Button size="lg" className="rounded-xl">
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+        <div className="relative mb-6">
+          <div className="absolute inset-0 bg-yellow-400/30 rounded-full blur-xl" />
+          <Coins className="h-20 w-20 text-yellow-500 relative" />
         </div>
-        <Footer />
-      </>
+        <h1 className="text-3xl font-bold mb-4">Earn & Redeem Rewards</h1>
+        <p className="text-muted-foreground mb-8 max-w-md">
+          Join AITD to start earning coins through daily activities, completing bounties, and more!
+        </p>
+        <Link to="/auth">
+          <Button size="lg" className="rounded-xl">
+            Get Started
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
     );
   }
 
   return (
     <>
-      <Navbar />
-      
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         {/* Hero Section */}
         <section className="relative py-12 lg:py-20 overflow-hidden">
@@ -543,8 +532,6 @@ export default function Rewards() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <Footer />
     </>
   );
 }

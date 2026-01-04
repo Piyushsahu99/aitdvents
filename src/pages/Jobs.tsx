@@ -3,9 +3,10 @@ import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift } from "lucide-react";
+import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthModal } from "@/components/AuthModal";
+import { JobSubmissionModal } from "@/components/JobSubmissionModal";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 
@@ -16,6 +17,7 @@ export default function Jobs() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showJobModal, setShowJobModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -74,6 +76,14 @@ export default function Jobs() {
     }
   };
 
+  const handlePostJob = () => {
+    if (!user) {
+      setShowAuthModal(true);
+    } else {
+      setShowJobModal(true);
+    }
+  };
+
   const typeColors: Record<string, string> = {
     "Internship": "bg-blue-500",
     "Full-time": "bg-emerald-500",
@@ -100,18 +110,27 @@ export default function Jobs() {
             <h1 className="text-3xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
               Jobs & Internships
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
               Launch your career with opportunities from top companies. Find internships, jobs, and more.
             </p>
+            
+            {/* Post Job Button */}
+            <Button 
+              onClick={handlePostJob}
+              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Post a Job / Internship
+            </Button>
           </div>
 
-          {/* Stats Row */}
+          {/* Stats Row - Real Data */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 animate-fade-in-up stagger-1">
             {[
               { label: "Open Positions", value: jobs.length, icon: Briefcase },
               { label: "Companies", value: new Set(jobs.map(j => j.company)).size, icon: Building },
               { label: "Categories", value: new Set(jobs.map(j => j.category)).size, icon: TrendingUp },
-              { label: "Avg. Stipend", value: "₹15K+", icon: Banknote },
+              { label: "Job Types", value: new Set(jobs.map(j => j.type)).size, icon: Users },
             ].map((stat, idx) => (
               <div key={idx} className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 text-center hover:shadow-lg transition-all hover:-translate-y-1">
                 <stat.icon className="h-6 w-6 mx-auto mb-2 text-orange-500" />
@@ -316,6 +335,11 @@ export default function Jobs() {
       </section>
 
       <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
+      <JobSubmissionModal 
+        open={showJobModal} 
+        onOpenChange={setShowJobModal}
+        onSuccess={fetchJobs}
+      />
     </div>
   );
 }

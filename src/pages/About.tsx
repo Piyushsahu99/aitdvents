@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Target, 
   Rocket, 
@@ -13,8 +15,6 @@ import {
   Award,
   Lightbulb,
   Heart,
-  Star,
-  Medal,
   Linkedin,
   Twitter,
   Instagram,
@@ -26,12 +26,64 @@ import piyushSahuImg from "@/assets/piyush-sahu-director.png";
 import companyMitraLogo from "@/assets/company-mitra-logo.jpg";
 import step2getherLogo from "@/assets/step2gether-logo.jpg";
 
+interface PlatformStats {
+  students: number;
+  events: number;
+  jobs: number;
+  courses: number;
+  bounties: number;
+  ambassadors: number;
+  colleges: number;
+}
+
 export default function About() {
-  const stats = [
-    { label: "Active Students", value: "50K+", icon: Users },
-    { label: "Partner Companies", value: "500+", icon: Building },
-    { label: "Opportunities Posted", value: "10K+", icon: Rocket },
-    { label: "Success Stories", value: "2K+", icon: Trophy },
+  const [stats, setStats] = useState<PlatformStats>({
+    students: 0,
+    events: 0,
+    jobs: 0,
+    courses: 0,
+    bounties: 0,
+    ambassadors: 0,
+    colleges: 0,
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const [studentsRes, eventsRes, jobsRes, coursesRes, bountiesRes, ambassadorsRes, collegesRes] = await Promise.all([
+        supabase.from("student_profiles").select("id", { count: "exact", head: true }),
+        supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("jobs").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("courses").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("bounties").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("campus_ambassadors").select("id", { count: "exact", head: true }),
+        supabase.from("campus_ambassadors").select("college"),
+      ]);
+
+      const uniqueColleges = new Set(collegesRes.data?.map(a => a.college) || []).size;
+
+      setStats({
+        students: studentsRes.count || 0,
+        events: eventsRes.count || 0,
+        jobs: jobsRes.count || 0,
+        courses: coursesRes.count || 0,
+        bounties: bountiesRes.count || 0,
+        ambassadors: ambassadorsRes.count || 0,
+        colleges: uniqueColleges,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
+  const platformStats = [
+    { label: "Students Registered", value: stats.students, icon: Users },
+    { label: "Campus Ambassadors", value: stats.ambassadors, icon: Users },
+    { label: "Live Events", value: stats.events, icon: Rocket },
+    { label: "Active Bounties", value: stats.bounties, icon: Trophy },
   ];
 
   const achievements = [
@@ -42,30 +94,6 @@ export default function About() {
       date: "Dec 2025",
       link: "https://codematrix-genesis-site.lovable.app",
       highlight: true,
-    },
-    {
-      icon: Users,
-      title: "50,000+ Community Members",
-      description: "Growing community of ambitious students from 500+ colleges across India",
-      date: "2024",
-    },
-    {
-      icon: Trophy,
-      title: "Best Student Platform Award",
-      description: "Recognized as one of the top student opportunity platforms in India",
-      date: "2024",
-    },
-    {
-      icon: Star,
-      title: "1000+ Success Stories",
-      description: "Students placed in top companies through our platform opportunities",
-      date: "2024",
-    },
-    {
-      icon: Medal,
-      title: "Partnership with 100+ Colleges",
-      description: "Official campus ambassador program across leading institutions",
-      date: "2024",
     },
   ];
 
@@ -227,21 +255,21 @@ export default function About() {
 
       {/* Achievements Section */}
       <section className="py-16 md:py-20 px-4">
-        <div className="container mx-auto">
+        <div className="container mx-auto max-w-3xl">
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center">
             OUR ACHIEVEMENTS
           </h2>
           <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-            Milestones that mark our journey in empowering students across India
+            Real milestones that mark our journey in empowering students across India
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid gap-6">
             {achievements.map((achievement, index) => {
               const Icon = achievement.icon;
               const isHighlight = 'highlight' in achievement && achievement.highlight;
               const hasLink = 'link' in achievement && achievement.link;
               
               const cardContent = (
-                <Card key={index} className={`p-6 hover:shadow-lg transition-all group ${isHighlight ? 'border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 md:col-span-2 lg:col-span-1' : 'border-primary/10 hover:border-primary/30'}`}>
+                <Card key={index} className={`p-6 hover:shadow-lg transition-all group ${isHighlight ? 'border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10' : 'border-primary/10 hover:border-primary/30'}`}>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`p-3 rounded-lg group-hover:bg-primary/20 transition-colors ${isHighlight ? 'bg-primary/20' : 'bg-primary/10'}`}>
                       <Icon className="h-6 w-6 text-primary" />
@@ -336,16 +364,22 @@ export default function About() {
             </p>
             <div className="grid md:grid-cols-3 gap-6 mt-12">
               <Card className="p-6 text-center">
-                <h3 className="text-4xl font-bold text-primary mb-2">70%</h3>
-                <p className="text-sm">of students miss opportunities due to information overload</p>
+                <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto mb-3">
+                  <Globe className="h-6 w-6 text-primary" />
+                </div>
+                <p className="text-sm font-medium">Information scattered across multiple platforms</p>
               </Card>
               <Card className="p-6 text-center">
-                <h3 className="text-4xl font-bold text-primary mb-2">85%</h3>
-                <p className="text-sm">struggle to build impressive portfolios and CVs</p>
+                <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto mb-3">
+                  <Target className="h-6 w-6 text-primary" />
+                </div>
+                <p className="text-sm font-medium">Difficulty finding relevant opportunities</p>
               </Card>
               <Card className="p-6 text-center">
-                <h3 className="text-4xl font-bold text-primary mb-2">60%</h3>
-                <p className="text-sm">lack access to quality mentorship and guidance</p>
+                <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto mb-3">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <p className="text-sm font-medium">Limited access to mentorship & guidance</p>
               </Card>
             </div>
           </div>
@@ -440,7 +474,7 @@ export default function About() {
             OUR IMPACT
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat) => {
+            {platformStats.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div key={stat.label} className="text-center">

@@ -71,6 +71,9 @@ interface PlatformStats {
   events: number;
   jobs: number;
   courses: number;
+  bounties: number;
+  ambassadors: number;
+  colleges: number;
 }
 
 export default function Home() {
@@ -81,6 +84,9 @@ export default function Home() {
     events: 0,
     jobs: 0,
     courses: 0,
+    bounties: 0,
+    ambassadors: 0,
+    colleges: 0,
   });
 
   useEffect(() => {
@@ -123,18 +129,26 @@ export default function Home() {
 
   const fetchPlatformStats = async () => {
     try {
-      const [studentsRes, eventsRes, jobsRes, coursesRes] = await Promise.all([
+      const [studentsRes, eventsRes, jobsRes, coursesRes, bountiesRes, ambassadorsRes, collegesRes] = await Promise.all([
         supabase.from("student_profiles").select("id", { count: "exact", head: true }),
         supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "live"),
         supabase.from("jobs").select("id", { count: "exact", head: true }).eq("status", "live"),
         supabase.from("courses").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("bounties").select("id", { count: "exact", head: true }).eq("status", "live"),
+        supabase.from("campus_ambassadors").select("id", { count: "exact", head: true }),
+        supabase.from("campus_ambassadors").select("college"),
       ]);
+
+      const uniqueColleges = new Set(collegesRes.data?.map(a => a.college) || []).size;
 
       setStats({
         students: studentsRes.count || 0,
         events: eventsRes.count || 0,
         jobs: jobsRes.count || 0,
         courses: coursesRes.count || 0,
+        bounties: bountiesRes.count || 0,
+        ambassadors: ambassadorsRes.count || 0,
+        colleges: uniqueColleges,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -223,21 +237,21 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Quick stats for mobile - compact row */}
+            {/* Quick stats for mobile - compact row - REAL DATA */}
             <div className="flex items-center justify-center gap-4 sm:gap-8 mt-5 sm:mt-7 animate-fade-in-up stagger-3">
               <div className="text-center">
-                <div className="text-lg sm:text-xl font-bold text-primary">{stats.courses || 50}+</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">Courses</div>
+                <div className="text-lg sm:text-xl font-bold text-primary">{stats.students || 0}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">Students</div>
               </div>
               <div className="w-px h-8 bg-border" />
               <div className="text-center">
-                <div className="text-lg sm:text-xl font-bold text-emerald-500">₹10K+</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">In Bounties</div>
+                <div className="text-lg sm:text-xl font-bold text-emerald-500">{stats.bounties || 0}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">Bounties</div>
               </div>
               <div className="w-px h-8 bg-border" />
               <div className="text-center">
-                <div className="text-lg sm:text-xl font-bold text-violet-500">{stats.jobs || 25}+</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">Jobs</div>
+                <div className="text-lg sm:text-xl font-bold text-violet-500">{stats.events || 0}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">Events</div>
               </div>
             </div>
 
@@ -571,13 +585,13 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Stats grid - visible on all screens */}
+            {/* Stats grid - REAL DATA from database */}
             <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
               {[
-                { value: "500+", label: "Campus Ambassadors" },
-                { value: "100+", label: "Colleges" },
-                { value: "₹50K+", label: "Rewards Given" },
-                { value: "20+", label: "Cities" },
+                { value: stats.ambassadors.toString(), label: "Campus Ambassadors" },
+                { value: stats.colleges.toString(), label: "Colleges" },
+                { value: stats.students.toString(), label: "Students" },
+                { value: stats.events.toString(), label: "Events" },
               ].map((stat) => (
                 <div key={stat.label} className="p-3 sm:p-4 lg:p-6 bg-white/10 backdrop-blur-sm rounded-xl lg:rounded-2xl border border-white/20">
                   <div className="text-xl sm:text-2xl lg:text-4xl font-bold mb-1">{stat.value}</div>
@@ -643,7 +657,7 @@ export default function Home() {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 ${stat.color}`}>
-                  {stat.value.toLocaleString()}+
+                  {stat.value.toLocaleString()}
                 </div>
                 <div className="font-medium text-foreground text-sm sm:text-base">{stat.label}</div>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{stat.sublabel}</p>

@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Briefcase, Building, MapPin, Clock, Banknote, Send, CheckCircle2 } from "lucide-react";
+import { Loader2, Briefcase, Building, MapPin, Clock, Banknote, Send, CheckCircle2, Coins } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface JobSubmissionModalProps {
   open: boolean;
@@ -137,9 +138,13 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Briefcase className="h-5 w-5 text-orange-500" />
             Post a Job / Internship
+            <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+              <Coins className="w-3 h-3 mr-1" />
+              +10 coins
+            </Badge>
           </DialogTitle>
           <p className="text-sm text-muted-foreground">
-            Share job opportunities with the student community. All submissions are reviewed before publishing.
+            Share job opportunities with the student community. Earn coins when approved!
           </p>
         </DialogHeader>
 
@@ -291,9 +296,10 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
           </div>
 
           {/* Info Banner */}
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-sm">
-            <p className="text-amber-700 dark:text-amber-400">
-              <strong>Note:</strong> All job submissions are reviewed by our team before being published to ensure quality and authenticity.
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-sm">
+            <p className="flex items-center gap-1 text-yellow-700 dark:text-yellow-500">
+              <Coins className="w-4 h-4" />
+              You'll earn <span className="font-semibold">+10 coins</span> when your job listing is approved!
             </p>
           </div>
 

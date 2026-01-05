@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FloatingTelegram } from "@/components/FloatingTelegram";
 import { ProfileCompletionPopup } from "@/components/ProfileCompletionPopup";
 import { CoinBadge } from "@/components/CoinBadge";
+import { ContributorLeaderboard } from "@/components/ContributorLeaderboard";
 import { POINT_VALUES } from "@/hooks/useEarnCoins";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -663,6 +664,11 @@ export default function Home() {
                 <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{stat.sublabel}</p>
               </div>
             ))}
+          </div>
+
+          {/* Contributor Leaderboard */}
+          <div className="mt-8 sm:mt-12 max-w-xl mx-auto">
+            <ContributorLeaderboard />
           </div>
         </div>
       </section>

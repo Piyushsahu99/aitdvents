@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
@@ -28,6 +29,33 @@ serve(async (req) => {
   }
 
   try {
+    // Get authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('No authorization header provided');
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { 
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Create Supabase client with user's JWT
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    // Verify admin role using RPC
+    const { data: isAdmin, error: roleError } = await supabase.rpc('is_admin');
+    if (roleError || !isAdmin) {
+      console.error('Admin check failed:', roleError);
+      return new Response(JSON.stringify({ error: 'Forbidden: Admin access required' }), { 
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const body = await req.json();
     
     // Validate input

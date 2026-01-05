@@ -4,10 +4,11 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, MapPin, Users, Trophy, Clock, Zap, Globe, User, Coins } from "lucide-react";
+import { Calendar, MapPin, Users, Trophy, Clock, Zap, Globe, User, Coins, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AuthModal } from "@/components/AuthModal";
+import { HackathonSubmissionModal } from "@/components/HackathonSubmissionModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import hackathonBanner from "@/assets/hackathon-banner.jpg";
@@ -20,6 +21,7 @@ export default function Hackathons() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [user, setUser] = useState<any>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -84,6 +86,14 @@ export default function Hackathons() {
     }
   };
 
+  const handleSubmitHackathon = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+    setShowSubmitModal(true);
+  };
+
   const getDaysUntil = (date: string) => {
     const days = Math.ceil((new Date(date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
     return days;
@@ -126,10 +136,16 @@ export default function Hackathons() {
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-3">
               Join exciting hackathons, collaborate with talented developers, and bring your innovative ideas to life
             </p>
-            <Badge className="bg-yellow-500/90 text-white border-0">
-              <Coins className="w-4 h-4 mr-2" />
-              Earn {POINT_VALUES.HACKATHON_REGISTER} coins per registration!
-            </Badge>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Badge className="bg-yellow-500/90 text-white border-0">
+                <Coins className="w-4 h-4 mr-2" />
+                Earn {POINT_VALUES.HACKATHON_REGISTER} coins per submission!
+              </Badge>
+              <Button onClick={handleSubmitHackathon} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Submit a Hackathon
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -311,6 +327,11 @@ export default function Hackathons() {
       )}
 
       <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
+      <HackathonSubmissionModal 
+        open={showSubmitModal} 
+        onOpenChange={setShowSubmitModal}
+        onSuccess={fetchHackathons}
+      />
       </div>
     </div>
   );

@@ -342,8 +342,30 @@ export default function AdminDashboard() {
   };
 
   const updateHackathonStatus = async (id: string, status: 'draft' | 'live' | 'ended') => {
+    const hackathon = hackathons.find(h => h.id === id);
+    
     const { error } = await supabase.from("hackathons").update({ status }).eq("id", id);
-    if (!error) { toast({ title: "Success", description: "Hackathon updated" }); fetchHackathons(); }
+    if (!error) { 
+      // Award coins if approving a user-submitted hackathon
+      if (status === 'live' && hackathon?.created_by) {
+        try {
+          await supabase.rpc("award_points", {
+            p_user_id: hackathon.created_by,
+            p_amount: 10, // Points for hackathon submission
+            p_action_type: "hackathon_approved",
+            p_description: `Hackathon "${hackathon.title}" was approved`,
+            p_reference_id: id,
+          });
+          toast({ title: "Success", description: "Hackathon approved & coins awarded!" }); 
+        } catch (err) {
+          console.error("Error awarding coins:", err);
+          toast({ title: "Success", description: "Hackathon updated" }); 
+        }
+      } else {
+        toast({ title: "Success", description: "Hackathon updated" }); 
+      }
+      fetchHackathons(); 
+    }
   };
 
   const deleteHackathon = async (id: string) => {

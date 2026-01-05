@@ -205,8 +205,31 @@ export default function AdminDashboard() {
 
   // Event CRUD
   const updateEventStatus = async (id: string, status: 'draft' | 'live' | 'ended') => {
+    // Get the event to check if it's user-submitted
+    const event = events.find(e => e.id === id);
+    
     const { error } = await supabase.from("events").update({ status }).eq("id", id);
-    if (!error) { toast({ title: "Success", description: "Event updated" }); fetchEvents(); }
+    if (!error) { 
+      // Award coins if approving a user-submitted event
+      if (status === 'live' && event?.submitted_by_user && event?.created_by) {
+        try {
+          await supabase.rpc("award_points", {
+            p_user_id: event.created_by,
+            p_amount: 5, // POINT_VALUES.EVENT_REGISTER
+            p_action_type: "event_approved",
+            p_description: `Event "${event.title}" was approved`,
+            p_reference_id: id,
+          });
+          toast({ title: "Success", description: "Event approved & coins awarded to contributor!" }); 
+        } catch (err) {
+          console.error("Error awarding coins:", err);
+          toast({ title: "Success", description: "Event updated (coin award failed)" }); 
+        }
+      } else {
+        toast({ title: "Success", description: "Event updated" }); 
+      }
+      fetchEvents(); 
+    }
   };
 
   const deleteEvent = async (id: string) => {
@@ -229,8 +252,30 @@ export default function AdminDashboard() {
   };
 
   const updateJobStatus = async (id: string, status: 'draft' | 'live' | 'ended') => {
+    const job = jobs.find(j => j.id === id);
+    
     const { error } = await supabase.from("jobs").update({ status }).eq("id", id);
-    if (!error) { toast({ title: "Success", description: "Job updated" }); fetchJobs(); }
+    if (!error) { 
+      // Award coins if approving a user-submitted job
+      if (status === 'live' && job?.created_by) {
+        try {
+          await supabase.rpc("award_points", {
+            p_user_id: job.created_by,
+            p_amount: 10, // Points for job submission
+            p_action_type: "job_approved",
+            p_description: `Job "${job.title}" was approved`,
+            p_reference_id: id,
+          });
+          toast({ title: "Success", description: "Job approved & coins awarded!" }); 
+        } catch (err) {
+          console.error("Error awarding coins:", err);
+          toast({ title: "Success", description: "Job updated" }); 
+        }
+      } else {
+        toast({ title: "Success", description: "Job updated" }); 
+      }
+      fetchJobs(); 
+    }
   };
 
   const deleteJob = async (id: string) => {

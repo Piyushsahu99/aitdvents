@@ -4,6 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 // Points awarded for various actions
 export const POINT_VALUES = {
   EVENT_REGISTER: 5,
+  EVENT_SUBMIT: 5,
+  JOB_SUBMIT: 10,
   REEL_UPLOAD: 10,
   REEL_LIKE: 1,
   STUDY_MATERIAL_UPLOAD: 15,

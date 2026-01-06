@@ -2179,10 +2179,12 @@ export type Database = {
         }
         Returns: boolean
       }
-      use_admin_invite: {
-        Args: { invite_code_input: string; user_id_input: string }
-        Returns: boolean
-      }
+      use_admin_invite:
+        | { Args: { invite_code_input: string }; Returns: boolean }
+        | {
+            Args: { invite_code_input: string; user_id_input: string }
+            Returns: boolean
+          }
       validate_admin_invite: {
         Args: { invite_code_input: string }
         Returns: boolean

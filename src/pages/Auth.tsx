@@ -274,7 +274,6 @@ export default function Auth() {
           if (adminInviteCode && isValidAdminInvite) {
             const { data: inviteUsed } = await supabase.rpc("use_admin_invite", {
               invite_code_input: adminInviteCode,
-              user_id_input: data.user.id,
             });
 
             if (inviteUsed) {

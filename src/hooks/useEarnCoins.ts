@@ -32,24 +32,11 @@ export function useEarnCoins() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      // Check if this action was already rewarded (for unique actions)
-      if (referenceId) {
-        const { data: existing } = await supabase
-          .from("points_transactions")
-          .select("id")
-          .eq("user_id", user.id)
-          .eq("action_type", actionType)
-          .eq("reference_id", referenceId)
-          .single();
-        
-        if (existing) return false; // Already earned for this action
-      }
-
-      // Use the award_points RPC function
-      const { error } = await supabase.rpc("award_points", {
-        p_user_id: user.id,
-        p_amount: amount,
-        p_action_type: actionType,
+      // Use the secure earn_points RPC function
+      // The server validates action types and sets fixed point values
+      // The amount parameter is kept for backwards compatibility but ignored by server
+      const { data, error } = await supabase.rpc("earn_points", {
+        p_action_type: actionType.toLowerCase(),
         p_description: description,
         p_reference_id: referenceId || null,
       });
@@ -57,6 +44,7 @@ export function useEarnCoins() {
       if (error) throw error;
 
       // Show success toast with coin animation effect
+      // Use the amount from POINT_VALUES for display (server enforces same values)
       toast({
         title: `+${amount} AITD Coins! 🪙`,
         description: description,

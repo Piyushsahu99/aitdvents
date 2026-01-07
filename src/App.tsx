@@ -27,6 +27,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Bounties from "./pages/Bounties";
 import Hackathons from "./pages/Hackathons";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
 import Dashboard from "./pages/Dashboard";
 import Rewards from "./pages/Rewards";
 import NotFound from "./pages/NotFound";
@@ -78,6 +80,8 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/terms" element={<TermsAndConditions />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/rewards" element={<Rewards />} />
               <Route path="/community" element={<Community />} />

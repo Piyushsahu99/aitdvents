@@ -84,19 +84,19 @@ export const Footer = () => {
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li><Link to="/events" className="text-muted-foreground hover:text-primary transition-colors">Events</Link></li>
-              <li><Link to="/tasks" className="text-muted-foreground hover:text-primary transition-colors">Tasks</Link></li>
+              <li><Link to="/bounties" className="text-muted-foreground hover:text-primary transition-colors">Bounties</Link></li>
               <li><Link to="/jobs" className="text-muted-foreground hover:text-primary transition-colors">Jobs</Link></li>
               <li><Link to="/blogs" className="text-muted-foreground hover:text-primary transition-colors">Blogs</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/resume" className="text-muted-foreground hover:text-primary transition-colors">Resume Builder</Link></li>
-              <li><Link to="/ai-tools" className="text-muted-foreground hover:text-primary transition-colors">AI Tools</Link></li>
-              <li><Link to="/alumni" className="text-muted-foreground hover:text-primary transition-colors">Alumni Network</Link></li>
-              <li><Link to="/ai-chat" className="text-muted-foreground hover:text-primary transition-colors">AI Assistant</Link></li>
+              <li><Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/cookies" className="text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link></li>
+              <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
             </ul>
           </div>
 

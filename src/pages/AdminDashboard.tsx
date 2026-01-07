@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
@@ -24,6 +24,9 @@ import { CouponManager } from "@/components/admin/CouponManager";
 import { OrderManager } from "@/components/admin/OrderManager";
 import { AmbassadorManager } from "@/components/admin/AmbassadorManager";
 import StudyMaterialsManager from "@/components/admin/StudyMaterialsManager";
+import { AdminStatsCards } from "@/components/admin/AdminStatsCards";
+import { AdminQuickActions } from "@/components/admin/AdminQuickActions";
+import { AdminAnalyticsChart } from "@/components/admin/AdminAnalyticsChart";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -39,6 +42,7 @@ export default function AdminDashboard() {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [editingEvent, setEditingEvent] = useState<any>(null);
   const [eventEditorOpen, setEventEditorOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -467,57 +471,83 @@ export default function AdminDashboard() {
     </Badge>
   );
 
+  // Calculate pending counts for quick actions
+  const pendingEvents = events.filter(e => e.submitted_by_user && e.status === 'draft').length;
+  const pendingJobs = jobs.filter(j => j.status === 'draft').length;
+  const pendingHackathons = hackathons.filter(h => h.status === 'draft').length;
+
+  // Calculate event status counts for analytics
+  const liveEvents = events.filter(e => e.status === 'live').length;
+  const draftEvents = events.filter(e => e.status === 'draft').length;
+  const endedEvents = events.filter(e => e.status === 'ended').length;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {/* Header - Mobile Optimized */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-bold mb-1 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Admin Dashboard
-            </h1>
-            <p className="text-sm text-muted-foreground">Manage platform content</p>
+        {/* Header - Modern Design */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+              <LayoutDashboard className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                Admin Dashboard
+              </h1>
+              <p className="text-sm text-muted-foreground">Manage your platform content & users</p>
+            </div>
           </div>
-          <Button variant="outline" size="sm" onClick={handleLogout} className="w-full sm:w-auto">
-            <LogOut className="mr-2 h-4 w-4" /> Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate("/")} className="gap-2">
+              <Home className="h-4 w-4" /> Home
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2 text-destructive hover:text-destructive">
+              <LogOut className="h-4 w-4" /> Logout
+            </Button>
+          </div>
         </div>
 
-        {/* Stats Overview - Mobile Optimized Grid */}
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-6">
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-primary mb-0.5 sm:mb-1" />
-              <p className="text-lg sm:text-2xl font-bold">{events.length}</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Events</p>
-            </div>
-          </Card>
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <Trophy className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-orange-500 mb-0.5 sm:mb-1" />
-              <p className="text-lg sm:text-2xl font-bold">{bounties.length}</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Bounties</p>
-            </div>
-          </Card>
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-blue-500 mb-0.5 sm:mb-1" />
-              <p className="text-lg sm:text-2xl font-bold">{jobs.length}</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Jobs</p>
-            </div>
-          </Card>
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <Users className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-cyan-500 mb-0.5 sm:mb-1" />
-              <p className="text-lg sm:text-2xl font-bold">{users.length}</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Users</p>
-            </div>
-          </Card>
-        </div>
+        {/* Stats Overview Cards */}
+        <AdminStatsCards 
+          stats={{
+            events: events.length,
+            bounties: bounties.length,
+            jobs: jobs.length,
+            users: users.length,
+            hackathons: hackathons.length,
+            scholarships: scholarships.length,
+            blogs: blogs.length,
+            courses: courses.length,
+          }}
+        />
 
-        <Tabs defaultValue="events" className="space-y-4 sm:space-y-6">
+        {/* Analytics Charts */}
+        <AdminAnalyticsChart 
+          data={{
+            events: events.length,
+            bounties: bounties.length,
+            jobs: jobs.length,
+            hackathons: hackathons.length,
+            scholarships: scholarships.length,
+            users: users.length,
+          }}
+          liveEvents={liveEvents}
+          draftEvents={draftEvents}
+          endedEvents={endedEvents}
+        />
+
+        {/* Quick Actions */}
+        <AdminQuickActions 
+          onTabChange={setActiveTab}
+          pendingEvents={pendingEvents}
+          pendingJobs={pendingJobs}
+          pendingHackathons={pendingHackathons}
+        />
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex w-max sm:w-auto gap-1 p-1">
+            <TabsList className="inline-flex w-max sm:w-auto gap-1 p-1 bg-muted/50 backdrop-blur-sm">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3"><LayoutDashboard className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Overview</span></TabsTrigger>
               <TabsTrigger value="events" className="text-xs sm:text-sm px-2 sm:px-3"><Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Events</span><span className="sm:hidden">Event</span></TabsTrigger>
               <TabsTrigger value="bounties" className="text-xs sm:text-sm px-2 sm:px-3"><Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Bounties</span><span className="sm:hidden">Bounty</span></TabsTrigger>
               <TabsTrigger value="hackathons" className="text-xs sm:text-sm px-2 sm:px-3"><Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Hackathons</span><span className="sm:hidden">Hack</span></TabsTrigger>
@@ -536,6 +566,63 @@ export default function AdminDashboard() {
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
             </TabsList>
           </div>
+
+          {/* Overview Tab - Summary View */}
+          <TabsContent value="overview">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Recent Activity Card */}
+              <Card className="p-6 col-span-full lg:col-span-2">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  Recent Events
+                </h3>
+                <div className="space-y-3">
+                  {events.slice(0, 5).map((event) => (
+                    <div key={event.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{event.title}</p>
+                        <p className="text-xs text-muted-foreground">{event.category} • {event.date}</p>
+                      </div>
+                      {getStatusBadge(event.status)}
+                    </div>
+                  ))}
+                  {events.length === 0 && (
+                    <p className="text-muted-foreground text-sm text-center py-8">No events yet. Create your first event!</p>
+                  )}
+                </div>
+              </Card>
+
+              {/* Quick Stats Card */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-amber-500" />
+                  Content Summary
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Live Events</span>
+                    <Badge variant="default" className="bg-green-500">{liveEvents}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Pending Approval</span>
+                    <Badge variant="secondary" className="bg-amber-500/10 text-amber-600">{pendingEvents + pendingJobs + pendingHackathons}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Active Bounties</span>
+                    <Badge variant="outline">{bounties.filter(b => b.status === 'live').length}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Open Jobs</span>
+                    <Badge variant="outline">{jobs.filter(j => j.status === 'live').length}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Total Users</span>
+                    <Badge variant="outline">{users.length}</Badge>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
 
 
           {/* Events Tab */}

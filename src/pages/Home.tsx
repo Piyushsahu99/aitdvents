@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PersonaCard } from "@/components/PersonaCard";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FloatingTelegram } from "@/components/FloatingTelegram";
+
 import { ProfileCompletionPopup } from "@/components/ProfileCompletionPopup";
 import { CoinBadge } from "@/components/CoinBadge";
 import { ContributorLeaderboard } from "@/components/ContributorLeaderboard";
@@ -192,7 +192,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <ProfileCompletionPopup />
-      <FloatingTelegram />
+      
       
       {/* Hero Section - Enhanced with Mascot */}
       <section className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center py-8 sm:py-12 lg:py-20 px-4 overflow-hidden">

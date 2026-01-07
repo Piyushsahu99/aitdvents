@@ -111,18 +111,31 @@ const Certificates = () => {
     setVerifying(true);
     setVerificationStatus("idle");
     
+    // Use the secure RPC function that only returns non-sensitive fields
     const { data, error } = await supabase
-      .from("issued_certificates")
-      .select("*")
-      .eq("certificate_number", verifyCode.trim().toUpperCase())
-      .single();
+      .rpc("verify_certificate", { cert_number: verifyCode.trim().toUpperCase() });
     
-    if (error || !data) {
+    if (error || !data || data.length === 0) {
       setVerificationStatus("invalid");
       setVerifiedCertificate(null);
     } else {
-      setVerificationStatus(data.is_valid ? "valid" : "invalid");
-      setVerifiedCertificate(data);
+      const cert = data[0];
+      setVerificationStatus(cert.is_valid ? "valid" : "invalid");
+      // Map the RPC result to Certificate interface (without sensitive fields)
+      setVerifiedCertificate({
+        id: "",
+        certificate_number: cert.certificate_number,
+        recipient_name: cert.recipient_name,
+        recipient_email: "", // Hidden from public
+        issue_date: cert.issue_date,
+        is_valid: cert.is_valid,
+        verification_url: cert.verification_url,
+        template_id: null,
+        event_id: null,
+        course_id: null,
+        linkedin_credential_id: null, // Hidden from public
+        metadata: null
+      });
     }
     
     setVerifying(false);

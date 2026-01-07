@@ -14,6 +14,8 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { UserReelsSection } from "@/components/profile/UserReelsSection";
 import { MemberCertificate } from "@/components/profile/MemberCertificate";
+import { SocialLinksDisplay } from "@/components/profile/SocialLinksDisplay";
+import { QuickActionCard } from "@/components/profile/QuickActionCard";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { 
   User, 
@@ -39,7 +41,14 @@ import {
   TrendingUp,
   Flame,
   Gift,
-  Trophy
+  Trophy,
+  BookOpen,
+  FileText,
+  Briefcase,
+  Video,
+  Linkedin,
+  Github,
+  Globe
 } from "lucide-react";
 
 interface ProfileData {
@@ -360,77 +369,127 @@ export default function Profile() {
   return (
     <div className="min-h-screen py-4 sm:py-8 px-3 sm:px-4">
       <div className="container mx-auto max-w-4xl">
-        {/* Header with Coins and Logout */}
-        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4 sm:mb-8">
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              My Profile
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">Manage your account settings</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Coins Card */}
-            {userPoints && (
-              <Link to="/rewards">
-                <Card className="flex items-center gap-3 p-3 hover:shadow-md transition-all cursor-pointer border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-amber-500/5">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-full bg-yellow-500/20">
-                      <Coins className="h-4 w-4 text-yellow-500" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold">{userPoints.total_points?.toLocaleString() || 0}</p>
-                      <p className="text-xs text-muted-foreground">AITD Coins</p>
-                    </div>
-                  </div>
-                  <div className="h-8 w-px bg-border" />
-                  <div className="flex items-center gap-1.5">
-                    <Flame className="h-4 w-4 text-orange-500" />
-                    <span className="text-sm font-medium">{userPoints.daily_login_streak || 0}</span>
-                  </div>
-                </Card>
-              </Link>
-            )}
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                toast({ title: "Logged out", description: "See you soon!" });
-                navigate("/");
-              }}
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
+        {/* Profile Header Card */}
+        <Card className="relative overflow-hidden mb-6">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-transparent" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <CardContent className="relative z-10 pt-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              {/* Avatar */}
+              <div className="relative">
+                <Avatar className="h-28 w-28 border-4 border-primary/20 ring-4 ring-primary/10 ring-offset-2 ring-offset-background">
+                  <AvatarImage src={profile?.avatar_url || ""} />
+                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 text-primary text-3xl font-bold">
+                    {formData.full_name ? getInitials(formData.full_name) : "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <Button
+                  size="icon"
+                  className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full shadow-lg"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Camera className="h-4 w-4" />
+                </Button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+              </div>
+              
+              {/* Profile Info */}
+              <div className="flex-1 text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-1">
+                  {formData.full_name || "Complete Your Profile"}
+                </h1>
+                {formData.college && (
+                  <p className="text-muted-foreground flex items-center justify-center sm:justify-start gap-2 mb-2">
+                    <School className="h-4 w-4" />
+                    {formData.college}
+                    {formData.graduation_year && ` • Class of ${formData.graduation_year}`}
+                  </p>
+                )}
+                
+                {/* Social Links - Colorful */}
+                <div className="mt-3">
+                  <SocialLinksDisplay
+                    linkedinUrl={formData.linkedin_url}
+                    githubUrl={formData.github_url}
+                    portfolioUrl={formData.portfolio_url}
+                    size="md"
+                    showLabels
+                  />
+                </div>
+              </div>
+              
+              {/* Stats & Logout */}
+              <div className="flex flex-col gap-3">
+                {userPoints && (
+                  <Link to="/rewards">
+                    <Card className="flex items-center gap-3 p-3 hover:shadow-md transition-all cursor-pointer border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-amber-500/5">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-full bg-yellow-500/20">
+                          <Coins className="h-4 w-4 text-yellow-500" />
+                        </div>
+                        <div>
+                          <p className="text-lg font-bold">{userPoints.total_points?.toLocaleString() || 0}</p>
+                          <p className="text-xs text-muted-foreground">AITD Coins</p>
+                        </div>
+                      </div>
+                      <div className="h-8 w-px bg-border" />
+                      <div className="flex items-center gap-1.5">
+                        <Flame className="h-4 w-4 text-orange-500" />
+                        <span className="text-sm font-medium">{userPoints.daily_login_streak || 0}</span>
+                      </div>
+                    </Card>
+                  </Link>
+                )}
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    toast({ title: "Logged out", description: "See you soon!" });
+                    navigate("/");
+                  }}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Quick Stats */}
         {userPoints && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <Card className="p-3 text-center">
+            <Card className="p-3 text-center bg-gradient-to-br from-primary/5 to-transparent">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Trophy className="h-4 w-4 text-primary" />
                 <span className="text-lg font-bold">Lvl {userPoints.level || 1}</span>
               </div>
               <p className="text-xs text-muted-foreground">Current Level</p>
             </Card>
-            <Card className="p-3 text-center">
+            <Card className="p-3 text-center bg-gradient-to-br from-emerald-500/5 to-transparent">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <TrendingUp className="h-4 w-4 text-emerald-500" />
                 <span className="text-lg font-bold">{userPoints.xp?.toLocaleString() || 0}</span>
               </div>
               <p className="text-xs text-muted-foreground">Total XP</p>
             </Card>
-            <Card className="p-3 text-center">
+            <Card className="p-3 text-center bg-gradient-to-br from-yellow-500/5 to-transparent">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Coins className="h-4 w-4 text-yellow-500" />
                 <span className="text-lg font-bold">{userPoints.lifetime_points?.toLocaleString() || 0}</span>
               </div>
               <p className="text-xs text-muted-foreground">Lifetime Coins</p>
             </Card>
-            <Card className="p-3 text-center">
+            <Card className="p-3 text-center bg-gradient-to-br from-orange-500/5 to-transparent">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Flame className="h-4 w-4 text-orange-500" />
                 <span className="text-lg font-bold">{userPoints.daily_login_streak || 0} days</span>
@@ -439,6 +498,44 @@ export default function Profile() {
             </Card>
           </div>
         )}
+
+        {/* Quick Actions Grid */}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+            <Flame className="h-4 w-4" />
+            Quick Actions
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <QuickActionCard
+              icon={BookOpen}
+              title="Upload Notes"
+              description="Share study materials"
+              href="/study-materials"
+              gradient="bg-gradient-courses"
+            />
+            <QuickActionCard
+              icon={Video}
+              title="Add Reel"
+              description="Upload your content"
+              href="/reels"
+              gradient="bg-gradient-practice"
+            />
+            <QuickActionCard
+              icon={Briefcase}
+              title="Post Job"
+              description="Share opportunities"
+              href="/jobs"
+              gradient="bg-gradient-jobs"
+            />
+            <QuickActionCard
+              icon={Users}
+              title="Network"
+              description="Connect with peers"
+              href="/network"
+              gradient="bg-gradient-network"
+            />
+          </div>
+        </div>
 
         {/* Email Verification Banner */}
         {!isEmailVerified && user?.email && (
@@ -629,26 +726,38 @@ export default function Profile() {
               </CardContent>
             </Card>
 
-            {/* Social Links */}
-            <Card>
+            {/* Social Links - Enhanced */}
+            <Card className="border-2 border-dashed border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <LinkIcon className="h-5 w-5" />
+                  <LinkIcon className="h-5 w-5 text-primary" />
                   Social Links
                 </CardTitle>
+                <CardDescription>Add your social profiles to let others connect with you</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="linkedin">LinkedIn URL</Label>
+                  <Label htmlFor="linkedin" className="flex items-center gap-2">
+                    <div className="p-1 rounded bg-[#0A66C2]/10">
+                      <Linkedin className="h-3.5 w-3.5 text-[#0A66C2]" />
+                    </div>
+                    LinkedIn URL
+                  </Label>
                   <Input
                     id="linkedin"
                     value={formData.linkedin_url}
                     onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
                     placeholder="https://linkedin.com/in/username"
+                    className="border-[#0A66C2]/20 focus:border-[#0A66C2]/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="github">GitHub URL</Label>
+                  <Label htmlFor="github" className="flex items-center gap-2">
+                    <div className="p-1 rounded bg-foreground/10">
+                      <Github className="h-3.5 w-3.5" />
+                    </div>
+                    GitHub URL
+                  </Label>
                   <Input
                     id="github"
                     value={formData.github_url}
@@ -657,14 +766,34 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="portfolio">Portfolio URL</Label>
+                  <Label htmlFor="portfolio" className="flex items-center gap-2">
+                    <div className="p-1 rounded bg-gradient-to-r from-primary/10 to-accent/10">
+                      <Globe className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    Portfolio URL
+                  </Label>
                   <Input
                     id="portfolio"
                     value={formData.portfolio_url}
                     onChange={(e) => setFormData({ ...formData, portfolio_url: e.target.value })}
                     placeholder="https://yourportfolio.com"
+                    className="border-primary/20 focus:border-primary/50"
                   />
                 </div>
+                
+                {/* Preview */}
+                {(formData.linkedin_url || formData.github_url || formData.portfolio_url) && (
+                  <div className="pt-4 border-t">
+                    <p className="text-xs text-muted-foreground mb-2">Preview how your links will appear:</p>
+                    <SocialLinksDisplay
+                      linkedinUrl={formData.linkedin_url}
+                      githubUrl={formData.github_url}
+                      portfolioUrl={formData.portfolio_url}
+                      size="md"
+                      showLabels
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 

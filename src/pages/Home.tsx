@@ -9,6 +9,7 @@ import { ProfileCompletionPopup } from "@/components/ProfileCompletionPopup";
 import { CoinBadge } from "@/components/CoinBadge";
 import { ContributorLeaderboard } from "@/components/ContributorLeaderboard";
 import { POINT_VALUES } from "@/hooks/useEarnCoins";
+import aitdMascot from "@/assets/aitd-mascot.png";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -35,6 +36,9 @@ import {
   Rocket,
   TrendingUp,
   Coins,
+  QrCode,
+  Globe,
+  Lightbulb,
 } from "lucide-react";
 
 interface Course {
@@ -190,86 +194,135 @@ export default function Home() {
       <ProfileCompletionPopup />
       <FloatingTelegram />
       
-      {/* Hero Section - Student Focused Mobile First */}
-      <section className="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] flex items-center py-6 sm:py-10 lg:py-16 px-4 overflow-hidden">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-background to-pink-500/10" />
+      {/* Hero Section - Enhanced with Mascot */}
+      <section className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center py-8 sm:py-12 lg:py-20 px-4 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-background to-orange-100/30 dark:from-orange-950/20 dark:via-background dark:to-orange-900/10" />
         
-        {/* Animated orbs - smaller on mobile */}
+        {/* Animated decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[5%] left-[5%] w-24 sm:w-40 lg:w-56 h-24 sm:h-40 lg:h-56 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute top-[15%] right-[5%] w-28 sm:w-48 lg:w-72 h-28 sm:h-48 lg:h-72 bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-full blur-3xl animate-float-delayed" />
-          <div className="absolute bottom-[10%] left-[15%] w-20 sm:w-36 lg:w-56 h-20 sm:h-36 lg:h-56 bg-gradient-to-br from-cyan-500/15 to-blue-500/15 rounded-full blur-3xl animate-float-slow" />
+          <div className="absolute top-[10%] left-[5%] w-16 sm:w-24 lg:w-32 h-16 sm:h-24 lg:h-32 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full blur-2xl animate-float" />
+          <div className="absolute top-[5%] right-[10%] w-20 sm:w-32 lg:w-40 h-20 sm:h-32 lg:h-40 bg-gradient-to-br from-orange-500/15 to-red-400/15 rounded-full blur-3xl animate-float-delayed" />
+          <div className="absolute bottom-[15%] left-[10%] w-24 sm:w-36 lg:w-48 h-24 sm:h-36 lg:h-48 bg-gradient-to-br from-yellow-400/15 to-orange-400/15 rounded-full blur-3xl animate-float-slow" />
+          <div className="absolute bottom-[20%] right-[5%] w-16 sm:w-28 lg:w-36 h-16 sm:h-28 lg:h-36 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-full blur-2xl animate-float" />
         </div>
         
         <div className="container mx-auto relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Animated student count badge */}
-            <Badge className="mb-3 sm:mb-5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-gradient-to-r from-violet-500/20 to-pink-500/20 text-foreground border-violet-500/30 hover:from-violet-500/30 hover:to-pink-500/30 animate-fade-in-down shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 text-violet-500 animate-pulse" />
-              {stats.students > 0 ? `${stats.students.toLocaleString()}+ Students Growing` : "Join Our Community"}
-            </Badge>
-            
-            {/* Main heading - optimized for mobile */}
-            <h1 className="text-[1.75rem] leading-[1.2] sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-5 animate-fade-in-up">
-              <span className="block sm:inline">Learn.</span>{" "}
-              <span className="block sm:inline text-gradient-primary">Earn.</span>{" "}
-              <span className="block sm:inline">Grow.</span>
-            </h1>
-            
-            {/* Subheading - mobile optimized */}
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-5 sm:mb-7 leading-relaxed max-w-xl mx-auto px-1 animate-fade-in-up stagger-1">
-              India's #1 platform for students to learn skills, win bounties & land dream jobs
-            </p>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Content */}
+            <div className="text-center lg:text-left order-2 lg:order-1">
+              {/* Badge with orange theme */}
+              <Badge className="mb-4 sm:mb-5 px-4 py-2 text-xs sm:text-sm bg-gradient-to-r from-orange-500/20 to-amber-500/20 text-orange-700 dark:text-orange-400 border-orange-500/30 hover:from-orange-500/30 hover:to-amber-500/30 animate-fade-in-down shadow-sm">
+                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 text-orange-500 animate-pulse" />
+                {stats.students > 0 ? `${stats.students.toLocaleString()}+ Students Growing` : "India's #1 Student Platform"}
+              </Badge>
+              
+              {/* Main heading with AITD branding */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-5 animate-fade-in-up leading-tight">
+                <span className="text-orange-500">AITD</span>{" "}
+                <span className="text-foreground">Events</span>
+                <span className="block mt-2 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+                  <span className="text-foreground">Learn.</span>{" "}
+                  <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Earn.</span>{" "}
+                  <span className="text-foreground">Grow.</span>
+                </span>
+              </h1>
+              
+              {/* Subheading */}
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-fade-in-up stagger-1">
+                Join India's fastest-growing platform for students to learn new skills, win bounties & land dream jobs
+              </p>
 
-            {/* Mobile-first CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center animate-fade-in-up stagger-2">
-              <Link to="/auth" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 border-0">
-                  <Rocket className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:animate-bounce" />
-                  Start Free - Earn Coins
-                </Button>
-              </Link>
-              <Link to="/bounties" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl hover:scale-[1.02] transition-all border-2 border-emerald-500/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500">
-                  <Trophy className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Win Money
-                </Button>
-              </Link>
+              {/* CTA Buttons with orange theme */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-in-up stagger-2">
+                <Link to="/auth" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-0 text-white">
+                    <Rocket className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:animate-bounce" />
+                    Start Free - Earn Coins
+                  </Button>
+                </Link>
+                <Link to="/bounties" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl hover:scale-[1.02] transition-all border-2 border-orange-500/50 text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500">
+                    <Trophy className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    Win Money
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Trust indicators */}
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-6 sm:mt-8 justify-center lg:justify-start animate-fade-in-up stagger-3">
+                <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/30 px-3 py-1.5 rounded-full border border-orange-200 dark:border-orange-800/50">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-orange-500" />
+                  <span className="text-xs sm:text-sm text-orange-700 dark:text-orange-400">100% Free</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/30 px-3 py-1.5 rounded-full border border-orange-200 dark:border-orange-800/50">
+                  <Coins className="h-3.5 w-3.5 text-orange-500" />
+                  <span className="text-xs sm:text-sm text-orange-700 dark:text-orange-400">Earn While Learning</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/30 px-3 py-1.5 rounded-full border border-orange-200 dark:border-orange-800/50">
+                  <Globe className="h-3.5 w-3.5 text-orange-500" />
+                  <span className="text-xs sm:text-sm text-orange-700 dark:text-orange-400">Pan-India Network</span>
+                </div>
+              </div>
             </div>
 
-            {/* Quick stats for mobile - compact row - REAL DATA */}
-            <div className="flex items-center justify-center gap-4 sm:gap-8 mt-5 sm:mt-7 animate-fade-in-up stagger-3">
-              <div className="text-center">
-                <div className="text-lg sm:text-xl font-bold text-primary">{stats.students || 0}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">Students</div>
-              </div>
-              <div className="w-px h-8 bg-border" />
-              <div className="text-center">
-                <div className="text-lg sm:text-xl font-bold text-emerald-500">{stats.bounties || 0}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">Bounties</div>
-              </div>
-              <div className="w-px h-8 bg-border" />
-              <div className="text-center">
-                <div className="text-lg sm:text-xl font-bold text-violet-500">{stats.events || 0}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">Events</div>
+            {/* Right Side - Mascot Image */}
+            <div className="order-1 lg:order-2 flex justify-center lg:justify-end animate-fade-in-up">
+              <div className="relative">
+                {/* Glow effect behind mascot */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-400/30 to-amber-400/30 rounded-full blur-3xl scale-75" />
+                
+                <img 
+                  src={aitdMascot} 
+                  alt="AITD Events Mascot - A friendly student holding QR code" 
+                  className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow"
+                  loading="eager"
+                />
+                
+                {/* Floating badges around mascot */}
+                <div className="absolute -top-2 -left-4 sm:top-4 sm:left-0 bg-white dark:bg-card shadow-lg rounded-xl px-3 py-2 flex items-center gap-2 animate-float border border-orange-200 dark:border-orange-800/50">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+                    <Trophy className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-foreground">{stats.bounties}+ Bounties</p>
+                    <p className="text-[10px] text-muted-foreground">Win Real Cash</p>
+                  </div>
+                </div>
+                
+                <div className="absolute -bottom-2 -right-4 sm:bottom-8 sm:right-0 bg-white dark:bg-card shadow-lg rounded-xl px-3 py-2 flex items-center gap-2 animate-float-delayed border border-orange-200 dark:border-orange-800/50">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-foreground">{stats.events}+ Events</p>
+                    <p className="text-[10px] text-muted-foreground">Hackathons & More</p>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Trust indicators - simplified for mobile */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-4 sm:mt-6 justify-center text-[10px] sm:text-xs text-muted-foreground animate-fade-in-up stagger-3">
-              <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
-                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                <span>Free Forever</span>
-              </div>
-              <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
-                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                <span>Earn While Learning</span>
-              </div>
-              <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-full">
-                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                <span>Real Opportunities</span>
-              </div>
+          </div>
+          
+          {/* Quick stats row below hero */}
+          <div className="flex items-center justify-center gap-6 sm:gap-10 lg:gap-16 mt-10 sm:mt-14 pt-8 border-t border-orange-200/50 dark:border-orange-800/30 animate-fade-in-up stagger-3">
+            <div className="text-center">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-500">{stats.students || 0}+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Students</div>
+            </div>
+            <div className="w-px h-10 bg-orange-200 dark:bg-orange-800/50" />
+            <div className="text-center">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-500">{stats.colleges || 0}+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Colleges</div>
+            </div>
+            <div className="w-px h-10 bg-orange-200 dark:bg-orange-800/50" />
+            <div className="text-center">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-500">{stats.jobs || 0}+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Job Openings</div>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-orange-200 dark:bg-orange-800/50" />
+            <div className="hidden sm:block text-center">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-500">{stats.courses || 0}+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Courses</div>
             </div>
           </div>
         </div>

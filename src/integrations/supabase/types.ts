@@ -494,6 +494,51 @@ export type Database = {
           },
         ]
       }
+      certificate_templates: {
+        Row: {
+          background_color: string | null
+          badge_url: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          primary_color: string | null
+          template_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          background_color?: string | null
+          badge_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          primary_color?: string | null
+          template_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          background_color?: string | null
+          badge_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          primary_color?: string | null
+          template_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       community_links: {
         Row: {
           created_at: string | null
@@ -687,6 +732,62 @@ export type Database = {
           points_reward?: number
         }
         Relationships: []
+      }
+      event_rsvps: {
+        Row: {
+          additional_notes: string | null
+          attending_mode: string
+          check_in_time: string | null
+          created_at: string | null
+          dietary_requirements: string | null
+          email: string
+          event_id: string
+          full_name: string
+          id: string
+          phone: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          attending_mode?: string
+          check_in_time?: string | null
+          created_at?: string | null
+          dietary_requirements?: string | null
+          email: string
+          event_id: string
+          full_name: string
+          id?: string
+          phone?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          additional_notes?: string | null
+          attending_mode?: string
+          check_in_time?: string | null
+          created_at?: string | null
+          dietary_requirements?: string | null
+          email?: string
+          event_id?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       events: {
         Row: {
@@ -884,6 +985,82 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      issued_certificates: {
+        Row: {
+          certificate_number: string
+          course_id: string | null
+          created_at: string | null
+          event_id: string | null
+          id: string
+          is_valid: boolean | null
+          issue_date: string | null
+          linkedin_credential_id: string | null
+          metadata: Json | null
+          recipient_email: string
+          recipient_name: string
+          template_id: string | null
+          user_id: string | null
+          valid_until: string | null
+          verification_url: string | null
+        }
+        Insert: {
+          certificate_number: string
+          course_id?: string | null
+          created_at?: string | null
+          event_id?: string | null
+          id?: string
+          is_valid?: boolean | null
+          issue_date?: string | null
+          linkedin_credential_id?: string | null
+          metadata?: Json | null
+          recipient_email: string
+          recipient_name: string
+          template_id?: string | null
+          user_id?: string | null
+          valid_until?: string | null
+          verification_url?: string | null
+        }
+        Update: {
+          certificate_number?: string
+          course_id?: string | null
+          created_at?: string | null
+          event_id?: string | null
+          id?: string
+          is_valid?: boolean | null
+          issue_date?: string | null
+          linkedin_credential_id?: string | null
+          metadata?: Json | null
+          recipient_email?: string
+          recipient_name?: string
+          template_id?: string | null
+          user_id?: string | null
+          valid_until?: string | null
+          verification_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issued_certificates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issued_certificates_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issued_certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       jobs: {
         Row: {
@@ -2147,6 +2324,7 @@ export type Database = {
         }
         Returns: number
       }
+      generate_certificate_number: { Args: never; Returns: string }
       get_public_profile: {
         Args: { profile_user_id: string }
         Returns: {

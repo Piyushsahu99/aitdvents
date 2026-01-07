@@ -4,21 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SearchBar } from "@/components/SearchBar";
+import { SocialLinksDisplay } from "@/components/profile/SocialLinksDisplay";
 import { POINT_VALUES } from "@/hooks/useEarnCoins";
 import { 
   Users, 
-  Linkedin, 
-  Github, 
-  Globe, 
   Loader2,
   UserPlus,
   Search,
   Coins,
   Gift,
-  Sparkles
+  Sparkles,
+  MapPin,
+  GraduationCap
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -191,18 +190,22 @@ export default function Network() {
                   
                   <div className="relative z-10">
                     <div className="flex items-start gap-4 mb-4">
-                      <Avatar className="h-16 w-16 border-2 border-primary/20 group-hover:border-primary/40 transition-colors">
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
+                      <Avatar className="h-16 w-16 border-2 border-primary/20 group-hover:border-primary/40 transition-colors ring-2 ring-offset-2 ring-primary/10">
+                        <AvatarImage src={profile.avatar_url} />
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-bold text-lg">
                           {getInitials(profile.full_name)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-xl font-bold truncate">{profile.full_name}</h3>
                         {profile.college && (
-                          <p className="text-sm text-muted-foreground truncate">{profile.college}</p>
+                          <p className="text-sm text-muted-foreground truncate flex items-center gap-1">
+                            <GraduationCap className="h-3 w-3" />
+                            {profile.college}
+                          </p>
                         )}
                         {profile.graduation_year && (
-                          <Badge variant="outline" className="mt-1">
+                          <Badge variant="outline" className="mt-1 text-xs">
                             Class of {profile.graduation_year}
                           </Badge>
                         )}
@@ -216,16 +219,20 @@ export default function Network() {
                     )}
 
                     {profile.is_looking_for_team && (
-                      <Badge className="mb-4 bg-success/10 text-success border-success/20">
+                      <Badge className="mb-4 bg-success/10 text-success border-success/20 animate-pulse-soft">
                         <UserPlus className="h-3 w-3 mr-1" />
                         Looking for Team
                       </Badge>
                     )}
 
                     {profile.skills && profile.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex flex-wrap gap-1.5 mb-4">
                         {profile.skills.slice(0, 3).map((skill, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">
+                          <Badge 
+                            key={i} 
+                            variant="secondary" 
+                            className="text-xs bg-primary/5 hover:bg-primary/10 transition-colors"
+                          >
                             {skill}
                           </Badge>
                         ))}
@@ -237,44 +244,13 @@ export default function Network() {
                       </div>
                     )}
 
-                    <div className="flex gap-2">
-                      {profile.linkedin_url && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 hover:bg-primary/10 hover:border-primary/40"
-                          asChild
-                        >
-                          <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer">
-                            <Linkedin className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                      {profile.github_url && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 hover:bg-primary/10 hover:border-primary/40"
-                          asChild
-                        >
-                          <a href={profile.github_url} target="_blank" rel="noopener noreferrer">
-                            <Github className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                      {profile.portfolio_url && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 hover:bg-primary/10 hover:border-primary/40"
-                          asChild
-                        >
-                          <a href={profile.portfolio_url} target="_blank" rel="noopener noreferrer">
-                            <Globe className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
+                    {/* Colorful Social Links */}
+                    <SocialLinksDisplay
+                      linkedinUrl={profile.linkedin_url}
+                      githubUrl={profile.github_url}
+                      portfolioUrl={profile.portfolio_url}
+                      size="md"
+                    />
                   </div>
                 </Card>
               ))}

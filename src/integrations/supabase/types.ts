@@ -2437,6 +2437,17 @@ export type Database = {
         Args: { invite_code_input: string }
         Returns: boolean
       }
+      verify_certificate: {
+        Args: { cert_number: string }
+        Returns: {
+          certificate_number: string
+          is_valid: boolean
+          issue_date: string
+          recipient_name: string
+          valid_until: string
+          verification_url: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"

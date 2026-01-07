@@ -275,7 +275,7 @@ export default function Home() {
                 <img 
                   src={aitdMascot} 
                   alt="AITD Events Mascot - A friendly student holding QR code" 
-                  className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow"
+                  className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow mascot-hover"
                   loading="eager"
                 />
                 

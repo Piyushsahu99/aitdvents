@@ -296,6 +296,44 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-glow);
   }
 
+  /* Mascot hover animation - bounce and wave */
+  @keyframes mascot-wave {
+    0%, 100% {
+      transform: rotate(0deg) scale(1);
+    }
+    10% {
+      transform: rotate(-3deg) scale(1.02);
+    }
+    20% {
+      transform: rotate(3deg) scale(1.02);
+    }
+    30% {
+      transform: rotate(-3deg) scale(1.02);
+    }
+    40% {
+      transform: rotate(3deg) scale(1.02);
+    }
+    50% {
+      transform: rotate(0deg) scale(1.05);
+    }
+    60% {
+      transform: translateY(-8px) scale(1.05);
+    }
+    80% {
+      transform: translateY(0) scale(1.02);
+    }
+  }
+
+  .mascot-hover {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
+  }
+
+  .mascot-hover:hover {
+    animation: mascot-wave 1s ease-in-out;
+    filter: drop-shadow(0 20px 40px rgba(249, 115, 22, 0.4));
+  }
+
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradientShift 4s ease infinite;

@@ -71,7 +71,7 @@ export const FloatingTelegram = () => {
               Join Telegram
             </a>
             <a
-              href="https://whatsapp.com/channel/0029VbBfukG7YSdBOP1Dzd11"
+              href="https://chat.whatsapp.com/I6sIUVE35tU8VepJJJD0OH"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-medium py-2.5 px-4 rounded-lg transition-colors"

@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { z } from "zod";
 import logo from "@/assets/aitd-logo.png";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield, ArrowLeft, RefreshCw, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield, ArrowLeft, RefreshCw, CheckCircle, AlertCircle } from "lucide-react";
 
 // List of common disposable/temporary email domains to block
 const disposableEmailDomains = [
@@ -78,6 +78,8 @@ export default function Auth() {
   const referralCode = searchParams.get("ref");
   const isResetFlow = searchParams.get("reset") === "true";
   const isVerifiedFlow = searchParams.get("verified") === "true";
+  const errorCode = searchParams.get("error_code");
+  const errorDescription = searchParams.get("error_description");
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -92,6 +94,9 @@ export default function Auth() {
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   const [showVerificationPending, setShowVerificationPending] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
+  const [showVerificationError, setShowVerificationError] = useState(false);
+  const [verificationErrorMessage, setVerificationErrorMessage] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -109,7 +114,17 @@ export default function Auth() {
         description: "Your email has been verified. You can now access all features.",
       });
     }
-  }, [adminInviteCode, isResetFlow, isVerifiedFlow]);
+    // Handle verification errors from URL
+    if (errorCode || errorDescription) {
+      const errorMsg = errorDescription?.replace(/\+/g, " ") || "Verification link has expired or is invalid";
+      if (errorCode === "otp_expired" || errorDescription?.includes("expired") || errorDescription?.includes("token")) {
+        setVerificationErrorMessage("Your verification link has expired. Please request a new one.");
+      } else {
+        setVerificationErrorMessage(errorMsg);
+      }
+      setShowVerificationError(true);
+    }
+  }, [adminInviteCode, isResetFlow, isVerifiedFlow, errorCode, errorDescription]);
 
   const checkSession = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -380,6 +395,168 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  // Handle Google OAuth Sign In
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth`,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to sign in with Google",
+        variant: "destructive",
+      });
+      setGoogleLoading(false);
+    }
+  };
+
+  // Verification Error View (expired/invalid token)
+  if (showVerificationError) {
+    return (
+      <div className="min-h-screen flex">
+        {/* Left Side - Branding */}
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
+          
+          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
+            <div className="flex items-center gap-3 mb-8">
+              <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
+              <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
+            </div>
+            
+            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
+              Link Expired<br />
+              <span className="text-primary-foreground/90">Let's Fix That</span>
+            </h1>
+            
+            <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
+              Verification links expire for security. Request a new one and you'll be good to go.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side - Content */}
+        <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
+          <div className="w-full max-w-md">
+            {/* Mobile Logo */}
+            <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
+              <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
+              <span className="text-2xl font-bold text-primary">AITD Events</span>
+            </div>
+
+            <div className="text-center space-y-6">
+              <div className="mx-auto w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertCircle className="h-10 w-10 text-destructive" />
+              </div>
+
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                  Verification Failed
+                </h2>
+                <p className="text-muted-foreground">
+                  {verificationErrorMessage}
+                </p>
+              </div>
+
+              <div className="bg-muted/50 rounded-lg p-4 text-left space-y-3">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <p className="text-sm text-muted-foreground">
+                    Enter your email below to receive a new verification link
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <p className="text-sm text-muted-foreground">
+                    Make sure to use the link within 24 hours
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                  />
+                </div>
+
+                <Button
+                  className="w-full"
+                  onClick={async () => {
+                    if (!email) {
+                      toast({
+                        title: "Email required",
+                        description: "Please enter your email address.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    setLoading(true);
+                    try {
+                      const { error } = await supabase.auth.resend({
+                        type: "signup",
+                        email: email,
+                        options: {
+                          emailRedirectTo: `${window.location.origin}/auth?verified=true`,
+                        },
+                      });
+                      if (error) throw error;
+                      toast({
+                        title: "Email sent!",
+                        description: "Check your inbox for the new verification link.",
+                      });
+                      setShowVerificationError(false);
+                      setPendingEmail(email);
+                      setShowVerificationPending(true);
+                    } catch (error: any) {
+                      toast({
+                        title: "Error",
+                        description: error.message || "Failed to resend email",
+                        variant: "destructive",
+                      });
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Mail className="h-4 w-4 mr-2" />
+                  )}
+                  Send new verification link
+                </Button>
+
+                <button
+                  onClick={() => {
+                    setShowVerificationError(false);
+                    setVerificationErrorMessage("");
+                    navigate("/auth", { replace: true });
+                  }}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Back to login
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Email Verification Pending View
   if (showVerificationPending) {
@@ -923,6 +1100,52 @@ export default function Auth() {
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               )}
+            </Button>
+
+            {/* Divider */}
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+
+            {/* Google Sign In Button */}
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-12 text-base font-medium"
+              onClick={handleGoogleSignIn}
+              disabled={googleLoading}
+            >
+              {googleLoading ? (
+                <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+              )}
+              Continue with Google
             </Button>
           </form>
 

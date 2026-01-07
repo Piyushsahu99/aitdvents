@@ -54,9 +54,9 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
       <BrowserRouter>
+        <Toaster />
+        <Sonner />
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-1 pb-20 lg:pb-0">

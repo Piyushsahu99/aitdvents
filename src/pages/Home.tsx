@@ -164,9 +164,9 @@ export default function Home() {
     { icon: BookOpen, title: "Courses", link: "/courses", gradient: "from-blue-500 to-cyan-400", coins: POINT_VALUES.COURSE_ENROLL },
     { icon: Trophy, title: "Bounties", link: "/bounties", gradient: "from-emerald-500 to-teal-400", coins: POINT_VALUES.BOUNTY_SUBMIT },
     { icon: Calendar, title: "Events", link: "/events", gradient: "from-violet-500 to-purple-400", coins: POINT_VALUES.EVENT_REGISTER },
-    { icon: FileText, title: "Study Materials", link: "/study-materials", gradient: "from-indigo-500 to-violet-400", coins: POINT_VALUES.STUDY_MATERIAL_UPLOAD },
+    { icon: MessageCircle, title: "Live Chat", link: "/live-chat", gradient: "from-green-500 to-emerald-400", coins: 0 },
     { icon: Briefcase, title: "Jobs", link: "/jobs", gradient: "from-orange-500 to-amber-400", coins: 0 },
-    { icon: MessageCircle, title: "Mentors", link: "/mentorship", gradient: "from-yellow-500 to-orange-400", coins: 0 },
+    { icon: FileText, title: "Notes", link: "/study-materials", gradient: "from-indigo-500 to-violet-400", coins: POINT_VALUES.STUDY_MATERIAL_UPLOAD },
     { icon: Target, title: "Practice", link: "/practice", gradient: "from-pink-500 to-rose-400", coins: 0 },
     { icon: GraduationCap, title: "Scholarships", link: "/scholarships", gradient: "from-cyan-500 to-blue-400", coins: 0 },
   ];

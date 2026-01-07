@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Users, Loader2 } from "lucide-react";
+import { ExternalLink, Users, Loader2, MessageCircle, Zap, Sparkles, ArrowRight } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { LiveChat } from "@/components/LiveChat";
 
 interface CommunityLink {
   id: string;
@@ -18,10 +20,18 @@ interface CommunityLink {
 export default function Community() {
   const [links, setLinks] = useState<CommunityLink[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCommunityLinks();
+    checkUser();
   }, []);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
 
   const fetchCommunityLinks = async () => {
     try {
@@ -75,9 +85,120 @@ export default function Community() {
         </div>
       </section>
 
+      {/* Live Chat Feature Section */}
+      <section className="py-12 px-4 bg-gradient-to-b from-orange-500/5 to-amber-500/5">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
+            {/* Left side - Feature description */}
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/20 to-amber-500/20 rounded-full">
+                <Zap className="h-4 w-4 text-orange-500" />
+                <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">Live & Real-time</span>
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Chat with Students{" "}
+                <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+                  Right Now
+                </span>
+              </h2>
+              
+              <p className="text-lg text-muted-foreground">
+                Join our live community chat! Connect with fellow students, ask questions, share resources, and make friends in real-time.
+              </p>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/80 border border-border/50">
+                  <div className="p-2 rounded-full bg-green-500/10">
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">Real-time</p>
+                    <p className="text-xs text-muted-foreground">Instant messages</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/80 border border-border/50">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <Users className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">Live Presence</p>
+                    <p className="text-xs text-muted-foreground">See who's online</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/80 border border-border/50">
+                  <div className="p-2 rounded-full bg-purple-500/10">
+                    <Sparkles className="h-4 w-4 text-purple-500" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">Engaging</p>
+                    <p className="text-xs text-muted-foreground">Active community</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background/80 border border-border/50">
+                  <div className="p-2 rounded-full bg-orange-500/10">
+                    <MessageCircle className="h-4 w-4 text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">24/7 Chat</p>
+                    <p className="text-xs text-muted-foreground">Always available</p>
+                  </div>
+                </div>
+              </div>
+
+              {!user && (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    <strong className="text-foreground">Login to join the conversation!</strong> Create an account to start chatting with other students.
+                  </p>
+                  <Button 
+                    onClick={() => navigate("/auth")}
+                    className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"
+                  >
+                    Login to Chat
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </div>
+              )}
+
+              <Button 
+                onClick={() => navigate("/live-chat")}
+                size="lg"
+                variant="outline"
+                className="border-orange-500/50 text-orange-600 hover:bg-orange-500/10"
+              >
+                <MessageCircle className="h-5 w-5 mr-2" />
+                Open Full Chat
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
+
+            {/* Right side - Live chat preview */}
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 to-amber-500/20 rounded-3xl blur-xl" />
+              <div className="relative">
+                <LiveChat compact />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Community Links Grid */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Join Us Across Platforms
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Connect with our community on your favorite platform
+            </p>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {links.map((link, index) => {
               const Icon = getIcon(link.icon);

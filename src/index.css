@@ -163,21 +163,43 @@ All colors MUST be HSL.
     padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0));
   }
 
-  /* Better touch targets */
-  button, a, [role="button"] {
+  /* Better touch targets for Android */
+  button, a, [role="button"], input, select, textarea {
     min-height: 44px;
-    min-width: 44px;
   }
 
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Prevent text selection on interactive elements */
   .no-select {
     -webkit-user-select: none;
     user-select: none;
+  }
+
+  /* Android-specific optimizations */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent pull-to-refresh on Android */
+  body {
+    overscroll-behavior-y: contain;
+  }
+
+  /* Optimize font rendering for Android */
+  body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Mobile-friendly input styling */
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on focus in iOS/Android */
   }
 }
 

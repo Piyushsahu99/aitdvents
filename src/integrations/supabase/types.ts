@@ -1769,6 +1769,44 @@ export type Database = {
           },
         ]
       }
+      reel_views: {
+        Row: {
+          created_at: string
+          earned_coins: boolean | null
+          id: string
+          reel_id: string
+          updated_at: string
+          user_id: string
+          watched_seconds: number
+        }
+        Insert: {
+          created_at?: string
+          earned_coins?: boolean | null
+          id?: string
+          reel_id: string
+          updated_at?: string
+          user_id: string
+          watched_seconds?: number
+        }
+        Update: {
+          created_at?: string
+          earned_coins?: boolean | null
+          id?: string
+          reel_id?: string
+          updated_at?: string
+          user_id?: string
+          watched_seconds?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_views_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reels: {
         Row: {
           category: string

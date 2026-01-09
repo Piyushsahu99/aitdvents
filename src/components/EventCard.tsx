@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Users, Clock, ArrowUpRight, Sparkles, Coins } from "lucide-react";
+import { Calendar, MapPin, Building2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -17,15 +17,17 @@ interface EventCardProps {
   days_left?: number;
   applied_count?: number;
   gradientIndex?: number;
+  college?: string | null;
+  onClick?: () => void;
 }
 
 const gradientClasses = [
-  "from-violet-500 to-purple-600",
-  "from-pink-500 to-rose-600", 
-  "from-cyan-500 to-blue-600",
-  "from-orange-500 to-amber-600",
-  "from-emerald-500 to-teal-600",
-  "from-fuchsia-500 to-pink-600",
+  "from-violet-600 via-purple-600 to-indigo-700",
+  "from-pink-500 via-rose-500 to-red-600", 
+  "from-cyan-500 via-blue-500 to-indigo-600",
+  "from-orange-500 via-amber-500 to-yellow-600",
+  "from-emerald-500 via-teal-500 to-cyan-600",
+  "from-fuchsia-500 via-pink-500 to-rose-600",
 ];
 
 export const EventCard = ({
@@ -43,14 +45,33 @@ export const EventCard = ({
   days_left,
   applied_count = 0,
   gradientIndex = 0,
+  college,
+  onClick,
 }: EventCardProps) => {
   const gradientClass = gradientClasses[gradientIndex % gradientClasses.length];
   const hasPoster = poster_url || image;
   
+  // Format date nicely
+  const formatDate = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = d.toLocaleDateString('en-US', { month: 'short' });
+      const year = d.getFullYear();
+      const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      return `${day} ${month} ${year} at ${time}`;
+    } catch {
+      return dateStr;
+    }
+  };
+  
   return (
-    <div className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_-12px_hsl(var(--primary)/0.25)] hover:-translate-y-2 h-full flex flex-col">
-      {/* Header with Poster or Gradient */}
-      <div className={`relative ${hasPoster ? 'h-48' : 'h-32'} overflow-hidden`}>
+    <div 
+      className="group relative bg-card rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl active:scale-[0.98] h-full flex flex-col border-0 shadow-lg"
+      onClick={onClick}
+    >
+      {/* Poster/Image Section */}
+      <div className={`relative ${hasPoster ? 'aspect-[4/3]' : 'h-44'} overflow-hidden`}>
         {hasPoster ? (
           <>
             <img
@@ -58,96 +79,88 @@ export const EventCard = ({
               alt={title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           </>
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradientClass}`}>
-            <div className="absolute inset-0">
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-700 delay-100" />
+          <div className={`w-full h-full bg-gradient-to-br ${gradientClass} relative`}>
+            {/* Abstract geometric patterns */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute top-4 right-4 w-24 h-24 border-2 border-white/20 rotate-45" />
+              <div className="absolute bottom-8 left-8 w-16 h-16 border-2 border-white/15 rotate-12" />
+              <div className="absolute top-1/2 left-1/2 w-32 h-32 -translate-x-1/2 -translate-y-1/2 border border-white/10 rounded-full" />
+              <div className="absolute top-8 left-4 w-12 h-1 bg-white/20 rotate-45" />
+              <div className="absolute bottom-12 right-8 w-8 h-1 bg-white/20 -rotate-45" />
             </div>
           </div>
         )}
         
-        {/* Status Badges */}
-        <div className="absolute top-3 left-3 flex gap-2 z-10">
-          <Badge className="bg-white/95 text-foreground hover:bg-white border-0 shadow-lg backdrop-blur-sm text-xs font-medium">
-            {is_online ? "Online" : "Offline"}
-          </Badge>
-          {is_free && (
-            <Badge className="bg-emerald-500 text-white hover:bg-emerald-600 border-0 shadow-lg text-xs font-medium">
-              <Sparkles className="w-3 h-3 mr-1" />
-              Free
-            </Badge>
-          )}
-        </div>
-
-        {/* Coins Badge */}
-        <div className="absolute top-3 right-3 z-10 flex flex-col gap-1">
-          <Badge variant="secondary" className="bg-black/20 text-white border-0 backdrop-blur-sm text-xs">
+        {/* Category Badge */}
+        <div className="absolute top-3 left-3 z-10">
+          <Badge variant="secondary" className="bg-white/95 text-foreground border-0 shadow-md text-xs font-medium px-2.5 py-1">
             {category}
           </Badge>
-          <Badge className="bg-yellow-500/90 text-white border-0 text-xs">
-            <Coins className="w-3 h-3 mr-1" />
-            +5 Coins
-          </Badge>
         </div>
 
-        {/* Title overlay for poster images */}
-        {hasPoster && (
-          <div className="absolute bottom-3 left-3 right-3 z-10">
-            <h3 className="font-bold text-white text-lg line-clamp-2 drop-shadow-lg">
-              {title}
-            </h3>
+        {/* Free/Paid Badge */}
+        {is_free && (
+          <div className="absolute top-3 right-3 z-10">
+            <Badge className="bg-emerald-500 text-white border-0 shadow-md text-xs font-medium px-2.5 py-1">
+              Free
+            </Badge>
           </div>
         )}
       </div>
 
-      {/* Content */}
+      {/* Content Section */}
       <div className="p-4 flex-1 flex flex-col">
-        {!hasPoster && (
-          <h3 className="font-semibold text-base line-clamp-2 mb-2 group-hover:text-primary transition-colors duration-300">
-            {title}
-          </h3>
-        )}
+        {/* Title */}
+        <h3 className="font-bold text-base text-foreground line-clamp-2 mb-3 leading-snug">
+          {title}
+        </h3>
         
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
-          {description}
-        </p>
-
-        {/* Stats */}
-        <div className="space-y-2 text-xs mb-4 flex-1">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Users className="h-3.5 w-3.5 text-primary" />
-            <span className="font-medium">{applied_count || participants || 0} Applied</span>
-          </div>
-          {days_left !== null && days_left !== undefined && (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-3.5 w-3.5 text-accent" />
-              <span className="font-medium">{days_left} days left</span>
+        {/* Event Details */}
+        <div className="space-y-2.5 text-sm flex-1">
+          {/* Date */}
+          <div className="flex items-center gap-2.5 text-muted-foreground">
+            <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Calendar className="h-3 w-3 text-primary" />
             </div>
-          )}
-          {date && (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Calendar className="h-3.5 w-3.5" />
-              <span>{new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+            <span className="text-sm font-medium">{formatDate(date)}</span>
+          </div>
+          
+          {/* Location */}
+          <div className="flex items-center gap-2.5 text-muted-foreground">
+            <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
+              <MapPin className="h-3 w-3 text-success" />
+            </div>
+            <span className="text-sm line-clamp-1">{location}</span>
+          </div>
+          
+          {/* College (if present) */}
+          {college && (
+            <div className="flex items-center gap-2.5 text-muted-foreground">
+              <div className="w-5 h-5 rounded-full bg-info/10 flex items-center justify-center flex-shrink-0">
+                <Building2 className="h-3 w-3 text-info" />
+              </div>
+              <span className="text-sm line-clamp-1 font-medium">{college}</span>
             </div>
           )}
         </div>
 
         {/* Action Button */}
         <Button 
-          size="sm" 
-          className="w-full group/btn relative overflow-hidden"
+          size="default" 
+          className="w-full mt-4 rounded-xl font-semibold bg-gradient-to-r from-primary to-accent text-white border-0 shadow-md hover:shadow-lg transition-all"
           onClick={(e) => {
             e.stopPropagation();
-            if (external_link) window.open(external_link, '_blank');
+            if (onClick) {
+              onClick();
+            } else if (external_link) {
+              window.open(external_link, '_blank');
+            }
           }}
         >
-          <span className="relative z-10 flex items-center justify-center">
-            View Details
-            <ArrowUpRight className="h-4 w-4 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-          </span>
+          View Details
         </Button>
       </div>
     </div>

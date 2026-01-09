@@ -855,6 +855,7 @@ export type Database = {
         Row: {
           applied_count: number | null
           category: string
+          college: string | null
           created_at: string | null
           created_by: string | null
           date: string
@@ -876,6 +877,7 @@ export type Database = {
         Insert: {
           applied_count?: number | null
           category: string
+          college?: string | null
           created_at?: string | null
           created_by?: string | null
           date: string
@@ -897,6 +899,7 @@ export type Database = {
         Update: {
           applied_count?: number | null
           category?: string
+          college?: string | null
           created_at?: string | null
           created_by?: string | null
           date?: string

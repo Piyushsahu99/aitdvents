@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,18 +8,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useEarnCoins, POINT_VALUES } from "@/hooks/useEarnCoins";
 import { ReelsFeed } from "@/components/reels/ReelsFeed";
 import { 
   Plus, Film, Youtube, Instagram, Linkedin, Share2, Loader2, CheckCircle,
-  Shield, FileText, Coins, Search, X, ChevronLeft, AlertTriangle
+  Shield, FileText, Coins, Search, X, ChevronLeft, AlertTriangle, Upload, Link
 } from "lucide-react";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 
-// Validation schema
-const reelSchema = z.object({
+// Validation schemas
+const linkReelSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
   description: z.string().trim().max(500, "Description must be less than 500 characters").optional(),
   video_url: z.string().url("Please enter a valid URL").refine((url) => {
@@ -33,6 +34,13 @@ const reelSchema = z.object({
   }, "Only YouTube, Instagram, LinkedIn, Vimeo, and Twitter/X links are allowed"),
   category: z.string().min(1, "Please select a category"),
   platform: z.string().min(1, "Please select a platform"),
+  tags: z.string().max(200, "Tags must be less than 200 characters").optional(),
+});
+
+const uploadReelSchema = z.object({
+  title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
+  description: z.string().trim().max(500, "Description must be less than 500 characters").optional(),
+  category: z.string().min(1, "Please select a category"),
   tags: z.string().max(200, "Tags must be less than 200 characters").optional(),
 });
 
@@ -61,6 +69,8 @@ const REPORT_REASONS = [
 export default function Reels() {
   const [user, setUser] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [showTermsDialog, setShowTermsDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
@@ -69,6 +79,10 @@ export default function Reels() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [submitTab, setSubmitTab] = useState<"upload" | "link">("upload");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -96,7 +110,61 @@ export default function Reels() {
     setUser(user);
   };
 
-  const handleSubmit = async () => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-m4v'];
+    if (!validTypes.includes(file.type)) {
+      toast({ title: "Invalid file type", description: "Please upload MP4, WebM, or MOV video", variant: "destructive" });
+      return;
+    }
+
+    // Validate file size (50MB limit)
+    if (file.size > 50 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Maximum file size is 50MB", variant: "destructive" });
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const uploadVideo = async (file: File): Promise<string | null> => {
+    if (!user) return null;
+
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('reel-videos')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('reel-videos')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmitUpload = async () => {
     if (!user) {
       toast({ title: "Please login", description: "You need to login to share reels", variant: "destructive" });
       navigate("/auth");
@@ -108,7 +176,77 @@ export default function Reels() {
       return;
     }
 
-    const result = reelSchema.safeParse(formData);
+    if (!selectedFile) {
+      toast({ title: "No video selected", description: "Please select a video file to upload", variant: "destructive" });
+      return;
+    }
+
+    const result = uploadReelSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach(err => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setSubmitting(true);
+    setErrors({});
+
+    try {
+      // Upload video first
+      const videoUrl = await uploadVideo(selectedFile);
+      if (!videoUrl) throw new Error("Failed to upload video");
+
+      const tagsArray = formData.tags
+        ? formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag.length > 0)
+        : [];
+
+      const { error } = await supabase.from("reels").insert({
+        user_id: user.id,
+        title: formData.title.trim(),
+        description: formData.description?.trim() || null,
+        video_url: videoUrl, // Use the same URL for both
+        native_video_url: videoUrl,
+        category: formData.category,
+        platform: "native",
+        tags: tagsArray,
+      });
+
+      if (error) throw error;
+
+      await earnCoins(POINT_VALUES.REEL_UPLOAD, "reel_upload", "Shared an educational reel");
+
+      toast({ 
+        title: "Reel shared! 🎉", 
+        description: `You earned ${POINT_VALUES.REEL_UPLOAD} coins for sharing!`,
+      });
+
+      resetForm();
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to share reel", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSubmitLink = async () => {
+    if (!user) {
+      toast({ title: "Please login", description: "You need to login to share reels", variant: "destructive" });
+      navigate("/auth");
+      return;
+    }
+
+    if (!acceptedTerms) {
+      toast({ title: "Terms Required", description: "Please accept the terms and conditions", variant: "destructive" });
+      return;
+    }
+
+    const result = linkReelSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach(err => {
@@ -147,17 +285,21 @@ export default function Reels() {
         description: `You earned ${POINT_VALUES.REEL_UPLOAD} coins for sharing!`,
       });
 
-      setFormData({ title: "", description: "", video_url: "", category: "", platform: "", tags: "" });
-      setAcceptedTerms(false);
-      setShowSubmitDialog(false);
-      
-      // Refresh the page to show new reel
+      resetForm();
       window.location.reload();
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to share reel", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const resetForm = () => {
+    setFormData({ title: "", description: "", video_url: "", category: "", platform: "", tags: "" });
+    setAcceptedTerms(false);
+    setShowSubmitDialog(false);
+    setSelectedFile(null);
+    setErrors({});
   };
 
   const handleReport = async () => {
@@ -221,14 +363,12 @@ export default function Reels() {
             <span className="text-white font-semibold">Reels</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setShowSearch(!showSearch)}
-              className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white"
-            >
-              {showSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
-            </button>
-          </div>
+          <button 
+            onClick={() => setShowSearch(!showSearch)}
+            className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white"
+          >
+            {showSearch ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+          </button>
         </div>
 
         {/* Search & Filter Bar */}
@@ -307,33 +447,68 @@ export default function Reels() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Title *</label>
-              <Input
-                placeholder="e.g., 5 Tips to Crack Technical Interviews"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className={errors.title ? "border-destructive" : ""}
-              />
-              {errors.title && <p className="text-destructive text-xs mt-1">{errors.title}</p>}
-            </div>
+          <Tabs value={submitTab} onValueChange={(v) => setSubmitTab(v as "upload" | "link")}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="upload" className="flex items-center gap-2">
+                <Upload className="w-4 h-4" />
+                Upload Video
+              </TabsTrigger>
+              <TabsTrigger value="link" className="flex items-center gap-2">
+                <Link className="w-4 h-4" />
+                Share Link
+              </TabsTrigger>
+            </TabsList>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Video URL *</label>
-              <Input
-                placeholder="https://youtube.com/watch?v=... or Instagram/LinkedIn URL"
-                value={formData.video_url}
-                onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
-                className={errors.video_url ? "border-destructive" : ""}
-              />
-              {errors.video_url && <p className="text-destructive text-xs mt-1">{errors.video_url}</p>}
-              <p className="text-xs text-muted-foreground mt-1">
-                Supported: YouTube, Instagram, LinkedIn, Vimeo, Twitter/X
-              </p>
-            </div>
+            {/* Upload Tab */}
+            <TabsContent value="upload" className="space-y-4 pt-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Video File *</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="video/mp4,video/webm,video/quicktime,video/x-m4v"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className={cn(
+                    "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
+                    selectedFile ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50"
+                  )}
+                >
+                  {selectedFile ? (
+                    <div className="space-y-2">
+                      <CheckCircle className="w-8 h-8 mx-auto text-primary" />
+                      <p className="text-sm font-medium">{selectedFile.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFile(null); }}>
+                        Change
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
+                      <p className="text-sm font-medium">Click to upload video</p>
+                      <p className="text-xs text-muted-foreground">MP4, WebM, MOV up to 50MB</p>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Title *</label>
+                <Input
+                  placeholder="e.g., 5 Tips to Crack Technical Interviews"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className={errors.title ? "border-destructive" : ""}
+                />
+                {errors.title && <p className="text-destructive text-xs mt-1">{errors.title}</p>}
+              </div>
+
               <div>
                 <label className="text-sm font-medium mb-2 block">Category *</label>
                 <Select
@@ -353,71 +528,139 @@ export default function Reels() {
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-2 block">Platform *</label>
-                <Select
-                  value={formData.platform}
-                  onValueChange={(value) => setFormData({ ...formData, platform: value })}
-                >
-                  <SelectTrigger className={errors.platform ? "border-destructive" : ""}>
-                    <SelectValue placeholder="Select platform" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PLATFORMS.map(platform => (
-                      <SelectItem key={platform.value} value={platform.value}>
-                        <span className="flex items-center gap-2">
-                          <platform.icon className="w-4 h-4" />
-                          {platform.label}
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.platform && <p className="text-destructive text-xs mt-1">{errors.platform}</p>}
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Description</label>
-              <Textarea
-                placeholder="Brief description of your content..."
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={3}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Tags</label>
-              <Input
-                placeholder="react, javascript, tips (comma separated)"
-                value={formData.tags}
-                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-              />
-            </div>
-
-            <div className="bg-muted/50 p-4 rounded-lg space-y-3">
-              <div className="flex items-start gap-3">
-                <Checkbox
-                  id="terms"
-                  checked={acceptedTerms}
-                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                <label className="text-sm font-medium mb-2 block">Description</label>
+                <Textarea
+                  placeholder="Brief description of your content..."
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={3}
                 />
-                <label htmlFor="terms" className="text-sm leading-relaxed">
-                  I agree to the{" "}
-                  <button
-                    type="button"
-                    onClick={() => setShowTermsDialog(true)}
-                    className="text-primary underline hover:no-underline"
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Tags</label>
+                <Input
+                  placeholder="react, javascript, tips (comma separated)"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                />
+              </div>
+            </TabsContent>
+
+            {/* Link Tab */}
+            <TabsContent value="link" className="space-y-4 pt-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Title *</label>
+                <Input
+                  placeholder="e.g., 5 Tips to Crack Technical Interviews"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className={errors.title ? "border-destructive" : ""}
+                />
+                {errors.title && <p className="text-destructive text-xs mt-1">{errors.title}</p>}
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Video URL *</label>
+                <Input
+                  placeholder="https://youtube.com/watch?v=..."
+                  value={formData.video_url}
+                  onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                  className={errors.video_url ? "border-destructive" : ""}
+                />
+                {errors.video_url && <p className="text-destructive text-xs mt-1">{errors.video_url}</p>}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Supported: YouTube, Instagram, LinkedIn, Vimeo, Twitter/X
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Category *</label>
+                  <Select
+                    value={formData.category}
+                    onValueChange={(value) => setFormData({ ...formData, category: value })}
                   >
-                    Terms & Conditions
-                  </button>{" "}
-                  and confirm that my content is educational and appropriate.
-                </label>
+                    <SelectTrigger className={errors.category ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.filter(c => c !== "All").map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.category && <p className="text-destructive text-xs mt-1">{errors.category}</p>}
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Platform *</label>
+                  <Select
+                    value={formData.platform}
+                    onValueChange={(value) => setFormData({ ...formData, platform: value })}
+                  >
+                    <SelectTrigger className={errors.platform ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Select platform" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PLATFORMS.map(platform => (
+                        <SelectItem key={platform.value} value={platform.value}>
+                          <span className="flex items-center gap-2">
+                            <platform.icon className="w-4 h-4" />
+                            {platform.label}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.platform && <p className="text-destructive text-xs mt-1">{errors.platform}</p>}
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Shield className="w-4 h-4" />
-                Content that violates guidelines will be removed
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Description</label>
+                <Textarea
+                  placeholder="Brief description of your content..."
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={3}
+                />
               </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Tags</label>
+                <Input
+                  placeholder="react, javascript, tips (comma separated)"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Terms Section */}
+          <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="terms"
+                checked={acceptedTerms}
+                onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+              />
+              <label htmlFor="terms" className="text-sm leading-relaxed">
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={() => setShowTermsDialog(true)}
+                  className="text-primary underline hover:no-underline"
+                >
+                  Terms & Conditions
+                </button>{" "}
+                and confirm that my content is educational and appropriate.
+              </label>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Shield className="w-4 h-4" />
+              Content that violates guidelines will be removed
             </div>
           </div>
 
@@ -425,11 +668,14 @@ export default function Reels() {
             <Button variant="outline" onClick={() => setShowSubmitDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={submitting || !acceptedTerms}>
-              {submitting ? (
+            <Button 
+              onClick={submitTab === "upload" ? handleSubmitUpload : handleSubmitLink} 
+              disabled={submitting || uploading || !acceptedTerms}
+            >
+              {submitting || uploading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Publishing...
+                  {uploading ? "Uploading..." : "Publishing..."}
                 </>
               ) : (
                 <>

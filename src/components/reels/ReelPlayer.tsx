@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useEarnCoins, POINT_VALUES } from "@/hooks/useEarnCoins";
 import { 
-  Heart, MessageCircle, Share2, Play, Pause, Volume2, VolumeX, 
+  Heart, Share2, Play, Pause, Volume2, VolumeX, 
   Coins, Check, ExternalLink, Flag
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +13,7 @@ interface Reel {
   title: string;
   description: string | null;
   video_url: string;
+  native_video_url: string | null;
   thumbnail_url: string | null;
   category: string;
   tags: string[];
@@ -50,20 +50,23 @@ export function ReelPlayer({
   const [isMuted, setIsMuted] = useState(true);
   const [watchTime, setWatchTime] = useState(0);
   const [showCoinAnimation, setShowCoinAnimation] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const watchTimeRef = useRef(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Extract YouTube video ID
+  // Check if we have a native video
+  const hasNativeVideo = !!reel.native_video_url;
+
+  // Extract YouTube video ID for shorts/regular videos
   const getYoutubeId = (url: string): string | null => {
     try {
       const urlObj = new URL(url);
       if (urlObj.hostname.includes("youtu.be")) {
-        return urlObj.pathname.slice(1);
+        return urlObj.pathname.slice(1).split('?')[0];
       }
       if (urlObj.hostname.includes("youtube.com")) {
         if (urlObj.pathname.includes("/shorts/")) {
-          return urlObj.pathname.split("/shorts/")[1];
+          return urlObj.pathname.split("/shorts/")[1].split('?')[0];
         }
         return urlObj.searchParams.get("v");
       }
@@ -74,9 +77,21 @@ export function ReelPlayer({
   };
 
   const youtubeId = getYoutubeId(reel.video_url);
-  const embedUrl = youtubeId 
-    ? `https://www.youtube.com/embed/${youtubeId}?autoplay=${isActive ? 1 : 0}&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0&playsinline=1`
-    : null;
+  const isYoutube = !!youtubeId;
+
+  // Handle native video playback
+  useEffect(() => {
+    if (!hasNativeVideo || !videoRef.current) return;
+
+    if (isActive) {
+      videoRef.current.play().catch(() => {});
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+      setIsPlaying(false);
+    }
+  }, [isActive, hasNativeVideo]);
 
   // Track watch time when active
   useEffect(() => {
@@ -85,7 +100,6 @@ export function ReelPlayer({
         watchTimeRef.current += 1;
         setWatchTime(watchTimeRef.current);
         
-        // Award coins after threshold
         if (watchTimeRef.current >= WATCH_TIME_THRESHOLD && !hasEarnedCoins) {
           onEarnCoins(reel.id);
           setShowCoinAnimation(true);
@@ -116,48 +130,91 @@ export function ReelPlayer({
   };
 
   const handleShare = async () => {
+    const shareUrl = reel.native_video_url || reel.video_url;
     if (navigator.share) {
       try {
         await navigator.share({
           title: reel.title,
           text: reel.description || "Check out this educational reel!",
-          url: reel.video_url,
+          url: shareUrl,
         });
       } catch (err) {
         console.log("Share cancelled");
       }
     } else {
-      navigator.clipboard.writeText(reel.video_url);
+      navigator.clipboard.writeText(shareUrl);
     }
+  };
+
+  const togglePlayPause = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const toggleMute = () => {
+    if (!videoRef.current) return;
+    videoRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
   };
 
   const progress = Math.min((watchTime / WATCH_TIME_THRESHOLD) * 100, 100);
 
   return (
-    <div 
-      ref={containerRef}
-      className="relative h-full w-full bg-black snap-start snap-always"
-    >
+    <div className="relative h-full w-full bg-black snap-start snap-always">
       {/* Video Container */}
       <div className="absolute inset-0 flex items-center justify-center">
-        {embedUrl ? (
+        {hasNativeVideo ? (
+          // Native video player
+          <div className="relative w-full h-full" onClick={togglePlayPause}>
+            <video
+              ref={videoRef}
+              src={reel.native_video_url!}
+              className="w-full h-full object-contain"
+              loop
+              muted={isMuted}
+              playsInline
+              preload="metadata"
+              poster={reel.thumbnail_url || undefined}
+            />
+            {/* Play/Pause overlay */}
+            {!isPlaying && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                <div className="w-20 h-20 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center">
+                  <Play className="w-10 h-10 text-white fill-white" />
+                </div>
+              </div>
+            )}
+          </div>
+        ) : isYoutube ? (
+          // YouTube embed
           <iframe
-            src={embedUrl}
-            className="w-full h-full object-cover"
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${isActive ? 1 : 0}&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0&playsinline=1`}
+            className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
         ) : (
+          // External link fallback with better styling
           <a
             href={reel.video_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center justify-center gap-4 text-white"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-700"
           >
-            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-              <Play className="w-10 h-10 fill-white" />
+            <div className="text-center text-white space-y-4">
+              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto animate-pulse">
+                <Play className="w-12 h-12 fill-white" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold capitalize">Watch on {reel.platform}</p>
+                <p className="text-sm text-white/70">Tap to open</p>
+              </div>
             </div>
-            <span className="text-sm">Watch on {reel.platform}</span>
           </a>
         )}
       </div>
@@ -197,6 +254,16 @@ export function ReelPlayer({
         </div>
       )}
 
+      {/* Mute button for native video */}
+      {hasNativeVideo && (
+        <button
+          onClick={(e) => { e.stopPropagation(); toggleMute(); }}
+          className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white"
+        >
+          {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+        </button>
+      )}
+
       {/* Right Side Actions */}
       <div className="absolute right-3 bottom-32 z-20 flex flex-col items-center gap-5">
         {/* Like */}
@@ -229,17 +296,19 @@ export function ReelPlayer({
         </button>
 
         {/* External Link */}
-        <a 
-          href={reel.video_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-col items-center gap-1"
-        >
-          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-            <ExternalLink className="w-6 h-6" />
-          </div>
-          <span className="text-white text-xs font-medium">Open</span>
-        </a>
+        {!hasNativeVideo && (
+          <a 
+            href={reel.video_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
+              <ExternalLink className="w-6 h-6" />
+            </div>
+            <span className="text-white text-xs font-medium">Open</span>
+          </a>
+        )}
 
         {/* Report */}
         <button 

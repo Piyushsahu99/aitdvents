@@ -3,9 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useEarnCoins, POINT_VALUES } from "@/hooks/useEarnCoins";
 import { ReelPlayer } from "./ReelPlayer";
-import { Loader2, Film, Plus, X } from "lucide-react";
+import { Loader2, Film, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface Reel {
   id: string;
@@ -13,6 +12,7 @@ interface Reel {
   title: string;
   description: string | null;
   video_url: string;
+  native_video_url: string | null;
   thumbnail_url: string | null;
   category: string;
   tags: string[];
@@ -119,14 +119,12 @@ export function ReelsFeed({ onOpenSubmit, onReport, selectedCategory, searchQuer
           newSet.delete(reelId);
           return newSet;
         });
-        // Update local count
         setReels(prev => prev.map(r => 
           r.id === reelId ? { ...r, likes_count: Math.max(0, r.likes_count - 1) } : r
         ));
       } else {
         await supabase.from("reel_likes").insert({ reel_id: reelId, user_id: user.id });
         setLikedReels(prev => new Set([...prev, reelId]));
-        // Update local count
         setReels(prev => prev.map(r => 
           r.id === reelId ? { ...r, likes_count: r.likes_count + 1 } : r
         ));
@@ -140,7 +138,6 @@ export function ReelsFeed({ onOpenSubmit, onReport, selectedCategory, searchQuer
     if (!user || earnedReels.has(reelId)) return;
 
     try {
-      // Record view with earned_coins = true
       await supabase.from("reel_views").upsert({
         reel_id: reelId,
         user_id: user.id,
@@ -148,14 +145,15 @@ export function ReelsFeed({ onOpenSubmit, onReport, selectedCategory, searchQuer
         earned_coins: true,
       }, { onConflict: 'reel_id,user_id' });
 
-      // Earn coins through RPC
       await earnCoins(POINT_VALUES.REEL_WATCH, "reel_watch", "Watched an educational reel", reelId);
 
-      // Update views count
-      await supabase
-        .from("reels")
-        .update({ views_count: reels.find(r => r.id === reelId)?.views_count ?? 0 + 1 })
-        .eq("id", reelId);
+      const currentReel = reels.find(r => r.id === reelId);
+      if (currentReel) {
+        await supabase
+          .from("reels")
+          .update({ views_count: (currentReel.views_count || 0) + 1 })
+          .eq("id", reelId);
+      }
 
       setEarnedReels(prev => new Set([...prev, reelId]));
     } catch (error) {

@@ -1817,6 +1817,7 @@ export type Database = {
           is_featured: boolean | null
           is_hidden: boolean | null
           likes_count: number | null
+          native_video_url: string | null
           platform: string
           reported_count: number | null
           tags: string[] | null
@@ -1836,6 +1837,7 @@ export type Database = {
           is_featured?: boolean | null
           is_hidden?: boolean | null
           likes_count?: number | null
+          native_video_url?: string | null
           platform: string
           reported_count?: number | null
           tags?: string[] | null
@@ -1855,6 +1857,7 @@ export type Database = {
           is_featured?: boolean | null
           is_hidden?: boolean | null
           likes_count?: number | null
+          native_video_url?: string | null
           platform?: string
           reported_count?: number | null
           tags?: string[] | null

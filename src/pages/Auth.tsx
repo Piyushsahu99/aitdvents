@@ -8,7 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { z } from "zod";
 import logo from "@/assets/aitd-logo.png";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield, ArrowLeft, RefreshCw, CheckCircle, AlertCircle } from "lucide-react";
+import { 
+  Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield, 
+  ArrowLeft, RefreshCw, CheckCircle, AlertCircle, User, 
+  Rocket, Trophy, Users, Zap
+} from "lucide-react";
 
 // List of common disposable/temporary email domains to block
 const disposableEmailDomains = [
@@ -71,6 +75,14 @@ const emailOnlySchema = z.object({
       message: "Please use a valid email from a trusted provider."
     }),
 });
+
+// Feature items for the left panel
+const features = [
+  { icon: Rocket, text: "Access 500+ curated opportunities", delay: "0s" },
+  { icon: Trophy, text: "Win bounties & hackathons", delay: "0.1s" },
+  { icon: Users, text: "Connect with top recruiters", delay: "0.2s" },
+  { icon: Zap, text: "Build your professional network", delay: "0.3s" },
+];
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -417,42 +429,113 @@ export default function Auth() {
     }
   };
 
-  // Verification Error View (expired/invalid token)
+  // Left Panel Component
+  const LeftPanel = ({ title, subtitle, description }: { title: string; subtitle: string; description: string }) => (
+    <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-accent animate-gradient" />
+      
+      {/* Pattern overlay */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.4%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]" />
+      </div>
+
+      {/* Floating decorative elements */}
+      <div className="absolute top-20 right-20 animate-float">
+        <div className="h-20 w-20 rounded-2xl bg-white/10 backdrop-blur-sm rotate-12" />
+      </div>
+      <div className="absolute bottom-32 right-16 animate-float-delayed">
+        <div className="h-16 w-16 rounded-full bg-white/10 backdrop-blur-sm" />
+      </div>
+      <div className="absolute top-1/3 right-1/4 animate-float-slow">
+        <Sparkles className="h-12 w-12 text-white/20" />
+      </div>
+      <div className="absolute bottom-1/4 left-1/4 animate-pulse-soft">
+        <div className="h-24 w-24 rounded-3xl bg-gradient-to-br from-white/10 to-transparent backdrop-blur-sm -rotate-12" />
+      </div>
+      
+      <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 2xl:px-20 w-full">
+        {/* Logo */}
+        <div className="flex items-center gap-4 mb-10 animate-fade-in">
+          <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-sm">
+            <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
+          </div>
+          <span className="text-2xl font-bold text-white">AITD Events</span>
+        </div>
+        
+        {/* Headlines */}
+        <div className="space-y-4 mb-10">
+          <h1 className="text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white leading-tight animate-fade-in-up">
+            {title}
+            <br />
+            <span className="text-white/90">{subtitle}</span>
+          </h1>
+          <p className="text-lg xl:text-xl text-white/70 max-w-md animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+            {description}
+          </p>
+        </div>
+        
+        {/* Features */}
+        <div className="space-y-4">
+          {features.map((feature, i) => (
+            <div 
+              key={i} 
+              className="flex items-center gap-4 text-white/90 animate-fade-in-up"
+              style={{ animationDelay: feature.delay }}
+            >
+              <div className="h-10 w-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                <feature.icon className="h-5 w-5" />
+              </div>
+              <span className="text-base xl:text-lg">{feature.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Stats */}
+        <div className="flex gap-8 mt-12 pt-8 border-t border-white/10">
+          <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <div className="text-3xl font-bold text-white">10K+</div>
+            <div className="text-sm text-white/60">Active Users</div>
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
+            <div className="text-3xl font-bold text-white">500+</div>
+            <div className="text-sm text-white/60">Opportunities</div>
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: "0.6s" }}>
+            <div className="text-3xl font-bold text-white">50+</div>
+            <div className="text-sm text-white/60">Partners</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Mobile Header Component
+  const MobileHeader = () => (
+    <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
+      <div className="p-2 rounded-xl bg-primary/10">
+        <img src={logo} alt="AITD Events" className="h-10 w-10 rounded-lg" />
+      </div>
+      <span className="text-2xl font-bold text-foreground">AITD Events</span>
+    </div>
+  );
+
+  // Verification Error View
   if (showVerificationError) {
     return (
       <div className="min-h-screen flex">
-        {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
-          
-          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-            <div className="flex items-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
-              <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
-            </div>
-            
-            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
-              Link Expired<br />
-              <span className="text-primary-foreground/90">Let's Fix That</span>
-            </h1>
-            
-            <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
-              Verification links expire for security. Request a new one and you'll be good to go.
-            </p>
-          </div>
-        </div>
+        <LeftPanel 
+          title="Link Expired" 
+          subtitle="Let's Fix That" 
+          description="Verification links expire for security. Request a new one and you'll be good to go."
+        />
 
-        {/* Right Side - Content */}
         <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
-          <div className="w-full max-w-md">
-            {/* Mobile Logo */}
-            <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
-              <span className="text-2xl font-bold text-primary">AITD Events</span>
-            </div>
+          <div className="w-full max-w-md animate-fade-in-up">
+            <MobileHeader />
 
             <div className="text-center space-y-6">
-              <div className="mx-auto w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center">
+              <div className="mx-auto w-20 h-20 rounded-2xl bg-destructive/10 flex items-center justify-center">
                 <AlertCircle className="h-10 w-10 text-destructive" />
               </div>
 
@@ -465,35 +548,39 @@ export default function Auth() {
                 </p>
               </div>
 
-              <div className="bg-muted/50 rounded-lg p-4 text-left space-y-3">
+              <div className="bg-muted/50 rounded-xl p-5 text-left space-y-3">
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle className="h-4 w-4 text-primary" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Enter your email below to receive a new verification link
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle className="h-4 w-4 text-primary" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Make sure to use the link within 24 hours
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <div className="space-y-4">
+                <div className="relative group">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     type="email"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                    className="pl-12 h-14 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all rounded-xl text-base"
                   />
                 </div>
 
                 <Button
-                  className="w-full"
+                  className="w-full h-14 text-base font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
                   onClick={async () => {
                     if (!email) {
                       toast({
@@ -533,9 +620,9 @@ export default function Auth() {
                   disabled={loading}
                 >
                   {loading ? (
-                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
                   ) : (
-                    <Mail className="h-4 w-4 mr-2" />
+                    <Mail className="h-5 w-5 mr-2" />
                   )}
                   Send new verification link
                 </Button>
@@ -546,9 +633,9 @@ export default function Auth() {
                     setVerificationErrorMessage("");
                     navigate("/auth", { replace: true });
                   }}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium"
                 >
-                  Back to login
+                  ← Back to login
                 </button>
               </div>
             </div>
@@ -562,38 +649,18 @@ export default function Auth() {
   if (showVerificationPending) {
     return (
       <div className="min-h-screen flex">
-        {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
-          
-          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-            <div className="flex items-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
-              <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
-            </div>
-            
-            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
-              Almost There!<br />
-              <span className="text-primary-foreground/90">Verify Your Email</span>
-            </h1>
-            
-            <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
-              We've sent a verification link to your email. Click it to activate your account and start exploring.
-            </p>
-          </div>
-        </div>
+        <LeftPanel 
+          title="Almost There!" 
+          subtitle="Verify Your Email" 
+          description="We've sent a verification link to your email. Click it to activate your account."
+        />
 
-        {/* Right Side - Content */}
         <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
-          <div className="w-full max-w-md">
-            {/* Mobile Logo */}
-            <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
-              <span className="text-2xl font-bold text-primary">AITD Events</span>
-            </div>
+          <div className="w-full max-w-md animate-fade-in-up">
+            <MobileHeader />
 
             <div className="text-center space-y-6">
-              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="mx-auto w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center animate-pulse-soft">
                 <Mail className="h-10 w-10 text-primary" />
               </div>
 
@@ -604,30 +671,34 @@ export default function Auth() {
                 <p className="text-muted-foreground">
                   We've sent a verification link to
                 </p>
-                <p className="font-semibold text-foreground mt-1 break-all">
+                <p className="font-semibold text-primary mt-1 break-all">
                   {pendingEmail}
                 </p>
               </div>
 
-              <div className="bg-muted/50 rounded-lg p-4 text-left space-y-3">
+              <div className="bg-muted/50 rounded-xl p-5 text-left space-y-3">
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle className="h-4 w-4 text-primary" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Click the link in the email to verify your account
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle className="h-4 w-4 text-primary" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Check your spam folder if you don't see it
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full h-14 rounded-xl text-base font-medium border-2 hover:bg-muted/50"
                   onClick={async () => {
                     setLoading(true);
                     try {
@@ -656,9 +727,9 @@ export default function Auth() {
                   disabled={loading}
                 >
                   {loading ? (
-                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
                   ) : (
-                    <Mail className="h-4 w-4 mr-2" />
+                    <Mail className="h-5 w-5 mr-2" />
                   )}
                   Resend verification email
                 </Button>
@@ -669,9 +740,9 @@ export default function Auth() {
                     setPendingEmail("");
                     setIsLogin(true);
                   }}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium"
                 >
-                  Back to login
+                  ← Back to login
                 </button>
               </div>
             </div>
@@ -681,39 +752,19 @@ export default function Auth() {
     );
   }
 
-  // Reset Password View (after clicking email link)
+  // Reset Password View
   if (showResetPassword) {
     return (
       <div className="min-h-screen flex">
-        {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
-          
-          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-            <div className="flex items-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
-              <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
-            </div>
-            
-            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
-              Set Your New<br />
-              <span className="text-primary-foreground/90">Password</span>
-            </h1>
-            
-            <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
-              Choose a strong password that you haven't used before.
-            </p>
-          </div>
-        </div>
+        <LeftPanel 
+          title="Set Your New" 
+          subtitle="Password" 
+          description="Choose a strong password that you haven't used before."
+        />
 
-        {/* Right Side - Form */}
         <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
-          <div className="w-full max-w-md">
-            {/* Mobile Logo */}
-            <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
-              <span className="text-2xl font-bold text-primary">AITD Events</span>
-            </div>
+          <div className="w-full max-w-md animate-fade-in-up">
+            <MobileHeader />
 
             <div className="mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
@@ -729,8 +780,8 @@ export default function Auth() {
                 <Label htmlFor="new-password" className="text-sm font-medium">
                   New Password
                 </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="new-password"
                     type={showPassword ? "text" : "password"}
@@ -740,12 +791,12 @@ export default function Auth() {
                     required
                     minLength={6}
                     maxLength={100}
-                    className="pl-10 pr-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                    className="pl-12 pr-12 h-14 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all rounded-xl text-base"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -756,8 +807,8 @@ export default function Auth() {
                 <Label htmlFor="confirm-password" className="text-sm font-medium">
                   Confirm New Password
                 </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="confirm-password"
                     type={showPassword ? "text" : "password"}
@@ -767,14 +818,14 @@ export default function Auth() {
                     required
                     minLength={6}
                     maxLength={100}
-                    className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                    className="pl-12 h-14 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all rounded-xl text-base"
                   />
                 </div>
               </div>
 
               <Button 
                 type="submit" 
-                className="w-full h-12 text-base font-semibold group"
+                className="w-full h-14 text-base font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group"
                 disabled={loading}
               >
                 {loading ? (
@@ -803,42 +854,22 @@ export default function Auth() {
   if (showForgotPassword) {
     return (
       <div className="min-h-screen flex">
-        {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
-          
-          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-            <div className="flex items-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
-              <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
-            </div>
-            
-            <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
-              Reset Your<br />
-              <span className="text-primary-foreground/90">Password</span>
-            </h1>
-            
-            <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
-              Don't worry, it happens to the best of us. Enter your email and we'll send you a reset link.
-            </p>
-          </div>
-        </div>
+        <LeftPanel 
+          title="Reset Your" 
+          subtitle="Password" 
+          description="Don't worry, it happens to the best of us. Enter your email and we'll send you a reset link."
+        />
 
-        {/* Right Side - Form */}
         <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
-          <div className="w-full max-w-md">
-            {/* Mobile Logo */}
-            <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
-              <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
-              <span className="text-2xl font-bold text-primary">AITD Events</span>
-            </div>
+          <div className="w-full max-w-md animate-fade-in-up">
+            <MobileHeader />
 
             <button
               onClick={() => {
                 setShowForgotPassword(false);
                 setResetEmailSent(false);
               }}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 transition-colors font-medium"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to login
@@ -851,19 +882,21 @@ export default function Auth() {
               <p className="text-muted-foreground">
                 {resetEmailSent 
                   ? "We've sent a password reset link to your email"
-                  : "Enter your email address and we'll send you a link to reset your password"}
+                  : "Enter your email and we'll send you a reset link"}
               </p>
             </div>
 
             {resetEmailSent ? (
               <div className="space-y-6">
-                <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-emerald-600" />
+                <div className="p-5 rounded-xl bg-success/10 border border-success/20">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-success/20 flex items-center justify-center">
+                      <Mail className="h-6 w-6 text-success" />
+                    </div>
                     <div>
-                      <p className="font-medium text-emerald-700">Check your email</p>
-                      <p className="text-sm text-emerald-600/80">
-                        We've sent a password reset link to <strong>{email}</strong>
+                      <p className="font-semibold text-foreground">Check your email</p>
+                      <p className="text-sm text-muted-foreground">
+                        We sent a reset link to <strong className="text-foreground">{email}</strong>
                       </p>
                     </div>
                   </div>
@@ -873,7 +906,7 @@ export default function Auth() {
                   Didn't receive the email?{" "}
                   <button
                     onClick={() => setResetEmailSent(false)}
-                    className="text-primary font-medium hover:underline"
+                    className="text-primary font-semibold hover:underline"
                   >
                     Try again
                   </button>
@@ -885,8 +918,8 @@ export default function Auth() {
                   <Label htmlFor="reset-email" className="text-sm font-medium">
                     Email address
                   </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                     <Input
                       id="reset-email"
                       type="email"
@@ -895,14 +928,14 @@ export default function Auth() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       maxLength={255}
-                      className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                      className="pl-12 h-14 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all rounded-xl text-base"
                     />
                   </div>
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full h-12 text-base font-semibold group"
+                  className="w-full h-14 text-base font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group"
                   disabled={loading}
                 >
                   {loading ? (
@@ -928,64 +961,23 @@ export default function Auth() {
     );
   }
 
+  // Main Login/Signup View
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-accent relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
-        
-        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-          <div className="flex items-center gap-3 mb-8">
-            <img src={logo} alt="AITD Events" className="h-14 w-14 rounded-xl shadow-lg" />
-            <span className="text-3xl font-bold text-primary-foreground">AITD Events</span>
-          </div>
-          
-          <h1 className="text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
-            Your Gateway to<br />
-            <span className="text-primary-foreground/90">Career Opportunities</span>
-          </h1>
-          
-          <p className="text-lg text-primary-foreground/80 mb-10 max-w-md">
-            Join thousands of tech students discovering hackathons, internships, and events that shape their future.
-          </p>
-          
-          <div className="space-y-4">
-            {[
-              "Access 500+ curated opportunities",
-              "Connect with top recruiters",
-              "Join exclusive tech events",
-              "Build your professional network"
-            ].map((feature, i) => (
-              <div key={i} className="flex items-center gap-3 text-primary-foreground/90">
-                <div className="h-2 w-2 rounded-full bg-primary-foreground/60" />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
+      <LeftPanel 
+        title="Your Gateway to" 
+        subtitle="Career Opportunities" 
+        description="Join thousands of tech students discovering hackathons, internships, and events that shape their future."
+      />
 
-          {/* Floating elements */}
-          <div className="absolute top-20 right-20 animate-float">
-            <Sparkles className="h-8 w-8 text-primary-foreground/30" />
-          </div>
-          <div className="absolute bottom-32 right-32 animate-float-delayed">
-            <div className="h-16 w-16 rounded-2xl bg-primary-foreground/10 backdrop-blur-sm" />
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Form */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
-            <img src={logo} alt="AITD Events" className="h-12 w-12 rounded-xl" />
-            <span className="text-2xl font-bold text-primary">AITD Events</span>
-          </div>
+        <div className="w-full max-w-md animate-fade-in-up">
+          <MobileHeader />
 
           <div className="mb-8">
             {isValidAdminInvite && (
-              <Badge className="mb-4 bg-amber-500/10 text-amber-600 border-amber-500/20">
-                <Shield className="h-3 w-3 mr-1" />
+              <Badge className="mb-4 bg-warning/10 text-warning border-warning/20 px-3 py-1">
+                <Shield className="h-3.5 w-3.5 mr-1.5" />
                 Admin Invite
               </Badge>
             )}
@@ -1006,8 +998,8 @@ export default function Auth() {
                     : "Start your journey with AITD Events"}
             </p>
             {referralCode && !isLogin && (
-              <Badge className="mt-2 bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-                <Sparkles className="h-3 w-3 mr-1" />
+              <Badge className="mt-3 bg-success/10 text-success border-success/20 px-3 py-1">
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                 Referral Code Applied
               </Badge>
             )}
@@ -1018,8 +1010,8 @@ export default function Auth() {
               <Label htmlFor="email" className="text-sm font-medium">
                 Email address
               </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   id="email"
                   type="email"
@@ -1028,11 +1020,11 @@ export default function Auth() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   maxLength={255}
-                  className="pl-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                  className="pl-12 h-14 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all rounded-xl text-base"
                 />
               </div>
               {!isLogin && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground pl-1">
                   Use your college email or a trusted provider (Gmail, Outlook, etc.)
                 </p>
               )}
@@ -1047,14 +1039,14 @@ export default function Auth() {
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(true)}
-                    className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+                    className="text-xs text-primary hover:text-primary/80 font-semibold transition-colors"
                   >
                     Forgot password?
                   </button>
                 )}
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -1064,18 +1056,18 @@ export default function Auth() {
                   required
                   minLength={6}
                   maxLength={100}
-                  className="pl-10 pr-10 h-12 bg-muted/50 border-border focus:bg-background transition-colors"
+                  className="pl-12 pr-12 h-14 bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all rounded-xl text-base"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
               {!isLogin && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground pl-1">
                   Must be at least 6 characters
                 </p>
               )}
@@ -1083,7 +1075,7 @@ export default function Auth() {
 
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold group"
+              className="w-full h-14 text-base font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group"
               disabled={loading}
             >
               {loading ? (
@@ -1103,12 +1095,12 @@ export default function Auth() {
             </Button>
 
             {/* Divider */}
-            <div className="relative my-4">
+            <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
+                <span className="w-full border-t-2 border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-background px-4 text-muted-foreground font-medium">Or continue with</span>
               </div>
             </div>
 
@@ -1116,17 +1108,17 @@ export default function Auth() {
             <Button
               type="button"
               variant="outline"
-              className="w-full h-12 text-base font-medium"
+              className="w-full h-14 text-base font-medium rounded-xl border-2 hover:bg-muted/50 hover:border-primary/20 transition-all"
               onClick={handleGoogleSignIn}
               disabled={googleLoading}
             >
               {googleLoading ? (
-                <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
               ) : (
-                <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 mr-3" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     fill="#4285F4"
@@ -1151,11 +1143,11 @@ export default function Auth() {
 
           {/* Admin Login Toggle */}
           {isLogin && (
-            <div className="mt-4">
+            <div className="mt-5">
               <button
                 type="button"
                 onClick={() => setIsAdminLogin(!isAdminLogin)}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 text-amber-600 text-sm font-medium transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-warning/30 bg-warning/5 hover:bg-warning/10 text-warning text-sm font-semibold transition-all"
               >
                 <Shield className="h-4 w-4" />
                 {isAdminLogin ? "Switch to Student Login" : "Login as Admin"}
@@ -1168,21 +1160,24 @@ export default function Auth() {
             </div>
           )}
 
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {isLogin ? (
-                <>Don't have an account? <span className="font-semibold text-primary">Sign up</span></>
+                <>Don't have an account? <span className="font-bold text-primary hover:underline">Sign up</span></>
               ) : (
-                <>Already have an account? <span className="font-semibold text-primary">Sign in</span></>
+                <>Already have an account? <span className="font-bold text-primary hover:underline">Sign in</span></>
               )}
             </button>
           </div>
 
           <p className="mt-8 text-xs text-center text-muted-foreground">
-            By continuing, you agree to our Terms of Service and Privacy Policy
+            By continuing, you agree to our{" "}
+            <a href="/terms" className="text-primary hover:underline">Terms of Service</a>
+            {" "}and{" "}
+            <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>
           </p>
         </div>
       </div>

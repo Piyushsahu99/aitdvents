@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -266,143 +266,175 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden rounded-xl h-9 w-9 sm:h-10 sm:w-10"
-              >
-                <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[85vw] sm:w-[350px] p-0">
-              <div className="flex flex-col h-full">
-                {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b">
-                  <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-2">
-                    <img src={logo} alt="AITD Events" className="h-8 w-8 rounded-lg" />
-                    <span className="text-lg font-bold text-primary">aitd.events</span>
-                  </Link>
-                </div>
+          <div className="lg:hidden flex items-center gap-2">
+            <CartIcon />
+            {user && <PointsWidget />}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-xl h-10 w-10 border-2 border-primary/20 bg-primary/5 active:scale-95 transition-transform"
+                >
+                  {isOpen ? <X className="h-5 w-5 text-primary" /> : <Menu className="h-5 w-5 text-primary" />}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[88vw] max-w-[380px] p-0 border-l-2 border-primary/20">
+                <div className="flex flex-col h-full bg-gradient-to-b from-background to-muted/20">
+                  {/* Header with gradient */}
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/10">
+                    <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-3">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-primary/30 rounded-xl blur-md" />
+                        <img src={logo} alt="AITD Events" className="h-10 w-10 rounded-xl relative z-10 shadow-md" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">aitd.events</span>
+                        <span className="text-[10px] text-muted-foreground">Learn • Compete • Grow</span>
+                      </div>
+                    </Link>
+                  </div>
 
-                {/* Scrollable Content */}
-                <ScrollArea className="flex-1">
-                  <div className="p-4 space-y-6">
-                    {/* Primary Links */}
-                    <div className="space-y-1">
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">Main</p>
-                      {primaryNavLinks.map((link) => {
-                        const Icon = link.icon;
-                        return (
+                  {/* Scrollable Content */}
+                  <ScrollArea className="flex-1">
+                    <div className="p-3 space-y-4">
+                      {/* Primary Links - Featured Cards */}
+                      <div className="space-y-2">
+                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest px-2 flex items-center gap-1.5">
+                          <Sparkles className="h-3 w-3" />
+                          Quick Access
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {primaryNavLinks.map((link) => {
+                            const Icon = link.icon;
+                            return (
+                              <Link
+                                key={link.path}
+                                to={link.path}
+                                onClick={() => setIsOpen(false)}
+                                className={`flex flex-col items-center p-3 rounded-2xl text-center transition-all active:scale-95 ${
+                                  isActive(link.path)
+                                    ? "bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg"
+                                    : "bg-card border border-border/50 text-foreground"
+                                }`}
+                              >
+                                <div className={`p-2.5 rounded-xl mb-2 ${
+                                  isActive(link.path) 
+                                    ? "bg-white/20" 
+                                    : "bg-gradient-to-br from-primary/10 to-accent/10"
+                                }`}>
+                                  <Icon className={`h-5 w-5 ${isActive(link.path) ? "text-white" : "text-primary"}`} />
+                                </div>
+                                <span className="font-semibold text-xs">{link.name}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* More Items by Category */}
+                      {moreNavLinks.map((category) => (
+                        <div key={category.category} className="space-y-1.5">
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-2">
+                            {category.category}
+                          </p>
+                          <div className="bg-card/50 rounded-2xl border border-border/30 overflow-hidden">
+                            {category.items.map((item, idx) => {
+                              const Icon = item.icon;
+                              return (
+                                <Link
+                                  key={item.path}
+                                  to={item.path}
+                                  onClick={() => setIsOpen(false)}
+                                  className={`flex items-center justify-between px-3 py-3 text-sm transition-all active:bg-muted/80 ${
+                                    isActive(item.path)
+                                      ? "bg-primary/10 text-primary font-semibold"
+                                      : "text-foreground"
+                                  } ${idx !== category.items.length - 1 ? "border-b border-border/30" : ""}`}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className={`p-1.5 rounded-lg ${isActive(item.path) ? "bg-primary/20" : "bg-muted/50"}`}>
+                                      <Icon className={`h-4 w-4 ${isActive(item.path) ? "text-primary" : "text-muted-foreground"}`} />
+                                    </div>
+                                    <span>{item.name}</span>
+                                  </div>
+                                  <ChevronRight className={`h-4 w-4 ${isActive(item.path) ? "text-primary" : "text-muted-foreground/50"}`} />
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* About */}
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-2">Info</p>
+                        <div className="bg-card/50 rounded-2xl border border-border/30 overflow-hidden">
                           <Link
-                            key={link.path}
-                            to={link.path}
+                            to="/about"
                             onClick={() => setIsOpen(false)}
-                            className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                              isActive(link.path)
-                                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-md"
-                                : "text-foreground hover:bg-muted"
+                            className={`flex items-center justify-between px-3 py-3 text-sm transition-all active:bg-muted/80 ${
+                              isActive("/about")
+                                ? "bg-primary/10 text-primary font-semibold"
+                                : "text-foreground"
                             }`}
                           >
                             <div className="flex items-center gap-3">
-                              <Icon className="h-5 w-5" />
-                              <span>{link.name}</span>
-                            </div>
-                            <ChevronRight className="h-4 w-4 opacity-50" />
-                          </Link>
-                        );
-                      })}
-                    </div>
-
-                    {/* More Items by Category */}
-                    {moreNavLinks.map((category) => (
-                      <div key={category.category} className="space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">
-                          {category.category}
-                        </p>
-                        {category.items.map((item) => {
-                          const Icon = item.icon;
-                          return (
-                            <Link
-                              key={item.path}
-                              to={item.path}
-                              onClick={() => setIsOpen(false)}
-                              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
-                                isActive(item.path)
-                                  ? "bg-primary/10 text-primary font-medium"
-                                  : "text-foreground hover:bg-muted"
-                              }`}
-                            >
-                              <div className="flex items-center gap-3">
-                                <Icon className="h-4 w-4" />
-                                <span>{item.name}</span>
+                              <div className={`p-1.5 rounded-lg ${isActive("/about") ? "bg-primary/20" : "bg-muted/50"}`}>
+                                <Users className={`h-4 w-4 ${isActive("/about") ? "text-primary" : "text-muted-foreground"}`} />
                               </div>
-                              <ChevronRight className="h-4 w-4 opacity-50" />
-                            </Link>
-                          );
-                        })}
+                              <span>About Us</span>
+                            </div>
+                            <ChevronRight className={`h-4 w-4 ${isActive("/about") ? "text-primary" : "text-muted-foreground/50"}`} />
+                          </Link>
+                        </div>
                       </div>
-                    ))}
-
-                    {/* About */}
-                    <div className="space-y-1">
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">Info</p>
-                      <Link
-                        to="/about"
-                        onClick={() => setIsOpen(false)}
-                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
-                          isActive("/about")
-                            ? "bg-primary/10 text-primary font-medium"
-                            : "text-foreground hover:bg-muted"
-                        }`}
-                      >
-                        <span>About Us</span>
-                        <ChevronRight className="h-4 w-4 opacity-50" />
-                      </Link>
                     </div>
-                  </div>
-                </ScrollArea>
+                  </ScrollArea>
 
-                {/* Footer Actions */}
-                <div className="p-4 border-t space-y-2 bg-muted/30">
-                  {user ? (
-                    <>
-                      <Link to="/profile" onClick={() => setIsOpen(false)} className="block">
-                        <Button variant="outline" className="w-full justify-start rounded-xl">
-                          <UserCircle className="mr-2 h-4 w-4" />
-                          My Profile
+                  {/* Footer Actions - Enhanced */}
+                  <div className="p-3 border-t border-primary/10 bg-gradient-to-r from-muted/50 to-muted/30 space-y-2">
+                    {user ? (
+                      <>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Link to="/profile" onClick={() => setIsOpen(false)} className="block">
+                            <Button variant="outline" size="sm" className="w-full justify-center rounded-xl h-10 text-xs font-semibold border-primary/20 active:scale-95 transition-transform">
+                              <UserCircle className="mr-1.5 h-4 w-4" />
+                              Profile
+                            </Button>
+                          </Link>
+                          <Link to="/dashboard" onClick={() => setIsOpen(false)} className="block">
+                            <Button variant="outline" size="sm" className="w-full justify-center rounded-xl h-10 text-xs font-semibold border-primary/20 active:scale-95 transition-transform">
+                              <LayoutDashboard className="mr-1.5 h-4 w-4" />
+                              Dashboard
+                            </Button>
+                          </Link>
+                        </div>
+                        {isAdmin && (
+                          <Link to="/admin" onClick={() => setIsOpen(false)} className="block">
+                            <Button variant="outline" size="sm" className="w-full justify-center rounded-xl h-10 text-xs font-semibold border-orange-500/30 text-orange-600 active:scale-95 transition-transform">
+                              <Settings className="mr-1.5 h-4 w-4" />
+                              Admin Panel
+                            </Button>
+                          </Link>
+                        )}
+                        <Button variant="ghost" size="sm" className="w-full rounded-xl h-10 text-xs text-muted-foreground active:scale-95 transition-transform" onClick={handleSignOut}>
+                          Sign Out
+                        </Button>
+                      </>
+                    ) : (
+                      <Link to="/auth" onClick={() => setIsOpen(false)} className="block">
+                        <Button className="w-full rounded-xl h-12 font-semibold bg-gradient-to-r from-primary to-accent shadow-lg active:scale-95 transition-transform">
+                          <Rocket className="mr-2 h-4 w-4" />
+                          Get Started Free
                         </Button>
                       </Link>
-                      <Link to="/dashboard" onClick={() => setIsOpen(false)} className="block">
-                        <Button variant="outline" className="w-full justify-start rounded-xl">
-                          <LayoutDashboard className="mr-2 h-4 w-4" />
-                          Dashboard
-                        </Button>
-                      </Link>
-                      {isAdmin && (
-                        <Link to="/admin" onClick={() => setIsOpen(false)} className="block">
-                          <Button variant="outline" className="w-full justify-start rounded-xl">
-                            <Settings className="mr-2 h-4 w-4" />
-                            Admin Panel
-                          </Button>
-                        </Link>
-                      )}
-                      <Button variant="outline" className="w-full rounded-xl" onClick={handleSignOut}>
-                        Sign Out
-                      </Button>
-                    </>
-                  ) : (
-                    <Link to="/auth" onClick={() => setIsOpen(false)} className="block">
-                      <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent">
-                        Get Started
-                      </Button>
-                    </Link>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </nav>

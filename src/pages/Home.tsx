@@ -235,14 +235,14 @@ export default function Home() {
 
               {/* CTA Buttons with orange theme */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-in-up stagger-2">
-                <Link to="/auth" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-0 text-white">
-                    <Rocket className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:animate-bounce" />
+              <Link to="/auth" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl shadow-lg active:scale-95 transition-transform duration-150 bg-gradient-to-r from-orange-500 to-amber-500 border-0 text-white">
+                    <Rocket className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     Start Free - Earn Coins
                   </Button>
                 </Link>
                 <Link to="/bounties" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl hover:scale-[1.02] transition-all border-2 border-orange-500/50 text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl active:scale-95 transition-transform duration-150 border-2 border-orange-500/50 text-orange-600 dark:text-orange-400">
                     <Trophy className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     Win Money
                   </Button>
@@ -275,7 +275,7 @@ export default function Home() {
                 <img 
                   src={aitdMascot} 
                   alt="AITD Events Mascot - A friendly student holding QR code" 
-                  className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow mascot-hover"
+                  className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow"
                   loading="eager"
                 />
                 
@@ -392,17 +392,17 @@ export default function Home() {
                 <Link
                   key={feature.title}
                   to={feature.link}
-                  className="group animate-fade-in-up"
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.03}s` }}
                 >
-                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-lg transition-all duration-300 active:scale-95 hover:-translate-y-1">
+                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 active:scale-95 transition-transform duration-150">
                     {feature.coins > 0 && (
                       <div className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
                         <Coins className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
                         +{feature.coins}
                       </div>
                     )}
-                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 group-hover:scale-110 group-active:scale-95 transition-transform shadow-md`}>
+                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 active:scale-95 transition-transform shadow-md`}>
                       <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <span className="font-medium text-[10px] sm:text-xs lg:text-sm text-center leading-tight text-foreground">

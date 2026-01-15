@@ -1,24 +1,66 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   Plus, Calendar, Trophy, Briefcase, GraduationCap, 
-  Users, Play, Tag, Settings, Sparkles, Mail, Download
+  Users, Play, Tag, Settings, Sparkles, Mail, Download, RefreshCw, Loader2
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminQuickActionsProps {
   onTabChange: (tab: string) => void;
   pendingEvents: number;
   pendingJobs: number;
   pendingHackathons: number;
+  onRefresh?: () => void;
 }
 
 export function AdminQuickActions({ 
   onTabChange, 
   pendingEvents, 
   pendingJobs, 
-  pendingHackathons 
+  pendingHackathons,
+  onRefresh 
 }: AdminQuickActionsProps) {
+  const [scraping, setScraping] = useState(false);
+  const { toast } = useToast();
   const totalPending = pendingEvents + pendingJobs + pendingHackathons;
+
+  const handleScrapeEvents = async () => {
+    setScraping(true);
+    try {
+      toast({ 
+        title: "Scraping Events", 
+        description: "Fetching events from Unstop... This may take a minute." 
+      });
+
+      const { data, error } = await supabase.functions.invoke('scrape-events', {
+        body: { source: 'unstop' }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({ 
+          title: "Scrape Complete!", 
+          description: data.message || `Found ${data.events_found} events, inserted ${data.events_inserted} new events.`
+        });
+        onRefresh?.();
+      } else {
+        throw new Error(data?.error || 'Scraping failed');
+      }
+    } catch (error: any) {
+      console.error('Scrape error:', error);
+      toast({ 
+        title: "Scrape Failed", 
+        description: error.message || "Failed to scrape events",
+        variant: "destructive" 
+      });
+    } finally {
+      setScraping(false);
+    }
+  };
 
   const quickActions = [
     { 
@@ -70,7 +112,7 @@ export function AdminQuickActions({
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {quickActions.map((action) => {
           const Icon = action.icon;
           return (
@@ -87,6 +129,19 @@ export function AdminQuickActions({
             </Button>
           );
         })}
+        
+        {/* Auto-Import Events Button */}
+        <Button
+          variant="outline"
+          className="h-auto py-4 flex flex-col gap-2 hover:scale-105 transition-transform border-dashed group border-emerald-500/50 bg-emerald-500/5"
+          onClick={handleScrapeEvents}
+          disabled={scraping}
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+            {scraping ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCw className="h-5 w-5" />}
+          </div>
+          <span className="text-xs font-medium">{scraping ? "Scraping..." : "Auto-Import"}</span>
+        </Button>
       </div>
 
       {/* Pending Items */}

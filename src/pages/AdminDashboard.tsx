@@ -542,6 +542,7 @@ export default function AdminDashboard() {
           pendingEvents={pendingEvents}
           pendingJobs={pendingJobs}
           pendingHackathons={pendingHackathons}
+          onRefresh={fetchAllData}
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">

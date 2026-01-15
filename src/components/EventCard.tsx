@@ -1,6 +1,8 @@
 import { Calendar, MapPin, Building2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface EventCardProps {
   title: string;
@@ -48,8 +50,41 @@ export const EventCard = ({
   college,
   onClick,
 }: EventCardProps) => {
+  const [unstopReferralId, setUnstopReferralId] = useState<string | null>(null);
   const gradientClass = gradientClasses[gradientIndex % gradientClasses.length];
   const hasPoster = poster_url || image;
+
+  useEffect(() => {
+    const fetchUnstopReferralId = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("student_profiles")
+          .select("unstop_referral_id")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+        if (data?.unstop_referral_id) {
+          setUnstopReferralId(data.unstop_referral_id);
+        }
+      }
+    };
+    fetchUnstopReferralId();
+  }, []);
+
+  // Helper to append referral to Unstop URLs
+  const getExternalLinkWithReferral = (url: string) => {
+    if (!unstopReferralId) return url;
+    try {
+      const urlObj = new URL(url);
+      if (urlObj.hostname.includes('unstop.com') || urlObj.hostname.includes('dare2compete.com')) {
+        urlObj.searchParams.set('ref', unstopReferralId);
+        return urlObj.toString();
+      }
+    } catch {
+      // Invalid URL, return as-is
+    }
+    return url;
+  };
   
   // Format date nicely
   const formatDate = (dateStr: string) => {
@@ -156,7 +191,7 @@ export const EventCard = ({
             if (onClick) {
               onClick();
             } else if (external_link) {
-              window.open(external_link, '_blank');
+              window.open(getExternalLinkWithReferral(external_link), '_blank');
             }
           }}
         >

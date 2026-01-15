@@ -1,10 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Users, Clock, ExternalLink, Sparkles, Share2, MessageCircle, Twitter, Linkedin, Link2, Check, Gift } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Calendar, MapPin, Users, Clock, ExternalLink, Sparkles, Share2, MessageCircle, Twitter, Linkedin, Link2, Check } from "lucide-react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 interface EventDetailModalProps {
   event: {
@@ -28,76 +27,32 @@ interface EventDetailModalProps {
 
 export const EventDetailModal = ({ event, open, onClose }: EventDetailModalProps) => {
   const [copied, setCopied] = useState(false);
-  const [unstopReferralId, setUnstopReferralId] = useState<string | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchUnstopReferralId = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const { data } = await supabase
-          .from("student_profiles")
-          .select("unstop_referral_id")
-          .eq("user_id", session.user.id)
-          .maybeSingle();
-        if (data?.unstop_referral_id) {
-          setUnstopReferralId(data.unstop_referral_id);
-        }
-      }
-    };
-    if (open) {
-      fetchUnstopReferralId();
-    }
-  }, [open]);
 
   if (!event) return null;
 
-  // Helper to append referral to Unstop URLs
-  const getExternalLinkWithReferral = (url: string) => {
-    if (!unstopReferralId) return url;
-    try {
-      const urlObj = new URL(url);
-      // Check if it's an Unstop URL
-      if (urlObj.hostname.includes('unstop.com') || urlObj.hostname.includes('dare2compete.com')) {
-        urlObj.searchParams.set('ref', unstopReferralId);
-        return urlObj.toString();
-      }
-    } catch {
-      // Invalid URL, return as-is
-    }
-    return url;
-  };
-
   const eventUrl = `${window.location.origin}/events?event=${event.id}`;
   const shareText = `Check out "${event.title}" on AITD! ${event.is_free ? '🎉 It\'s FREE!' : ''}`;
-  const externalLinkWithRef = event.external_link ? getExternalLinkWithReferral(event.external_link) : null;
 
   const shareToWhatsApp = () => {
-    const shareUrl = externalLinkWithRef || eventUrl;
-    const url = `https://wa.me/?text=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(`${shareText}\n\n${eventUrl}`)}`;
     window.open(url, '_blank');
   };
 
   const shareToTwitter = () => {
-    const shareUrl = externalLinkWithRef || eventUrl;
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(eventUrl)}`;
     window.open(url, '_blank');
   };
 
   const shareToLinkedIn = () => {
-    const shareUrl = externalLinkWithRef || eventUrl;
-    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventUrl)}`;
     window.open(url, '_blank');
   };
 
   const copyLink = () => {
-    const shareUrl = externalLinkWithRef || eventUrl;
-    navigator.clipboard.writeText(shareUrl);
+    navigator.clipboard.writeText(eventUrl);
     setCopied(true);
-    toast({ 
-      title: "Link copied!", 
-      description: unstopReferralId && externalLinkWithRef ? "Event link with your referral copied!" : "Event link copied to clipboard" 
-    });
+    toast({ title: "Link copied!", description: "Event link copied to clipboard" });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -226,22 +181,14 @@ export const EventDetailModal = ({ event, open, onClose }: EventDetailModalProps
 
           {/* Action Button */}
           {event.external_link && (
-            <div className="space-y-2">
-              <Button 
-                className="w-full gap-2" 
-                size="lg"
-                onClick={() => window.open(externalLinkWithRef || event.external_link, '_blank')}
-              >
-                Register Now
-                <ExternalLink className="w-4 h-4" />
-              </Button>
-              {unstopReferralId && event.external_link.includes('unstop') && (
-                <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
-                  <Gift className="w-3 h-3 text-orange-500" />
-                  Your Unstop referral will be tracked
-                </p>
-              )}
-            </div>
+            <Button 
+              className="w-full gap-2" 
+              size="lg"
+              onClick={() => window.open(event.external_link, '_blank')}
+            >
+              Register Now
+              <ExternalLink className="w-4 h-4" />
+            </Button>
           )}
         </div>
       </DialogContent>

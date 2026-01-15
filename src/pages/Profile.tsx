@@ -70,7 +70,6 @@ interface ProfileData {
   phone_verified: boolean | null;
   email_verified: boolean | null;
   created_at: string | null;
-  unstop_referral_id: string | null;
 }
 
 interface Referral {
@@ -123,7 +122,6 @@ export default function Profile() {
     is_public: false,
     is_looking_for_team: false,
     share_phone_publicly: false,
-    unstop_referral_id: "",
   });
 
   useEffect(() => {
@@ -186,7 +184,6 @@ export default function Profile() {
         is_public: data.is_public || false,
         is_looking_for_team: data.is_looking_for_team || false,
         share_phone_publicly: (data as any).share_phone_publicly || false,
-        unstop_referral_id: (data as any).unstop_referral_id || "",
       });
     }
   };
@@ -241,7 +238,6 @@ export default function Profile() {
       is_public: formData.is_public,
       is_looking_for_team: formData.is_looking_for_team,
       share_phone_publicly: formData.share_phone_publicly,
-      unstop_referral_id: formData.unstop_referral_id || null,
     };
 
     if (profile) {
@@ -817,46 +813,13 @@ export default function Profile() {
 
           {/* Referrals Tab */}
           <TabsContent value="referrals" className="space-y-6">
-            {/* Unstop Referral Settings */}
-            <Card className="border-2 border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ExternalLink className="h-5 w-5 text-orange-500" />
-                  Unstop Referral Link
-                </CardTitle>
-                <CardDescription>
-                  Add your Unstop referral ID to earn rewards when users register through your shared event links
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="unstop_referral" className="flex items-center gap-2">
-                    Unstop Referral ID
-                  </Label>
-                  <Input
-                    id="unstop_referral"
-                    value={formData.unstop_referral_id}
-                    onChange={(e) => setFormData({ ...formData, unstop_referral_id: e.target.value })}
-                    placeholder="e.g., referrer-abc123 or your Unstop username"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Find your referral ID on Unstop's referral section. When users click "Register" on Unstop events you share, your referral will be tracked.
-                  </p>
-                </div>
-                <Button onClick={handleSaveProfile} disabled={saving} size="sm">
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                  Save Referral ID
-                </Button>
-              </CardContent>
-            </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Your AITD Referral Code
+                  Your Referral Code
                 </CardTitle>
-                <CardDescription>Share this code to invite friends and earn rewards on AITD</CardDescription>
+                <CardDescription>Share this code to invite friends and earn rewards</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">

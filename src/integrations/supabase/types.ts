@@ -2139,6 +2139,7 @@ export type Database = {
           portfolio_url: string | null
           share_phone_publicly: boolean | null
           skills: string[] | null
+          unstop_referral_id: string | null
           updated_at: string | null
           user_id: string
         }
@@ -2161,6 +2162,7 @@ export type Database = {
           portfolio_url?: string | null
           share_phone_publicly?: boolean | null
           skills?: string[] | null
+          unstop_referral_id?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -2183,6 +2185,7 @@ export type Database = {
           portfolio_url?: string | null
           share_phone_publicly?: boolean | null
           skills?: string[] | null
+          unstop_referral_id?: string | null
           updated_at?: string | null
           user_id?: string
         }

@@ -23,6 +23,7 @@ const primaryNavLinks = [
   { name: "Events", path: "/events", icon: Calendar },
   { name: "Bounties", path: "/bounties", icon: DollarSign },
   { name: "Jobs", path: "/jobs", icon: Briefcase },
+  { name: "Chat", path: "/live-chat", icon: MessageCircle },
 ];
 
 // Secondary navigation items - shown in "More" dropdown

@@ -69,6 +69,18 @@ interface Event {
   is_free: boolean;
   days_left: number | null;
   applied_count: number;
+  created_at: string | null;
+}
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  stipend: string;
+  category: string;
+  created_at: string | null;
 }
 
 interface PlatformStats {
@@ -84,6 +96,7 @@ interface PlatformStats {
 export default function Home() {
   const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
   const [highlightedEvents, setHighlightedEvents] = useState<Event[]>([]);
+  const [latestJobs, setLatestJobs] = useState<Job[]>([]);
   const [stats, setStats] = useState<PlatformStats>({
     students: 0,
     events: 0,
@@ -97,6 +110,7 @@ export default function Home() {
   useEffect(() => {
     fetchFeaturedCourses();
     fetchHighlightedEvents();
+    fetchLatestJobs();
     fetchPlatformStats();
   }, []);
 
@@ -106,13 +120,29 @@ export default function Home() {
         .from("events")
         .select("*")
         .eq("status", "live")
-        .order("applied_count", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(4);
 
       if (error) throw error;
       setHighlightedEvents(data || []);
     } catch (error) {
       console.error("Error fetching events:", error);
+    }
+  };
+
+  const fetchLatestJobs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("status", "live")
+        .order("created_at", { ascending: false })
+        .limit(4);
+
+      if (error) throw error;
+      setLatestJobs(data || []);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
     }
   };
 
@@ -507,10 +537,10 @@ export default function Home() {
             <div className="text-center mb-6 sm:mb-10">
               <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-violet-500/10 text-violet-600 border-violet-500/20">
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
-                Trending Events
+                Newly Added Events
               </Badge>
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-                Don't Miss <span className="text-gradient-primary">These Events</span>
+                Latest <span className="text-gradient-primary">Events</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
                 Join hackathons, workshops, and competitions
@@ -543,6 +573,7 @@ export default function Home() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                        <Badge className="bg-orange-500 text-white border-0 text-[10px] sm:text-xs px-1.5 py-0.5 animate-pulse">New</Badge>
                         {event.is_free && (
                           <Badge className="bg-emerald-500 text-white border-0 text-[10px] sm:text-xs px-1.5 py-0.5">Free</Badge>
                         )}
@@ -583,6 +614,73 @@ export default function Home() {
         </section>
       )}
 
+      {/* Latest Jobs Section */}
+      {latestJobs.length > 0 && (
+        <section className="py-10 sm:py-14 lg:py-20 px-4">
+          <div className="container mx-auto">
+            <div className="text-center mb-6 sm:mb-10">
+              <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">
+                <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
+                Newly Added Jobs
+              </Badge>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+                Latest <span className="text-gradient-primary">Opportunities</span>
+              </h2>
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+                Freshly added internships and job openings
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+              {latestJobs.map((job, index) => (
+                <Link 
+                  key={job.id} 
+                  to="/jobs" 
+                  className="animate-fade-in-up" 
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full border-border/50">
+                    <CardHeader className="p-3 sm:p-4 pb-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge className="bg-orange-500 text-white border-0 text-[10px] sm:text-xs px-1.5 py-0.5 animate-pulse">New</Badge>
+                        <Badge variant="outline" className="text-[10px] sm:text-xs">{job.type}</Badge>
+                      </div>
+                      <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">
+                        {job.title}
+                      </CardTitle>
+                      <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                        {job.company}
+                      </p>
+                    </CardHeader>
+                    <CardContent className="p-3 sm:p-4 pt-0">
+                      <div className="flex flex-col gap-1 text-[10px] sm:text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Target className="w-3 h-3" />
+                          <span>{job.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <TrendingUp className="w-3 h-3" />
+                          <span className="font-semibold text-emerald-600">{job.stipend}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="text-center">
+              <Link to="/jobs">
+                <Button variant="outline" className="hover:scale-[1.02] transition-all rounded-xl text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">
+                  View All Jobs
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Campus Ambassador Section */}
       <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -607,21 +705,21 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6 max-w-sm mx-auto lg:mx-0">
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
-                    <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
-                  <span>Exclusive Goodies</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs sm:text-sm">
-                  <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
-                    <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </div>
-                  <span>Cash Rewards</span>
+                  <span>Earn Upto ₹10,000</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
                     <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
-                  <span>Certificates</span>
+                  <span>Verified Certificate</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                  <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
+                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </div>
+                  <span>Free Event Access</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
@@ -631,12 +729,12 @@ export default function Home() {
                 </div>
               </div>
 
-              <Link to="/campus-ambassador">
+              <a href="https://forms.gle/5hyQgiaEGQ7uBw857" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="secondary" className="text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all">
                   Apply Now
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </Link>
+              </a>
             </div>
 
             {/* Stats grid - REAL DATA from database */}

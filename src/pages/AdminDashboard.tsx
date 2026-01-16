@@ -14,7 +14,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
+import { JobEditor } from "@/components/admin/JobEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
+import { AdminActivityChart } from "@/components/admin/AdminActivityChart";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
 import { ReelsModerationManager } from "@/components/admin/ReelsModerationManager";
 import { UserManager } from "@/components/admin/UserManager";
@@ -41,7 +43,9 @@ export default function AdminDashboard() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [blogs, setBlogs] = useState<any[]>([]);
   const [editingEvent, setEditingEvent] = useState<any>(null);
+  const [editingJob, setEditingJob] = useState<any>(null);
   const [eventEditorOpen, setEventEditorOpen] = useState(false);
+  const [jobEditorOpen, setJobEditorOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
   const [formData, setFormData] = useState({
@@ -536,6 +540,9 @@ export default function AdminDashboard() {
           endedEvents={endedEvents}
         />
 
+        {/* Activity & Active Users Analytics */}
+        <AdminActivityChart />
+
         {/* Quick Actions */}
         <AdminQuickActions 
           onTabChange={setActiveTab}
@@ -897,6 +904,7 @@ export default function AdminDashboard() {
                       <TableCell>{item.stipend}</TableCell>
                       <TableCell>{getStatusBadge(item.status)}</TableCell>
                       <TableCell className="flex gap-1">
+                        <Button size="sm" variant="ghost" onClick={() => { setEditingJob(item); setJobEditorOpen(true); }}><Edit className="h-4 w-4 text-blue-500" /></Button>
                         {item.status === 'draft' && <Button size="sm" variant="ghost" onClick={() => updateJobStatus(item.id, 'live')}><CheckCircle className="h-4 w-4 text-green-500" /></Button>}
                         {item.status === 'live' && <Button size="sm" variant="ghost" onClick={() => updateJobStatus(item.id, 'ended')}><XCircle className="h-4 w-4 text-yellow-500" /></Button>}
                         <Button size="sm" variant="ghost" onClick={() => deleteJob(item.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
@@ -906,6 +914,14 @@ export default function AdminDashboard() {
                 </TableBody>
               </Table>
             </Card>
+
+            {/* Job Editor Modal */}
+            <JobEditor
+              job={editingJob}
+              open={jobEditorOpen}
+              onOpenChange={setJobEditorOpen}
+              onSave={fetchJobs}
+            />
           </TabsContent>
 
           {/* Scholarships Tab */}

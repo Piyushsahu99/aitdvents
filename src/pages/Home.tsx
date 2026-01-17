@@ -193,11 +193,11 @@ export default function Home() {
   const features = [
     { icon: BookOpen, title: "Courses", link: "/courses", gradient: "from-blue-500 to-cyan-400", coins: POINT_VALUES.COURSE_ENROLL },
     { icon: Trophy, title: "Bounties", link: "/bounties", gradient: "from-emerald-500 to-teal-400", coins: POINT_VALUES.BOUNTY_SUBMIT },
-    { icon: Calendar, title: "Events", link: "/events", gradient: "from-violet-500 to-purple-400", coins: POINT_VALUES.EVENT_REGISTER },
-    { icon: MessageCircle, title: "Live Chat", link: "/live-chat", gradient: "from-green-500 to-emerald-400", coins: 0 },
+    { icon: Calendar, title: "Events", link: "/events", gradient: "from-orange-500 to-amber-400", coins: POINT_VALUES.EVENT_REGISTER },
+    { icon: MessageCircle, title: "Live Chat", link: "/live-chat", gradient: "from-teal-500 to-cyan-400", coins: 0 },
     { icon: Briefcase, title: "Jobs", link: "/jobs", gradient: "from-orange-500 to-amber-400", coins: 0 },
-    { icon: FileText, title: "Notes", link: "/study-materials", gradient: "from-indigo-500 to-violet-400", coins: POINT_VALUES.STUDY_MATERIAL_UPLOAD },
-    { icon: Target, title: "Practice", link: "/practice", gradient: "from-pink-500 to-rose-400", coins: 0 },
+    { icon: FileText, title: "Notes", link: "/study-materials", gradient: "from-blue-500 to-indigo-400", coins: POINT_VALUES.STUDY_MATERIAL_UPLOAD },
+    { icon: Target, title: "Practice", link: "/practice", gradient: "from-teal-500 to-emerald-400", coins: 0 },
     { icon: GraduationCap, title: "Scholarships", link: "/scholarships", gradient: "from-cyan-500 to-blue-400", coins: 0 },
   ];
 
@@ -402,12 +402,12 @@ export default function Home() {
       <section className="py-6 sm:py-10 lg:py-14 px-3 sm:px-4 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-5 sm:mb-8">
-            <Badge className="mb-2 text-xs sm:text-sm bg-violet-500/10 text-violet-600 border-violet-500/20">
+            <Badge className="mb-2 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">
               <Zap className="w-3 h-3 mr-1" />
               Explore
             </Badge>
             <h2 className="text-lg sm:text-2xl md:text-3xl font-bold mb-1.5 sm:mb-2">
-              What do you want to <span className="text-gradient-primary">do today?</span>
+              What do you want to <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">do today?</span>
             </h2>
             <p className="text-[11px] sm:text-sm text-muted-foreground">
               Tap to explore opportunities
@@ -422,20 +422,20 @@ export default function Home() {
                 <Link
                   key={feature.title}
                   to={feature.link}
-                  className="animate-fade-in-up"
+                  className="animate-fade-in-up group"
                   style={{ animationDelay: `${index * 0.03}s` }}
                 >
-                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 active:scale-95 transition-transform duration-150">
+                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-orange-500/50 active:scale-95 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
                     {feature.coins > 0 && (
                       <div className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
                         <Coins className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
                         +{feature.coins}
                       </div>
                     )}
-                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 active:scale-95 transition-transform shadow-md`}>
+                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 active:scale-95 transition-all shadow-md group-hover:scale-110 group-hover:shadow-lg`}>
                       <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
-                    <span className="font-medium text-[10px] sm:text-xs lg:text-sm text-center leading-tight text-foreground">
+                    <span className="font-medium text-[10px] sm:text-xs lg:text-sm text-center leading-tight text-foreground group-hover:text-orange-600 transition-colors">
                       {feature.title}
                     </span>
                   </div>
@@ -456,7 +456,7 @@ export default function Home() {
                 Featured Courses
               </Badge>
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-                Start Learning <span className="text-gradient-primary">Today</span>
+                Start Learning <span className="bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">Today</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
                 Master new skills with expert-led courses
@@ -535,12 +535,12 @@ export default function Home() {
         <section className="py-10 sm:py-14 lg:py-20 px-4 bg-muted/30">
           <div className="container mx-auto">
             <div className="text-center mb-6 sm:mb-10">
-              <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-violet-500/10 text-violet-600 border-violet-500/20">
+              <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
                 Newly Added Events
               </Badge>
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-                Latest <span className="text-gradient-primary">Events</span>
+                Latest <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Events</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
                 Join hackathons, workshops, and competitions
@@ -555,19 +555,19 @@ export default function Home() {
                   className="animate-fade-in-up" 
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full border-border/50">
+                  <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50 hover:border-orange-500/30">
                     <div className="relative h-28 sm:h-32 lg:h-40 overflow-hidden">
                       {event.poster_url ? (
                         <img
                           src={event.poster_url}
                           alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
                         />
                       ) : (
                         <div className={`w-full h-full bg-gradient-to-br ${
-                          index % 4 === 0 ? 'from-violet-500 to-purple-600' : 
-                          index % 4 === 1 ? 'from-pink-500 to-rose-600' :
+                          index % 4 === 0 ? 'from-orange-500 to-amber-600' : 
+                          index % 4 === 1 ? 'from-teal-500 to-cyan-600' :
                           index % 4 === 2 ? 'from-blue-500 to-cyan-600' : 'from-emerald-500 to-teal-600'
                         }`} />
                       )}
@@ -624,7 +624,7 @@ export default function Home() {
                 Newly Added Jobs
               </Badge>
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-                Latest <span className="text-gradient-primary">Opportunities</span>
+                Latest <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Opportunities</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
                 Freshly added internships and job openings
@@ -639,13 +639,13 @@ export default function Home() {
                   className="animate-fade-in-up" 
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full border-border/50">
+                  <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50 hover:border-orange-500/30">
                     <CardHeader className="p-3 sm:p-4 pb-2">
                       <div className="flex items-center gap-2 mb-2">
                         <Badge className="bg-orange-500 text-white border-0 text-[10px] sm:text-xs px-1.5 py-0.5 animate-pulse">New</Badge>
                         <Badge variant="outline" className="text-[10px] sm:text-xs">{job.type}</Badge>
                       </div>
-                      <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">
+                      <CardTitle className="line-clamp-2 group-hover:text-orange-600 transition-colors text-sm sm:text-base">
                         {job.title}
                       </CardTitle>
                       <p className="text-xs sm:text-sm text-muted-foreground font-medium">
@@ -682,7 +682,7 @@ export default function Home() {
       )}
 
       {/* Campus Ambassador Section */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
+      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-orange-500 via-amber-500 to-orange-600 text-white relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[10%] left-[5%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[10%] right-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-white/10 rounded-full blur-3xl animate-float-delayed" />
@@ -759,7 +759,7 @@ export default function Home() {
       <section className="py-10 sm:py-14 lg:py-20 px-4 bg-muted/30">
         <div className="container mx-auto">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-2 sm:mb-3">
-            Who's using <span className="text-gradient-primary">AITD</span>?
+            Who's using <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">AITD</span>?
           </h2>
           <p className="text-center text-muted-foreground mb-6 sm:mb-10 max-w-xl mx-auto text-xs sm:text-sm md:text-base">
             Join thousands of students, companies, and institutions transforming tech education
@@ -776,20 +776,20 @@ export default function Home() {
 
       {/* Stats Section */}
       <section className="py-10 sm:py-14 lg:py-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-background to-teal-500/5" />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[20%] left-[10%] w-40 sm:w-64 h-40 sm:h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-[20%] right-[10%] w-48 sm:w-80 h-48 sm:h-80 bg-accent/10 rounded-full blur-3xl animate-float-delayed" />
+          <div className="absolute top-[20%] left-[10%] w-40 sm:w-64 h-40 sm:h-64 bg-orange-500/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-[20%] right-[10%] w-48 sm:w-80 h-48 sm:h-80 bg-teal-500/10 rounded-full blur-3xl animate-float-delayed" />
         </div>
         
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-8 sm:mb-12">
-            <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
+            <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">
               <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
               Growing Community
             </Badge>
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-              Join Our <span className="text-gradient-primary">Community</span>
+              Join Our <span className="bg-gradient-to-r from-orange-500 to-teal-500 bg-clip-text text-transparent">Community</span>
             </h2>
             <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-lg mx-auto">
               Thousands of students are already building their future with us
@@ -798,14 +798,14 @@ export default function Home() {
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {[
-              { value: stats.students, label: "Students", sublabel: "Learning & Growing", color: "text-primary" },
-              { value: stats.jobs, label: "Jobs", sublabel: "Active Listings", color: "text-accent" },
+              { value: stats.students, label: "Students", sublabel: "Learning & Growing", color: "text-orange-500" },
+              { value: stats.jobs, label: "Jobs", sublabel: "Active Listings", color: "text-teal-500" },
               { value: stats.events, label: "Events", sublabel: "Hackathons & More", color: "text-blue-500" },
               { value: stats.courses, label: "Courses", sublabel: "Expert-Led Content", color: "text-emerald-500" },
             ].map((stat, index) => (
               <div
                 key={stat.label}
-                className="text-center p-4 sm:p-5 lg:p-6 rounded-xl lg:rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-300 animate-fade-in-up"
+                className="text-center p-4 sm:p-5 lg:p-6 rounded-xl lg:rounded-2xl bg-card border border-border/50 hover:border-orange-500/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fade-in-up cursor-default"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 ${stat.color}`}>
@@ -825,7 +825,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-primary via-primary/90 to-accent text-white relative overflow-hidden">
+      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-orange-500 via-amber-500 to-teal-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
         <div className="container mx-auto relative z-10 text-center">
           <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 text-xs sm:text-sm">

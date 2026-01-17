@@ -795,6 +795,87 @@ export type Database = {
         }
         Relationships: []
       }
+      earning_tasks: {
+        Row: {
+          action_required: string
+          bonus_pool: number | null
+          brand_logo_url: string | null
+          brand_name: string
+          created_at: string | null
+          created_by: string | null
+          current_completions: number | null
+          deadline: string | null
+          description: string
+          difficulty: string | null
+          id: string
+          instructions: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          max_completions: number | null
+          platform: string | null
+          reward_amount: number
+          reward_currency: string | null
+          task_type: string
+          task_url: string
+          title: string
+          top_performers_count: number | null
+          updated_at: string | null
+          verification_type: string | null
+        }
+        Insert: {
+          action_required: string
+          bonus_pool?: number | null
+          brand_logo_url?: string | null
+          brand_name: string
+          created_at?: string | null
+          created_by?: string | null
+          current_completions?: number | null
+          deadline?: string | null
+          description: string
+          difficulty?: string | null
+          id?: string
+          instructions?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          max_completions?: number | null
+          platform?: string | null
+          reward_amount?: number
+          reward_currency?: string | null
+          task_type?: string
+          task_url: string
+          title: string
+          top_performers_count?: number | null
+          updated_at?: string | null
+          verification_type?: string | null
+        }
+        Update: {
+          action_required?: string
+          bonus_pool?: number | null
+          brand_logo_url?: string | null
+          brand_name?: string
+          created_at?: string | null
+          created_by?: string | null
+          current_completions?: number | null
+          deadline?: string | null
+          description?: string
+          difficulty?: string | null
+          id?: string
+          instructions?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          max_completions?: number | null
+          platform?: string | null
+          reward_amount?: number
+          reward_currency?: string | null
+          task_type?: string
+          task_url?: string
+          title?: string
+          top_performers_count?: number | null
+          updated_at?: string | null
+          verification_type?: string | null
+        }
+        Relationships: []
+      }
       event_rsvps: {
         Row: {
           additional_notes: string | null
@@ -2280,6 +2361,56 @@ export type Database = {
           year?: string | null
         }
         Relationships: []
+      }
+      task_completions: {
+        Row: {
+          bonus_earned: number | null
+          coins_earned: number | null
+          id: string
+          proof_url: string | null
+          rejection_reason: string | null
+          status: string | null
+          submitted_at: string | null
+          task_id: string
+          user_id: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          bonus_earned?: number | null
+          coins_earned?: number | null
+          id?: string
+          proof_url?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          task_id: string
+          user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          bonus_earned?: number | null
+          coins_earned?: number | null
+          id?: string
+          proof_url?: string | null
+          rejection_reason?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          task_id?: string
+          user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_completions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "earning_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_achievements: {
         Row: {

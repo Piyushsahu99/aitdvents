@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/SearchBar";
 import { AuthModal } from "@/components/AuthModal";
 import { POINT_VALUES } from "@/hooks/useEarnCoins";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { 
   Trophy, 
   Clock, 
@@ -17,7 +21,18 @@ import {
   Grid3X3,
   List,
   Award,
-  Coins
+  Coins,
+  Instagram,
+  Github,
+  Youtube,
+  Send,
+  Linkedin,
+  Twitter,
+  Star,
+  ExternalLink,
+  Gift,
+  CheckCircle2,
+  Zap
 } from "lucide-react";
 
 interface Bounty {
@@ -35,6 +50,29 @@ interface Bounty {
   banner_url?: string;
 }
 
+interface EarningTask {
+  id: string;
+  title: string;
+  description: string;
+  brand_name: string;
+  brand_logo_url: string | null;
+  task_type: string;
+  platform: string | null;
+  action_required: string;
+  task_url: string;
+  reward_amount: number;
+  reward_currency: string;
+  max_completions: number | null;
+  current_completions: number;
+  bonus_pool: number;
+  top_performers_count: number;
+  difficulty: string;
+  verification_type: string;
+  instructions: string | null;
+  deadline: string | null;
+  is_featured: boolean;
+}
+
 export default function Bounties() {
   const [bounties, setBounties] = useState<Bounty[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,16 +81,30 @@ export default function Bounties() {
   const [user, setUser] = useState<any>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [earningTasks, setEarningTasks] = useState<EarningTask[]>([]);
+  const [selectedTask, setSelectedTask] = useState<EarningTask | null>(null);
+  const [proofUrl, setProofUrl] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [userCompletions, setUserCompletions] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchBounties();
+    fetchEarningTasks();
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserCompletions(session.user.id);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserCompletions(session.user.id);
+      } else {
+        setUserCompletions([]);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -72,6 +124,90 @@ export default function Bounties() {
       console.error("Error fetching bounties:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchEarningTasks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("earning_tasks")
+        .select("*")
+        .eq("is_active", true)
+        .order("is_featured", { ascending: false })
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setEarningTasks(data || []);
+    } catch (error) {
+      console.error("Error fetching earning tasks:", error);
+    }
+  };
+
+  const fetchUserCompletions = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("task_completions")
+        .select("task_id")
+        .eq("user_id", userId);
+
+      if (error) throw error;
+      setUserCompletions(data?.map(c => c.task_id) || []);
+    } catch (error) {
+      console.error("Error fetching completions:", error);
+    }
+  };
+
+  const handleTaskSubmit = async () => {
+    if (!user || !selectedTask) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!proofUrl.trim()) {
+      toast.error("Please provide proof of completion");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from("task_completions")
+        .insert({
+          task_id: selectedTask.id,
+          user_id: user.id,
+          proof_url: proofUrl,
+          status: "pending"
+        });
+
+      if (error) {
+        if (error.code === "23505") {
+          toast.error("You've already submitted this task");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success("Task submitted for verification! Coins will be awarded upon approval.");
+        setUserCompletions([...userCompletions, selectedTask.id]);
+        setSelectedTask(null);
+        setProofUrl("");
+      }
+    } catch (error) {
+      console.error("Error submitting task:", error);
+      toast.error("Failed to submit task");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const getPlatformIcon = (platform: string | null) => {
+    switch (platform?.toLowerCase()) {
+      case "instagram": return <Instagram className="h-5 w-5 text-pink-500" />;
+      case "github": return <Github className="h-5 w-5" />;
+      case "youtube": return <Youtube className="h-5 w-5 text-red-500" />;
+      case "telegram": return <Send className="h-5 w-5 text-blue-500" />;
+      case "linkedin": return <Linkedin className="h-5 w-5 text-blue-600" />;
+      case "twitter": return <Twitter className="h-5 w-5 text-sky-500" />;
+      default: return <Star className="h-5 w-5 text-yellow-500" />;
     }
   };
 
@@ -124,19 +260,113 @@ export default function Bounties() {
         <div className="container mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <Trophy className="h-10 w-10 text-primary" />
-            <h1 className="text-4xl font-bold">Bounties</h1>
+            <h1 className="text-4xl font-bold">Bounties & Earning Tasks</h1>
           </div>
           <p className="text-muted-foreground text-lg mb-3">
-            Participate in existing challenges and earn rewards for your efforts.
+            Complete tasks from brands & participate in challenges to earn rewards.
           </p>
-          <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-            <Coins className="h-4 w-4 mr-2" />
-            Earn {POINT_VALUES.BOUNTY_SUBMIT} coins per submission!
-          </Badge>
+          <div className="flex flex-wrap gap-2">
+            <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+              <Coins className="h-4 w-4 mr-2" />
+              Earn {POINT_VALUES.BOUNTY_SUBMIT} coins per bounty submission!
+            </Badge>
+            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+              <Zap className="h-4 w-4 mr-2" />
+              Instant coins for micro-tasks!
+            </Badge>
+          </div>
         </div>
       </section>
 
-      {/* Featured Opportunities */}
+      {/* Earning Tasks Section */}
+      {earningTasks.length > 0 && (
+        <section className="py-8 px-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
+          <div className="container mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Gift className="h-6 w-6 text-emerald-500" />
+                <h2 className="text-xl font-bold">Partner's Earning Tasks</h2>
+                <Badge variant="secondary" className="ml-2">New</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground hidden sm:block">
+                Complete simple tasks & earn instantly!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {earningTasks.map((task) => {
+                const isCompleted = userCompletions.includes(task.id);
+                return (
+                  <Card 
+                    key={task.id} 
+                    className={`group overflow-hidden hover:shadow-lg transition-all cursor-pointer ${
+                      isCompleted ? "opacity-60" : ""
+                    } ${task.is_featured ? "ring-2 ring-emerald-500/50" : ""}`}
+                    onClick={() => !isCompleted && setSelectedTask(task)}
+                  >
+                    <div className="p-4">
+                      {/* Header */}
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 flex items-center justify-center flex-shrink-0">
+                          {getPlatformIcon(task.platform)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                              {task.title}
+                            </h3>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{task.brand_name}</p>
+                        </div>
+                      </div>
+
+                      {/* Tags */}
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        {task.is_featured && (
+                          <Badge className="bg-emerald-500 text-white border-0 text-[10px]">
+                            <Sparkles className="h-2.5 w-2.5 mr-1" />
+                            Featured
+                          </Badge>
+                        )}
+                        <Badge variant="outline" className="text-[10px] capitalize">
+                          {task.action_required}
+                        </Badge>
+                        {task.bonus_pool > 0 && (
+                          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px]">
+                            <Trophy className="h-2.5 w-2.5 mr-1" />
+                            +{task.bonus_pool} Bonus
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Reward */}
+                      <div className="flex items-center justify-between pt-3 border-t border-border">
+                        <div className="flex items-center gap-2">
+                          <Coins className="h-4 w-4 text-yellow-500" />
+                          <span className="font-bold text-emerald-600">+{task.reward_amount}</span>
+                          <span className="text-xs text-muted-foreground">coins</span>
+                        </div>
+                        {isCompleted ? (
+                          <Badge className="bg-emerald-500 text-white border-0 text-xs">
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
+                            Done
+                          </Badge>
+                        ) : (
+                          <Button size="sm" variant="ghost" className="text-xs h-7 px-2">
+                            Complete <ArrowRight className="h-3 w-3 ml-1" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Featured Bounties */}
       {featuredBounties.length > 0 && (
         <section className="py-8 px-4">
           <div className="container mx-auto">
@@ -419,6 +649,55 @@ export default function Bounties() {
         onOpenChange={setShowAuthModal}
         onSuccess={() => fetchBounties()}
       />
+
+      {/* Task Completion Dialog */}
+      <Dialog open={!!selectedTask} onOpenChange={(open) => !open && setSelectedTask(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {selectedTask && getPlatformIcon(selectedTask.platform)}
+              {selectedTask?.title}
+            </DialogTitle>
+            <DialogDescription>
+              Complete this task and earn <span className="font-bold text-emerald-600">+{selectedTask?.reward_amount} coins</span>
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="p-3 bg-muted rounded-lg text-sm">
+              <p className="font-medium mb-2">Instructions:</p>
+              <p className="text-muted-foreground whitespace-pre-line">{selectedTask?.instructions || selectedTask?.description}</p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <a href={selectedTask?.task_url} target="_blank" rel="noopener noreferrer" className="flex-1">
+                <Button variant="outline" className="w-full">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open Task Link
+                </Button>
+              </a>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="proof">Proof of Completion</Label>
+              <Input
+                id="proof"
+                placeholder="Enter screenshot URL or username..."
+                value={proofUrl}
+                onChange={(e) => setProofUrl(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">Paste a screenshot link or relevant proof</p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedTask(null)}>Cancel</Button>
+            <Button onClick={handleTaskSubmit} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit for Verification"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

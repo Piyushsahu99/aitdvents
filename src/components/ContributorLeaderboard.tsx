@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Medal, Award, Coins, TrendingUp, Crown } from "lucide-react";
+import { Trophy, Medal, Award, Coins, TrendingUp, Crown, RefreshCw } from "lucide-react";
 
 interface LeaderboardUser {
   user_id: string;
@@ -19,13 +19,13 @@ interface LeaderboardUser {
 export function ContributorLeaderboard() {
   const [leaders, setLeaders] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, []);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async (showRefresh = false) => {
     try {
+      if (showRefresh) setIsRefreshing(true);
+      
       // Fetch top users by lifetime points
       const { data: pointsData, error: pointsError } = await supabase
         .from("user_points")
@@ -64,11 +64,60 @@ export function ContributorLeaderboard() {
       });
 
       setLeaders(combined);
+      setLastUpdated(new Date());
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
+  }, []);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [fetchLeaderboard]);
+
+  // Real-time subscription for user_points changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('leaderboard-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_points',
+        },
+        () => {
+          // Refresh leaderboard when points change
+          fetchLeaderboard(true);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchLeaderboard]);
+
+  // Periodic refresh every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchLeaderboard(true);
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchLeaderboard]);
+
+  const formatLastUpdated = () => {
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - lastUpdated.getTime()) / 1000);
+    
+    if (diff < 5) return "Just now";
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    return lastUpdated.toLocaleTimeString();
   };
 
   const getRankIcon = (rank: number) => {
@@ -156,10 +205,23 @@ export function ContributorLeaderboard() {
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />
           Top Contributors
-          <Badge variant="secondary" className="ml-auto">
-            <Coins className="h-3 w-3 mr-1" />
-            Lifetime Coins
-          </Badge>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-xs text-muted-foreground font-normal">
+              {formatLastUpdated()}
+            </span>
+            <button
+              onClick={() => fetchLeaderboard(true)}
+              disabled={isRefreshing}
+              className="p-1 hover:bg-muted rounded-full transition-colors disabled:opacity-50"
+              title="Refresh leaderboard"
+            >
+              <RefreshCw className={`h-4 w-4 text-muted-foreground ${isRefreshing ? 'animate-spin' : ''}`} />
+            </button>
+            <Badge variant="secondary">
+              <Coins className="h-3 w-3 mr-1" />
+              Lifetime
+            </Badge>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">

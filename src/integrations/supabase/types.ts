@@ -1134,9 +1134,12 @@ export type Database = {
       }
       issued_certificates: {
         Row: {
+          achievement_details: Json | null
           certificate_number: string
+          certificate_type: string | null
           course_id: string | null
           created_at: string | null
+          email_sent_at: string | null
           event_id: string | null
           id: string
           is_valid: boolean | null
@@ -1145,15 +1148,20 @@ export type Database = {
           metadata: Json | null
           recipient_email: string
           recipient_name: string
+          shared_to_linkedin: boolean | null
+          shared_to_twitter: boolean | null
           template_id: string | null
           user_id: string | null
           valid_until: string | null
           verification_url: string | null
         }
         Insert: {
+          achievement_details?: Json | null
           certificate_number: string
+          certificate_type?: string | null
           course_id?: string | null
           created_at?: string | null
+          email_sent_at?: string | null
           event_id?: string | null
           id?: string
           is_valid?: boolean | null
@@ -1162,15 +1170,20 @@ export type Database = {
           metadata?: Json | null
           recipient_email: string
           recipient_name: string
+          shared_to_linkedin?: boolean | null
+          shared_to_twitter?: boolean | null
           template_id?: string | null
           user_id?: string | null
           valid_until?: string | null
           verification_url?: string | null
         }
         Update: {
+          achievement_details?: Json | null
           certificate_number?: string
+          certificate_type?: string | null
           course_id?: string | null
           created_at?: string | null
+          email_sent_at?: string | null
           event_id?: string | null
           id?: string
           is_valid?: boolean | null
@@ -1179,6 +1192,8 @@ export type Database = {
           metadata?: Json | null
           recipient_email?: string
           recipient_name?: string
+          shared_to_linkedin?: boolean | null
+          shared_to_twitter?: boolean | null
           template_id?: string | null
           user_id?: string | null
           valid_until?: string | null
@@ -1541,6 +1556,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      monthly_leaderboard_winners: {
+        Row: {
+          certificate_id: string | null
+          created_at: string
+          id: string
+          month: number
+          points_earned: number
+          rank: number
+          user_id: string
+          year: number
+        }
+        Insert: {
+          certificate_id?: string | null
+          created_at?: string
+          id?: string
+          month: number
+          points_earned?: number
+          rank: number
+          user_id: string
+          year: number
+        }
+        Update: {
+          certificate_id?: string | null
+          created_at?: string
+          id?: string
+          month?: number
+          points_earned?: number
+          rank?: number
+          user_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_leaderboard_winners_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "issued_certificates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {

@@ -86,6 +86,599 @@ export type Database = {
         }
         Relationships: []
       }
+      ambassador_event_registrations: {
+        Row: {
+          ambassador_id: string | null
+          attended_at: string | null
+          created_at: string | null
+          event_id: string | null
+          food_coupon_code: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          ambassador_id?: string | null
+          attended_at?: string | null
+          created_at?: string | null
+          event_id?: string | null
+          food_coupon_code?: string | null
+          id?: string
+          status?: string
+        }
+        Update: {
+          ambassador_id?: string | null
+          attended_at?: string | null
+          created_at?: string | null
+          event_id?: string | null
+          food_coupon_code?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_event_registrations_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "campus_ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_events: {
+        Row: {
+          created_at: string | null
+          cycle_id: string | null
+          description: string | null
+          eligible_min_points: number | null
+          eligible_min_rank: number | null
+          event_date: string
+          event_type: string
+          food_coupon_value: number | null
+          id: string
+          is_active: boolean | null
+          location: string | null
+          max_attendees: number | null
+          meeting_link: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cycle_id?: string | null
+          description?: string | null
+          eligible_min_points?: number | null
+          eligible_min_rank?: number | null
+          event_date: string
+          event_type?: string
+          food_coupon_value?: number | null
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          max_attendees?: number | null
+          meeting_link?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cycle_id?: string | null
+          description?: string | null
+          eligible_min_points?: number | null
+          eligible_min_rank?: number | null
+          event_date?: string
+          event_type?: string
+          food_coupon_value?: number | null
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          max_attendees?: number | null
+          meeting_link?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_events_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_program_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_mentor_sessions: {
+        Row: {
+          ambassador_id: string | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          meeting_link: string | null
+          mentor_id: string | null
+          notes: string | null
+          rating: number | null
+          scheduled_at: string
+          status: string
+          topic: string
+          updated_at: string | null
+        }
+        Insert: {
+          ambassador_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          meeting_link?: string | null
+          mentor_id?: string | null
+          notes?: string | null
+          rating?: number | null
+          scheduled_at: string
+          status?: string
+          topic: string
+          updated_at?: string | null
+        }
+        Update: {
+          ambassador_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          meeting_link?: string | null
+          mentor_id?: string | null
+          notes?: string | null
+          rating?: number | null
+          scheduled_at?: string
+          status?: string
+          topic?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_mentor_sessions_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "campus_ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_mentor_sessions_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_mentors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_mentors: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          email: string | null
+          expertise: string[] | null
+          full_name: string
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          email?: string | null
+          expertise?: string[] | null
+          full_name: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          email?: string | null
+          expertise?: string[] | null
+          full_name?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ambassador_points: {
+        Row: {
+          ambassador_id: string | null
+          created_at: string | null
+          cycle_id: string | null
+          id: string
+          rank: number | null
+          tasks_completed: number | null
+          team_size: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ambassador_id?: string | null
+          created_at?: string | null
+          cycle_id?: string | null
+          id?: string
+          rank?: number | null
+          tasks_completed?: number | null
+          team_size?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ambassador_id?: string | null
+          created_at?: string | null
+          cycle_id?: string | null
+          id?: string
+          rank?: number | null
+          tasks_completed?: number | null
+          team_size?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_points_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "campus_ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_points_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_program_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_program_cycles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string
+          id: string
+          is_active: boolean | null
+          name: string
+          rewards_description: string | null
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rewards_description?: string | null
+          start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rewards_description?: string | null
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      ambassador_reward_claims: {
+        Row: {
+          ambassador_id: string | null
+          created_at: string | null
+          cycle_id: string | null
+          fulfilled_at: string | null
+          fulfillment_notes: string | null
+          id: string
+          reward_id: string | null
+          status: string
+        }
+        Insert: {
+          ambassador_id?: string | null
+          created_at?: string | null
+          cycle_id?: string | null
+          fulfilled_at?: string | null
+          fulfillment_notes?: string | null
+          id?: string
+          reward_id?: string | null
+          status?: string
+        }
+        Update: {
+          ambassador_id?: string | null
+          created_at?: string | null
+          cycle_id?: string | null
+          fulfilled_at?: string | null
+          fulfillment_notes?: string | null
+          id?: string
+          reward_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_reward_claims_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "campus_ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_reward_claims_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_program_cycles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_reward_claims_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_rewards: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          points_required: number
+          quantity: number | null
+          rank_required: number | null
+          reward_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          points_required?: number
+          quantity?: number | null
+          rank_required?: number | null
+          reward_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          points_required?: number
+          quantity?: number | null
+          rank_required?: number | null
+          reward_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      ambassador_task_submissions: {
+        Row: {
+          admin_feedback: string | null
+          ambassador_id: string | null
+          attachments: string[] | null
+          created_at: string | null
+          id: string
+          points_awarded: number | null
+          proof_images: string[] | null
+          proof_links: string[] | null
+          report_content: string
+          report_title: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_by_user_id: string | null
+          task_id: string | null
+        }
+        Insert: {
+          admin_feedback?: string | null
+          ambassador_id?: string | null
+          attachments?: string[] | null
+          created_at?: string | null
+          id?: string
+          points_awarded?: number | null
+          proof_images?: string[] | null
+          proof_links?: string[] | null
+          report_content: string
+          report_title: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by_user_id?: string | null
+          task_id?: string | null
+        }
+        Update: {
+          admin_feedback?: string | null
+          ambassador_id?: string | null
+          attachments?: string[] | null
+          created_at?: string | null
+          id?: string
+          points_awarded?: number | null
+          proof_images?: string[] | null
+          proof_links?: string[] | null
+          report_content?: string
+          report_title?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by_user_id?: string | null
+          task_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_task_submissions_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "campus_ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_task_submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_tasks: {
+        Row: {
+          created_at: string | null
+          cycle_id: string | null
+          deadline: string | null
+          description: string
+          difficulty: string
+          id: string
+          instructions: string | null
+          is_active: boolean | null
+          max_completions: number | null
+          points: number
+          priority: number | null
+          required_proof: string[] | null
+          task_type: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cycle_id?: string | null
+          deadline?: string | null
+          description: string
+          difficulty?: string
+          id?: string
+          instructions?: string | null
+          is_active?: boolean | null
+          max_completions?: number | null
+          points?: number
+          priority?: number | null
+          required_proof?: string[] | null
+          task_type?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cycle_id?: string | null
+          deadline?: string | null
+          description?: string
+          difficulty?: string
+          id?: string
+          instructions?: string | null
+          is_active?: boolean | null
+          max_completions?: number | null
+          points?: number
+          priority?: number | null
+          required_proof?: string[] | null
+          task_type?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_tasks_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_program_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_team_members: {
+        Row: {
+          ambassador_id: string | null
+          college: string | null
+          created_at: string | null
+          cycle_id: string | null
+          designation: string | null
+          email: string
+          full_name: string
+          id: string
+          joined_at: string | null
+          phone: string | null
+          role: string
+          status: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ambassador_id?: string | null
+          college?: string | null
+          created_at?: string | null
+          cycle_id?: string | null
+          designation?: string | null
+          email: string
+          full_name: string
+          id?: string
+          joined_at?: string | null
+          phone?: string | null
+          role?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ambassador_id?: string | null
+          college?: string | null
+          created_at?: string | null
+          cycle_id?: string | null
+          designation?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          joined_at?: string | null
+          phone?: string | null
+          role?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_team_members_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "campus_ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambassador_team_members_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_program_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignment_submissions: {
         Row: {
           assignment_id: string

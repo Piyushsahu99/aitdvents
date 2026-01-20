@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
 import { JobEditor } from "@/components/admin/JobEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
@@ -30,6 +30,7 @@ import { AdminStatsCards } from "@/components/admin/AdminStatsCards";
 import { AdminQuickActions } from "@/components/admin/AdminQuickActions";
 import { AdminAnalyticsChart } from "@/components/admin/AdminAnalyticsChart";
 import { LeaderboardCertificateManager } from "@/components/admin/LeaderboardCertificateManager";
+import { AmbassadorProgramManager } from "@/components/admin/AmbassadorProgramManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -571,6 +572,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="blogs" className="text-xs sm:text-sm px-2 sm:px-3"><FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Blogs</TabsTrigger>
               <TabsTrigger value="cms" className="text-xs sm:text-sm px-2 sm:px-3"><Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CMS</TabsTrigger>
               <TabsTrigger value="ambassadors" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Ambassadors</span><span className="sm:hidden">Amb</span></TabsTrigger>
+              <TabsTrigger value="ambassador-program" className="text-xs sm:text-sm px-2 sm:px-3"><UserCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Amb Program</span><span className="sm:hidden">Prog</span></TabsTrigger>
               <TabsTrigger value="study-materials" className="text-xs sm:text-sm px-2 sm:px-3"><BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Materials</span><span className="sm:hidden">Mat</span></TabsTrigger>
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
               <TabsTrigger value="leaderboard-certs" className="text-xs sm:text-sm px-2 sm:px-3"><Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Leaderboard</span><span className="sm:hidden">Lead</span></TabsTrigger>
@@ -1038,6 +1040,11 @@ export default function AdminDashboard() {
           {/* Ambassadors Tab */}
           <TabsContent value="ambassadors">
             <AmbassadorManager />
+          </TabsContent>
+
+          {/* Ambassador Program Tab */}
+          <TabsContent value="ambassador-program">
+            <AmbassadorProgramManager />
           </TabsContent>
 
           {/* Study Materials Tab */}

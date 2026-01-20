@@ -23,9 +23,11 @@ interface TeamMember {
 
 interface TeamManagerProps {
   ambassadorId: string;
+  cycleId: string;
+  onTeamUpdate?: () => void;
 }
 
-export function TeamManager({ ambassadorId }: TeamManagerProps) {
+export function TeamManager({ ambassadorId, cycleId, onTeamUpdate }: TeamManagerProps) {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -39,7 +41,7 @@ export function TeamManager({ ambassadorId }: TeamManagerProps) {
 
   useEffect(() => {
     fetchMembers();
-  }, [ambassadorId]);
+  }, [ambassadorId, cycleId]);
 
   const fetchMembers = async () => {
     try {
@@ -47,6 +49,7 @@ export function TeamManager({ ambassadorId }: TeamManagerProps) {
         .from("ambassador_team_members")
         .select("*")
         .eq("ambassador_id", ambassadorId)
+        .eq("cycle_id", cycleId)
         .order("role", { ascending: true });
 
       if (error) throw error;
@@ -68,15 +71,9 @@ export function TeamManager({ ambassadorId }: TeamManagerProps) {
     }
 
     try {
-      const { data: activeCycle } = await supabase
-        .from("ambassador_program_cycles")
-        .select("id")
-        .eq("is_active", true)
-        .single();
-
       const { error } = await supabase.from("ambassador_team_members").insert({
         ambassador_id: ambassadorId,
-        cycle_id: activeCycle?.id,
+        cycle_id: cycleId,
         full_name: formData.full_name,
         email: formData.email,
         phone: formData.phone || null,
@@ -89,6 +86,7 @@ export function TeamManager({ ambassadorId }: TeamManagerProps) {
       setIsDialogOpen(false);
       setFormData({ full_name: "", email: "", phone: "", role: "volunteer", designation: "" });
       fetchMembers();
+      onTeamUpdate?.();
     } catch (error) {
       console.error("Error adding member:", error);
       toast.error("Failed to add team member");

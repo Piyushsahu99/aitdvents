@@ -24,9 +24,11 @@ interface Task {
 
 interface TaskBoardProps {
   ambassadorId: string;
+  cycleId: string;
+  onSubmissionComplete?: () => void;
 }
 
-export function TaskBoard({ ambassadorId }: TaskBoardProps) {
+export function TaskBoard({ ambassadorId, cycleId, onSubmissionComplete }: TaskBoardProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [submissions, setSubmissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,12 +43,12 @@ export function TaskBoard({ ambassadorId }: TaskBoardProps) {
 
   useEffect(() => {
     fetchData();
-  }, [ambassadorId]);
+  }, [ambassadorId, cycleId]);
 
   const fetchData = async () => {
     try {
       const [tasksRes, submissionsRes] = await Promise.all([
-        supabase.from("ambassador_tasks").select("*").eq("is_active", true).order("priority"),
+        supabase.from("ambassador_tasks").select("*").eq("is_active", true).eq("cycle_id", cycleId).order("priority"),
         supabase.from("ambassador_task_submissions").select("task_id").eq("ambassador_id", ambassadorId),
       ]);
 
@@ -81,6 +83,7 @@ export function TaskBoard({ ambassadorId }: TaskBoardProps) {
       setIsSubmitOpen(false);
       setFormData({ report_title: "", report_content: "", proof_links: "" });
       fetchData();
+      onSubmissionComplete?.();
     } catch (error) {
       console.error("Error submitting task:", error);
       toast.error("Failed to submit task");

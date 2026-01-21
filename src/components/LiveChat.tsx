@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Send, Users, MessageCircle, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { EmojiPicker } from "@/components/chat/EmojiPicker";
+import { GroupChatSelector } from "@/components/chat/GroupChatSelector";
 
 interface LiveChatProps {
   roomId?: string;
@@ -16,7 +18,7 @@ interface LiveChatProps {
 }
 
 export function LiveChat({ roomId, compact = false }: LiveChatProps) {
-  const { messages, currentRoom, sendMessage, isLoading, onlineUsers } = useLiveChat(roomId);
+  const { messages, rooms, currentRoom, setCurrentRoom, sendMessage, isLoading, onlineUsers, refreshRooms } = useLiveChat(roomId);
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -70,7 +72,12 @@ export function LiveChat({ roomId, compact = false }: LiveChatProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <CardTitle className="text-base font-semibold">{currentRoom.name}</CardTitle>
+            <GroupChatSelector
+              rooms={rooms}
+              currentRoom={currentRoom}
+              onRoomSelect={setCurrentRoom}
+              onRoomCreated={refreshRooms}
+            />
           </div>
           <Badge variant="secondary" className="text-xs">
             <Users className="h-3 w-3 mr-1" />
@@ -142,7 +149,11 @@ export function LiveChat({ roomId, compact = false }: LiveChatProps) {
       </CardContent>
 
       <div className="p-3 border-t border-border/50 bg-muted/30">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <EmojiPicker 
+            onEmojiSelect={(emoji) => setNewMessage(prev => prev + emoji)}
+            disabled={!currentUserId}
+          />
           <Input
             placeholder={currentUserId ? "Type a message..." : "Login to chat"}
             value={newMessage}

@@ -3,7 +3,8 @@ import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus, Rocket, CheckCircle2, FileText, GraduationCap, ArrowRight } from "lucide-react";
+import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus, Rocket, CheckCircle2, FileText, GraduationCap, ArrowRight, Share2 } from "lucide-react";
+import { ShareButtons } from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthModal } from "@/components/AuthModal";
 import { JobSubmissionModal } from "@/components/JobSubmissionModal";
@@ -369,9 +370,20 @@ export default function Jobs() {
                               </div>
                             </div>
                             
-                            <div className="flex sm:flex-col gap-2">
+                            <div className="flex flex-col gap-3">
+                              {/* Share Buttons */}
+                              <div className="flex items-center gap-1 justify-end">
+                                <span className="text-xs text-muted-foreground mr-1 hidden sm:inline">Share:</span>
+                                <ShareButtons 
+                                  title={job.title}
+                                  url={job.apply_link || `${window.location.origin}/jobs?id=${job.id}`}
+                                  type="job"
+                                  referenceId={job.id}
+                                  compact
+                                />
+                              </div>
                               <Button 
-                                onClick={handleApply}
+                                onClick={() => job.apply_link ? window.open(job.apply_link, '_blank') : handleApply()}
                                 className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
                               >
                                 Apply Now

@@ -847,7 +847,7 @@ export default function Home() {
             </Link>
             <Link to="/about">
               <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all bg-transparent border-white/30 text-white hover:bg-white/10">
-                Learn More
+                Learn More About AITD
               </Button>
             </Link>
           </div>

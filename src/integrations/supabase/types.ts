@@ -3205,14 +3205,23 @@ export type Database = {
         Returns: number
       }
       check_daily_login: { Args: { p_user_id: string }; Returns: Json }
-      earn_points: {
-        Args: {
-          p_action_type: string
-          p_description?: string
-          p_reference_id?: string
-        }
-        Returns: number
-      }
+      earn_points:
+        | {
+            Args: {
+              p_action_type: string
+              p_description?: string
+              p_reference_id?: string
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              p_action_type: string
+              p_description: string
+              p_reference_id?: string
+            }
+            Returns: boolean
+          }
       generate_certificate_number: { Args: never; Returns: string }
       get_public_profile: {
         Args: { profile_user_id: string }

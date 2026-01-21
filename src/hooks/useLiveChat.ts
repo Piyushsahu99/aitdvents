@@ -197,6 +197,10 @@ export function useLiveChat(roomId?: string) {
     fetchMessages();
   }, [fetchMessages]);
 
+  const refreshRooms = useCallback(() => {
+    fetchRooms();
+  }, [fetchRooms]);
+
   return {
     messages,
     rooms,
@@ -205,5 +209,6 @@ export function useLiveChat(roomId?: string) {
     sendMessage,
     isLoading,
     onlineUsers,
+    refreshRooms,
   };
 }

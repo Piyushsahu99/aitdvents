@@ -19,7 +19,6 @@ import logo from "@/assets/aitd-logo.png";
 
 // Primary navigation items - shown directly in navbar
 const primaryNavLinks = [
-  { name: "Store", path: "/store", icon: ShoppingBag },
   { name: "Events", path: "/events", icon: Calendar },
   { name: "Bounties", path: "/bounties", icon: DollarSign },
   { name: "Jobs", path: "/jobs", icon: Briefcase },
@@ -28,6 +27,12 @@ const primaryNavLinks = [
 
 // Secondary navigation items - shown in "More" dropdown
 const moreNavLinks = [
+  { 
+    category: "Main",
+    items: [
+      { name: "Store", path: "/store", icon: ShoppingBag },
+    ]
+  },
   { 
     category: "Learning",
     items: [

@@ -3,7 +3,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus } from "lucide-react";
+import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus, Rocket, CheckCircle2, FileText, GraduationCap, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthModal } from "@/components/AuthModal";
 import { JobSubmissionModal } from "@/components/JobSubmissionModal";
@@ -212,9 +212,79 @@ export default function Jobs() {
             </div>
           ) : (
             <>
+              {/* AITD Hiring Featured Banner */}
+              <Card className="mb-8 overflow-hidden border-orange-500/30 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 relative">
+                <div className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                  🔥 FEATURED
+                </div>
+                <CardContent className="p-0">
+                  <div className="flex flex-col lg:flex-row">
+                    {/* Image Section */}
+                    <div className="lg:w-72 h-48 lg:h-auto flex-shrink-0">
+                      <img
+                        src="/images/aitd-hiring-2025.png"
+                        alt="AITD Events is Hiring - Join our team"
+                        className="w-full h-full object-cover lg:object-contain lg:p-4"
+                      />
+                    </div>
+                    
+                    {/* Content Section */}
+                    <div className="flex-1 p-6">
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <Badge className="bg-orange-500 text-white border-0 animate-pulse">
+                          <Rocket className="h-3 w-3 mr-1" />
+                          We Are Hiring!
+                        </Badge>
+                        <Badge variant="outline" className="border-orange-500/30 text-orange-600">
+                          Open to All Students
+                        </Badge>
+                      </div>
+                      
+                      <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+                        Join AITD Events Team - Multiple Roles
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Be part of our student-driven community! We're looking for passionate students to join exciting roles.
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {["Graphic Designer", "Video Editor", "Event Manager", "Sponsorship Team", "Marketing & PR", "Community Lead"].map((role) => (
+                          <div key={role} className="flex items-center gap-1 text-xs bg-orange-500/10 text-orange-700 rounded-full px-2.5 py-1 border border-orange-500/20">
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>{role}</span>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-3 mb-4 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Gift className="w-3.5 h-3.5 text-orange-500" />
+                          <span>Free Event Access</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <FileText className="w-3.5 h-3.5 text-orange-500" />
+                          <span>Offer Letter</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <GraduationCap className="w-3.5 h-3.5 text-orange-500" />
+                          <span>Certificate</span>
+                        </div>
+                      </div>
+                      
+                      <a href="https://forms.gle/12yBH78tNfAzhDFm6" target="_blank" rel="noopener noreferrer">
+                        <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg">
+                          Apply Now
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               <div className="space-y-4">
                 {filteredJobs.map((job, index) => (
-                  <Card 
+                  <Card
                     key={job.id}
                     className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in-up"
                     style={{ animationDelay: `${index * 0.05}s` }}

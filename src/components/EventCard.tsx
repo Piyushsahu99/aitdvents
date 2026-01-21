@@ -70,16 +70,16 @@ export const EventCard = ({
       className="group relative bg-card rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl active:scale-[0.98] h-full flex flex-col border-0 shadow-lg"
       onClick={onClick}
     >
-      {/* Poster/Image Section */}
-      <div className={`relative ${hasPoster ? 'aspect-[4/3]' : 'h-44'} overflow-hidden`}>
+      {/* Poster/Image Section - Auto-sizing based on content */}
+      <div className={`relative ${hasPoster ? 'w-full' : 'h-44'} overflow-hidden`}>
         {hasPoster ? (
           <>
             <img
               src={poster_url || image}
               alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-auto max-h-[300px] object-contain bg-muted/30 group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
           </>
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${gradientClass} relative`}>

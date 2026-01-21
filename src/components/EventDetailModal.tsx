@@ -1,9 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Users, Clock, ExternalLink, Sparkles, Share2, MessageCircle, Twitter, Linkedin, Link2, Check } from "lucide-react";
+import { Calendar, MapPin, Users, Clock, ExternalLink, Sparkles, Share2, MessageCircle, Twitter, Linkedin, Link2, Check, Instagram, Coins } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useEarnCoins, POINT_VALUES } from "@/hooks/useEarnCoins";
 
 interface EventDetailModalProps {
   event: {
@@ -27,33 +29,67 @@ interface EventDetailModalProps {
 
 export const EventDetailModal = ({ event, open, onClose }: EventDetailModalProps) => {
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const { toast } = useToast();
+  const { earnCoins } = useEarnCoins();
 
   if (!event) return null;
 
-  const eventUrl = `${window.location.origin}/events?event=${event.id}`;
-  const shareText = `Check out "${event.title}" on AITD! ${event.is_free ? '🎉 It\'s FREE!' : ''}`;
+  // Generate a shortened/personalized link with the event's external link
+  const eventShareUrl = event.external_link || `${window.location.origin}/events?event=${event.id}`;
+  const shareText = `🎉 Check out "${event.title}" on AITD Events! ${event.is_free ? '✨ It\'s FREE!' : ''}\n\n`;
 
-  const shareToWhatsApp = () => {
-    const url = `https://wa.me/?text=${encodeURIComponent(`${shareText}\n\n${eventUrl}`)}`;
-    window.open(url, '_blank');
+  const handleShareReward = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await earnCoins(1, "event_share", `Shared event: ${event.title}`, event.id);
+    }
   };
 
-  const shareToTwitter = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(eventUrl)}`;
+  const shareToWhatsApp = async () => {
+    setSharing(true);
+    const url = `https://wa.me/?text=${encodeURIComponent(`${shareText}${eventShareUrl}`)}`;
     window.open(url, '_blank');
+    await handleShareReward();
+    setSharing(false);
   };
 
-  const shareToLinkedIn = () => {
-    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventUrl)}`;
-    window.open(url, '_blank');
+  const shareToInstagram = async () => {
+    setSharing(true);
+    // Instagram doesn't support direct URL sharing, so we copy to clipboard and inform user
+    navigator.clipboard.writeText(`${shareText}${eventShareUrl}`);
+    toast({ 
+      title: "Link copied for Instagram! 📱", 
+      description: "Paste it in your Instagram story or bio. +1 coin earned!" 
+    });
+    await handleShareReward();
+    setSharing(false);
   };
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(eventUrl);
+  const shareToTwitter = async () => {
+    setSharing(true);
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(eventShareUrl)}`;
+    window.open(url, '_blank');
+    await handleShareReward();
+    setSharing(false);
+  };
+
+  const shareToLinkedIn = async () => {
+    setSharing(true);
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventShareUrl)}`;
+    window.open(url, '_blank');
+    await handleShareReward();
+    setSharing(false);
+  };
+
+  const copyLink = async () => {
+    setSharing(true);
+    navigator.clipboard.writeText(eventShareUrl);
     setCopied(true);
-    toast({ title: "Link copied!", description: "Event link copied to clipboard" });
+    await handleShareReward();
+    toast({ title: "Link copied! +1 coin", description: "Event link copied to clipboard" });
     setTimeout(() => setCopied(false), 2000);
+    setSharing(false);
   };
 
   return (
@@ -78,37 +114,79 @@ export const EventDetailModal = ({ event, open, onClose }: EventDetailModalProps
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
-          {/* Event Poster - Prominent Display */}
+          {/* Event Poster - Auto-sizing to preserve aspect ratio */}
           {event.poster_url && (
-            <div className="relative rounded-xl overflow-hidden border border-border">
+            <div className="relative rounded-xl overflow-hidden border border-border bg-muted/30">
               <img
                 src={event.poster_url}
                 alt={event.title}
-                className="w-full h-auto max-h-[400px] object-contain bg-muted"
+                className="w-full h-auto max-h-[500px] object-contain"
               />
             </div>
           )}
 
-          {/* Share Buttons */}
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
-            <Share2 className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground mr-2">Share:</span>
-            <Button size="sm" variant="outline" onClick={shareToWhatsApp} className="gap-2 bg-green-500/10 hover:bg-green-500/20 border-green-500/30">
-              <MessageCircle className="w-4 h-4 text-green-600" />
-              <span className="hidden sm:inline">WhatsApp</span>
-            </Button>
-            <Button size="sm" variant="outline" onClick={shareToTwitter} className="gap-2">
-              <Twitter className="w-4 h-4" />
-              <span className="hidden sm:inline">Twitter</span>
-            </Button>
-            <Button size="sm" variant="outline" onClick={shareToLinkedIn} className="gap-2">
-              <Linkedin className="w-4 h-4" />
-              <span className="hidden sm:inline">LinkedIn</span>
-            </Button>
-            <Button size="sm" variant="outline" onClick={copyLink} className="gap-2">
-              {copied ? <Check className="w-4 h-4 text-green-500" /> : <Link2 className="w-4 h-4" />}
-              <span className="hidden sm:inline">{copied ? "Copied!" : "Copy"}</span>
-            </Button>
+          {/* Share Buttons with Coin Reward Indicator */}
+          <div className="p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Share2 className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">Share & Earn</span>
+              <Badge variant="secondary" className="gap-1 text-xs">
+                <Coins className="w-3 h-3" />
+                +1 coin per share
+              </Badge>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={shareToWhatsApp} 
+                disabled={sharing}
+                className="gap-2 bg-green-500/10 hover:bg-green-500/20 border-green-500/30"
+              >
+                <MessageCircle className="w-4 h-4 text-green-600" />
+                <span className="hidden sm:inline">WhatsApp</span>
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={shareToInstagram}
+                disabled={sharing}
+                className="gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border-pink-500/30"
+              >
+                <Instagram className="w-4 h-4 text-pink-600" />
+                <span className="hidden sm:inline">Instagram</span>
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={shareToTwitter}
+                disabled={sharing}
+                className="gap-2"
+              >
+                <Twitter className="w-4 h-4" />
+                <span className="hidden sm:inline">Twitter</span>
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={shareToLinkedIn}
+                disabled={sharing}
+                className="gap-2"
+              >
+                <Linkedin className="w-4 h-4" />
+                <span className="hidden sm:inline">LinkedIn</span>
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={copyLink}
+                disabled={sharing}
+                className="gap-2"
+              >
+                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Link2 className="w-4 h-4" />}
+                <span className="hidden sm:inline">{copied ? "Copied!" : "Copy"}</span>
+              </Button>
+            </div>
           </div>
 
           {/* Event Details */}

@@ -614,9 +614,86 @@ export default function Home() {
         </section>
       )}
 
+      {/* AITD Hiring Banner - Featured */}
+      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[20%] right-[10%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-[15%] left-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-black/10 rounded-full blur-3xl animate-float-delayed" />
+        </div>
+        
+        <div className="container mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="text-center lg:text-left text-white">
+              <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm animate-pulse">
+                <Rocket className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
+                We Are Hiring!
+              </Badge>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
+                Join AITD Events <span className="opacity-90">Team</span>
+              </h2>
+              <p className="text-sm sm:text-base lg:text-lg opacity-90 mb-4 sm:mb-6 max-w-xl mx-auto lg:mx-0">
+                Be part of our student-driven community! We're looking for passionate students to join multiple exciting roles.
+              </p>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-6 max-w-lg mx-auto lg:mx-0">
+                {["Graphic Designer", "Video Editor", "Event Manager", "Sponsorship Team", "Marketing & PR", "Community Lead"].map((role) => (
+                  <div key={role} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/15 rounded-full px-3 py-1.5 backdrop-blur-sm border border-white/20">
+                    <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="truncate">{role}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 mb-6 text-xs sm:text-sm">
+                <div className="flex items-center gap-1.5 bg-white/20 rounded-lg px-3 py-2">
+                  <Gift className="w-4 h-4" />
+                  <span>Free Event Access</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white/20 rounded-lg px-3 py-2">
+                  <FileText className="w-4 h-4" />
+                  <span>Offer Letter</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white/20 rounded-lg px-3 py-2">
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Certificate</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <a href="https://forms.gle/12yBH78tNfAzhDFm6" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="bg-white text-orange-600 hover:bg-white/90 text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all font-semibold w-full sm:w-auto">
+                    Apply Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+                <Link to="/jobs">
+                  <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all w-full sm:w-auto">
+                    View in Jobs
+                    <Briefcase className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative max-w-sm lg:max-w-md">
+                <img
+                  src="/images/aitd-hiring-2025.png"
+                  alt="AITD Events is Hiring - Join our team as Graphic Designer, Video Editor, Event Manager, and more"
+                  className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white/20"
+                />
+                <div className="absolute -bottom-3 -right-3 bg-white text-orange-600 rounded-full px-4 py-2 shadow-lg font-bold text-sm animate-bounce">
+                  Limited Seats!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Latest Jobs Section */}
       {latestJobs.length > 0 && (
-        <section className="py-10 sm:py-14 lg:py-20 px-4">
+        <section className="py-10 sm:py-14 lg:py-20 px-4 bg-muted/30">
           <div className="container mx-auto">
             <div className="text-center mb-6 sm:mb-10">
               <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">

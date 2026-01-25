@@ -94,33 +94,34 @@ export const EventDetailModal = ({ event, open, onClose }: EventDetailModalProps
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] sm:max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <div className="flex items-start gap-4">
-            <DialogTitle className="text-xl flex-1">{event.title}</DialogTitle>
+          <div className="flex items-start gap-3 sm:gap-4">
+            <DialogTitle className="text-base sm:text-lg md:text-xl flex-1 leading-tight">{event.title}</DialogTitle>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            <Badge variant="secondary">{event.category}</Badge>
-            <Badge variant={event.is_online ? "default" : "outline"}>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
+            <Badge variant="secondary" className="text-[10px] sm:text-xs">{event.category}</Badge>
+            <Badge variant={event.is_online ? "default" : "outline"} className="text-[10px] sm:text-xs">
               {event.is_online ? "Online" : "Offline"}
             </Badge>
             {event.is_free && (
-              <Badge className="bg-emerald-500 text-white">
-                <Sparkles className="w-3 h-3 mr-1" />
+              <Badge className="bg-success text-success-foreground text-[10px] sm:text-xs">
+                <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
                 Free
               </Badge>
             )}
           </div>
         </DialogHeader>
 
-        <div className="space-y-6 mt-4">
-          {/* Event Poster - Auto-sizing to preserve aspect ratio */}
+        <div className="space-y-4 sm:space-y-6 mt-3 sm:mt-4">
+          {/* Event Poster - Responsive sizing */}
           {event.poster_url && (
-            <div className="relative rounded-xl overflow-hidden border border-border bg-muted/30">
+            <div className="relative rounded-lg sm:rounded-xl overflow-hidden border border-border bg-muted/30">
               <img
                 src={event.poster_url}
                 alt={event.title}
-                className="w-full h-auto max-h-[500px] object-contain"
+                className="w-full h-auto max-h-[40vh] sm:max-h-[50vh] md:max-h-[500px] object-contain"
+                loading="lazy"
               />
             </div>
           )}

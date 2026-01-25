@@ -299,8 +299,10 @@ export default function Home() {
             {/* Right Side - Mascot Image */}
             <div className="order-1 lg:order-2 flex justify-center lg:justify-end animate-fade-in-up">
               <div className="relative">
-                {/* Glow effect behind mascot */}
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-400/30 to-amber-400/30 rounded-full blur-3xl scale-75" />
+                {/* Animated glow effects behind mascot */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-400/25 to-amber-400/25 rounded-full blur-3xl scale-90 animate-pulse-soft" />
+                <div className="absolute inset-4 bg-gradient-to-tr from-amber-300/20 to-orange-500/20 rounded-full blur-2xl scale-75 animate-float" />
+                <div className="absolute -inset-4 bg-gradient-to-bl from-orange-300/15 to-yellow-400/15 rounded-full blur-3xl scale-110 animate-float-delayed opacity-60" />
                 
                 <img 
                   src={aitdMascot} 

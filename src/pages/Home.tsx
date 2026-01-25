@@ -229,12 +229,55 @@ export default function Home() {
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-background to-orange-100/30 dark:from-orange-950/20 dark:via-background dark:to-orange-900/10" />
         
-        {/* Animated decorative elements */}
+        {/* Animated mesh gradient overlay */}
+        <div className="absolute inset-0 bg-mesh opacity-50" />
+        
+        {/* Shooting stars */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Shooting star 1 */}
+          <div className="absolute top-[10%] left-0 animate-shooting-star">
+            <div className="w-32 sm:w-48 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-amber-200 rounded-full shadow-lg shadow-orange-400/50" />
+          </div>
+          {/* Shooting star 2 */}
+          <div className="absolute top-[30%] left-0 animate-shooting-star-delayed">
+            <div className="w-24 sm:w-40 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-yellow-200 rounded-full shadow-lg shadow-amber-400/50" />
+          </div>
+          {/* Shooting star 3 */}
+          <div className="absolute top-[50%] left-0 animate-shooting-star-slow">
+            <div className="w-20 sm:w-32 h-px bg-gradient-to-r from-transparent via-orange-300 to-white rounded-full shadow-lg shadow-orange-300/50" />
+          </div>
+          {/* Reverse shooting star */}
+          <div className="absolute top-[20%] right-0 animate-shooting-star-reverse">
+            <div className="w-28 sm:w-36 h-0.5 bg-gradient-to-l from-transparent via-teal-400 to-cyan-200 rounded-full shadow-lg shadow-teal-400/50" />
+          </div>
+        </div>
+        
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[20%] left-[10%] w-2 h-2 rounded-full bg-orange-400/40 animate-particle" />
+          <div className="absolute top-[40%] left-[25%] w-1.5 h-1.5 rounded-full bg-amber-400/30 animate-particle-delayed" />
+          <div className="absolute top-[60%] left-[15%] w-1 h-1 rounded-full bg-yellow-400/40 animate-particle-slow" />
+          <div className="absolute top-[30%] right-[20%] w-2 h-2 rounded-full bg-teal-400/30 animate-particle" />
+          <div className="absolute top-[70%] right-[30%] w-1.5 h-1.5 rounded-full bg-cyan-400/40 animate-particle-delayed" />
+          <div className="absolute bottom-[20%] left-[40%] w-1 h-1 rounded-full bg-orange-300/50 animate-rise" />
+          <div className="absolute bottom-[30%] right-[45%] w-1.5 h-1.5 rounded-full bg-amber-300/40 animate-rise-delayed" />
+        </div>
+        
+        {/* Animated decorative blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[10%] left-[5%] w-16 sm:w-24 lg:w-32 h-16 sm:h-24 lg:h-32 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full blur-2xl animate-float" />
           <div className="absolute top-[5%] right-[10%] w-20 sm:w-32 lg:w-40 h-20 sm:h-32 lg:h-40 bg-gradient-to-br from-orange-500/15 to-red-400/15 rounded-full blur-3xl animate-float-delayed" />
           <div className="absolute bottom-[15%] left-[10%] w-24 sm:w-36 lg:w-48 h-24 sm:h-36 lg:h-48 bg-gradient-to-br from-yellow-400/15 to-orange-400/15 rounded-full blur-3xl animate-float-slow" />
           <div className="absolute bottom-[20%] right-[5%] w-16 sm:w-28 lg:w-36 h-16 sm:h-28 lg:h-36 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-full blur-2xl animate-float" />
+          {/* Additional orbiting elements */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[400px] lg:h-[500px]">
+            <div className="absolute inset-0 animate-orbit opacity-30">
+              <div className="absolute top-0 left-1/2 w-3 h-3 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 blur-sm" />
+            </div>
+            <div className="absolute inset-0 animate-orbit-reverse opacity-20">
+              <div className="absolute bottom-0 right-1/2 w-2 h-2 rounded-full bg-gradient-to-br from-teal-400 to-cyan-400 blur-sm" />
+            </div>
+          </div>
         </div>
         
         <div className="container mx-auto relative z-10">

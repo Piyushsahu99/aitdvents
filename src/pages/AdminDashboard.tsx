@@ -581,55 +581,55 @@ export default function AdminDashboard() {
 
           {/* Overview Tab - Summary View */}
           <TabsContent value="overview">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
               {/* Recent Activity Card */}
-              <Card className="p-6 col-span-full lg:col-span-2">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
+              <Card className="p-3 sm:p-4 md:p-6 col-span-full lg:col-span-2">
+                <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                   Recent Events
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {events.slice(0, 5).map((event) => (
-                    <div key={event.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                    <div key={event.id} className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors gap-2">
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{event.title}</p>
-                        <p className="text-xs text-muted-foreground">{event.category} • {event.date}</p>
+                        <p className="font-medium truncate text-xs sm:text-sm md:text-base">{event.title}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{event.category} • {event.date}</p>
                       </div>
                       {getStatusBadge(event.status)}
                     </div>
                   ))}
                   {events.length === 0 && (
-                    <p className="text-muted-foreground text-sm text-center py-8">No events yet. Create your first event!</p>
+                    <p className="text-muted-foreground text-xs sm:text-sm text-center py-6 sm:py-8">No events yet. Create your first event!</p>
                   )}
                 </div>
               </Card>
 
               {/* Quick Stats Card */}
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-amber-500" />
+              <Card className="p-3 sm:p-4 md:p-6">
+                <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
+                  <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-warning" />
                   Content Summary
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Live Events</span>
-                    <Badge variant="default" className="bg-green-500">{liveEvents}</Badge>
+                    <span className="text-xs sm:text-sm text-muted-foreground">Live Events</span>
+                    <Badge variant="default" className="bg-success text-[10px] sm:text-xs">{liveEvents}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Pending Approval</span>
-                    <Badge variant="secondary" className="bg-amber-500/10 text-amber-600">{pendingEvents + pendingJobs + pendingHackathons}</Badge>
+                    <span className="text-xs sm:text-sm text-muted-foreground">Pending</span>
+                    <Badge variant="secondary" className="bg-warning/10 text-warning text-[10px] sm:text-xs">{pendingEvents + pendingJobs + pendingHackathons}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Active Bounties</span>
-                    <Badge variant="outline">{bounties.filter(b => b.status === 'live').length}</Badge>
+                    <span className="text-xs sm:text-sm text-muted-foreground">Bounties</span>
+                    <Badge variant="outline" className="text-[10px] sm:text-xs">{bounties.filter(b => b.status === 'live').length}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Open Jobs</span>
-                    <Badge variant="outline">{jobs.filter(j => j.status === 'live').length}</Badge>
+                    <span className="text-xs sm:text-sm text-muted-foreground">Jobs</span>
+                    <Badge variant="outline" className="text-[10px] sm:text-xs">{jobs.filter(j => j.status === 'live').length}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Total Users</span>
-                    <Badge variant="outline">{users.length}</Badge>
+                    <span className="text-xs sm:text-sm text-muted-foreground">Users</span>
+                    <Badge variant="outline" className="text-[10px] sm:text-xs">{users.length}</Badge>
                   </div>
                 </div>
               </Card>
@@ -639,13 +639,13 @@ export default function AdminDashboard() {
 
           {/* Events Tab */}
           <TabsContent value="events">
-            <Card className="p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Plus className="h-5 w-5" /> Create Event (AI-Powered)</h3>
-              <form onSubmit={handleCreateEvent} className="grid md:grid-cols-2 gap-4">
-                <div><Label>Title</Label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required /></div>
-                <div><Label>Category</Label>
+            <Card className="p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
+              <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2"><Plus className="h-4 w-4 sm:h-5 sm:w-5" /> Create Event (AI-Powered)</h3>
+              <form onSubmit={handleCreateEvent} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div><Label className="text-xs sm:text-sm">Title</Label><Input className="text-sm" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required /></div>
+                <div><Label className="text-xs sm:text-sm">Category</Label>
                   <Select value={formData.category} onValueChange={v => setFormData({...formData, category: v})}>
-                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectTrigger className="text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Hackathon">Hackathon</SelectItem>
                       <SelectItem value="Workshop">Workshop</SelectItem>
@@ -655,65 +655,78 @@ export default function AdminDashboard() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="md:col-span-2"><Label>Description</Label><Textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required /></div>
-                <div><Label>Date</Label><Input value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} required /></div>
-                <div><Label>Location</Label><Input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required /></div>
-                <div><Label>Registration Link</Label><Input value={formData.external_link} onChange={e => setFormData({...formData, external_link: e.target.value})} /></div>
-                <div><Label>Participants</Label><Input type="number" value={formData.participants} onChange={e => setFormData({...formData, participants: parseInt(e.target.value) || 0})} /></div>
-                <div className="md:col-span-2">
-                  <Button type="submit" disabled={generating}>{generating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating...</> : <><Sparkles className="mr-2 h-4 w-4" />Create with AI</>}</Button>
+                <div className="sm:col-span-2"><Label className="text-xs sm:text-sm">Description</Label><Textarea className="text-sm min-h-[80px]" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required /></div>
+                <div><Label className="text-xs sm:text-sm">Date</Label><Input className="text-sm" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} required /></div>
+                <div><Label className="text-xs sm:text-sm">Location</Label><Input className="text-sm" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required /></div>
+                <div><Label className="text-xs sm:text-sm">Registration Link</Label><Input className="text-sm" value={formData.external_link} onChange={e => setFormData({...formData, external_link: e.target.value})} /></div>
+                <div><Label className="text-xs sm:text-sm">Participants</Label><Input className="text-sm" type="number" value={formData.participants} onChange={e => setFormData({...formData, participants: parseInt(e.target.value) || 0})} /></div>
+                <div className="sm:col-span-2">
+                  <Button type="submit" disabled={generating} size="sm" className="text-xs sm:text-sm">{generating ? <><Loader2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />Generating...</> : <><Sparkles className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />Create with AI</>}</Button>
                 </div>
               </form>
             </Card>
             {/* Pending User Submissions */}
             {events.filter(e => e.submitted_by_user && e.status === 'draft').length > 0 && (
-              <Card className="p-4 mb-6 border-orange-500/50 bg-orange-500/5">
-                <h4 className="font-semibold mb-3 flex items-center gap-2 text-orange-600">
-                  <Users className="h-5 w-5" />
-                  Pending User Submissions ({events.filter(e => e.submitted_by_user && e.status === 'draft').length})
+              <Card className="p-3 sm:p-4 mb-4 sm:mb-6 border-warning/50 bg-warning/5">
+                <h4 className="font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-warning text-xs sm:text-sm md:text-base">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                  Pending Submissions ({events.filter(e => e.submitted_by_user && e.status === 'draft').length})
                 </h4>
+                <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+                  <Table>
+                    <TableHeader><TableRow><TableHead className="text-xs">Title</TableHead><TableHead className="text-xs hidden sm:table-cell">Category</TableHead><TableHead className="text-xs hidden md:table-cell">Date</TableHead><TableHead className="text-xs">Actions</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {events.filter(e => e.submitted_by_user && e.status === 'draft').map(item => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-medium text-xs sm:text-sm py-2">
+                            <div className="truncate max-w-[120px] sm:max-w-none">{item.title}</div>
+                            <div className="text-[10px] text-muted-foreground sm:hidden">{item.category}</div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-[10px] sm:text-xs">{item.category}</Badge></TableCell>
+                          <TableCell className="hidden md:table-cell text-xs">{item.date}</TableCell>
+                          <TableCell className="py-2">
+                            <div className="flex gap-0.5 sm:gap-1">
+                              <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }}><Edit className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-info" /></Button>
+                              <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => updateEventStatus(item.id, 'live')}><CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" /></Button>
+                              <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => deleteEvent(item.id)}><Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" /></Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </Card>
+            )}
+
+            <Card className="overflow-hidden">
+              <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader><TableRow><TableHead>Title</TableHead><TableHead>Category</TableHead><TableHead>Date</TableHead><TableHead>Location</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+                  <TableHeader><TableRow><TableHead className="text-xs">Title</TableHead><TableHead className="text-xs hidden sm:table-cell">Category</TableHead><TableHead className="text-xs hidden md:table-cell">Date</TableHead><TableHead className="text-xs hidden lg:table-cell">Source</TableHead><TableHead className="text-xs">Status</TableHead><TableHead className="text-xs">Actions</TableHead></TableRow></TableHeader>
                   <TableBody>
-                    {events.filter(e => e.submitted_by_user && e.status === 'draft').map(item => (
+                    {events.map(item => (
                       <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.title}</TableCell>
-                        <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
-                        <TableCell>{item.date}</TableCell>
-                        <TableCell>{item.location}</TableCell>
-                        <TableCell className="flex gap-1">
-                          <Button size="sm" variant="ghost" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }} title="Edit"><Edit className="h-4 w-4 text-blue-500" /></Button>
-                          <Button size="sm" variant="ghost" onClick={() => updateEventStatus(item.id, 'live')} title="Approve"><CheckCircle className="h-4 w-4 text-green-500" /></Button>
-                          <Button size="sm" variant="ghost" onClick={() => deleteEvent(item.id)} title="Reject"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                        <TableCell className="font-medium text-xs sm:text-sm py-2">
+                          <div className="truncate max-w-[100px] sm:max-w-[180px] md:max-w-none">{item.title}</div>
+                          <div className="text-[10px] text-muted-foreground sm:hidden">{item.category}</div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-[10px] sm:text-xs">{item.category}</Badge></TableCell>
+                        <TableCell className="hidden md:table-cell text-xs">{item.date}</TableCell>
+                        <TableCell className="hidden lg:table-cell"><Badge variant={item.submitted_by_user ? "secondary" : "default"} className="text-[10px]">{item.submitted_by_user ? 'User' : 'Admin'}</Badge></TableCell>
+                        <TableCell className="py-2">{getStatusBadge(item.status)}</TableCell>
+                        <TableCell className="py-2">
+                          <div className="flex gap-0.5 sm:gap-1">
+                            <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }}><Edit className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-info" /></Button>
+                            {item.status === 'draft' && <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => updateEventStatus(item.id, 'live')}><CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" /></Button>}
+                            {item.status === 'live' && <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => updateEventStatus(item.id, 'ended')}><XCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" /></Button>}
+                            <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => deleteEvent(item.id)}><Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" /></Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
-              </Card>
-            )}
-
-            <Card>
-              <Table>
-                <TableHeader><TableRow><TableHead>Title</TableHead><TableHead>Category</TableHead><TableHead>Date</TableHead><TableHead>Source</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
-                <TableBody>
-                  {events.map(item => (
-                    <TableRow key={item.id}>
-                      <TableCell className="font-medium">{item.title}</TableCell>
-                      <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
-                      <TableCell>{item.date}</TableCell>
-                      <TableCell><Badge variant={item.submitted_by_user ? "secondary" : "default"}>{item.submitted_by_user ? 'User' : 'Admin'}</Badge></TableCell>
-                      <TableCell>{getStatusBadge(item.status)}</TableCell>
-                      <TableCell className="flex gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => { setEditingEvent(item); setEventEditorOpen(true); }}><Edit className="h-4 w-4 text-blue-500" /></Button>
-                        {item.status === 'draft' && <Button size="sm" variant="ghost" onClick={() => updateEventStatus(item.id, 'live')}><CheckCircle className="h-4 w-4 text-green-500" /></Button>}
-                        {item.status === 'live' && <Button size="sm" variant="ghost" onClick={() => updateEventStatus(item.id, 'ended')}><XCircle className="h-4 w-4 text-yellow-500" /></Button>}
-                        <Button size="sm" variant="ghost" onClick={() => deleteEvent(item.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              </div>
             </Card>
             
             {/* Event Editor Modal */}

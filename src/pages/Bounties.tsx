@@ -254,25 +254,25 @@ export default function Bounties() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       {/* Hero Section */}
-      <section className="py-12 px-4 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <section className="py-8 sm:py-12 px-4 bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <div className="container mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <Trophy className="h-10 w-10 text-primary" />
-            <h1 className="text-4xl font-bold">Bounties & Earning Tasks</h1>
+          <div className="flex items-center gap-2 sm:gap-3 mb-2">
+            <Trophy className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">Bounties & Tasks</h1>
           </div>
-          <p className="text-muted-foreground text-lg mb-3">
-            Complete tasks from brands & participate in challenges to earn rewards.
+          <p className="text-muted-foreground text-sm sm:text-base lg:text-lg mb-3">
+            Complete tasks & challenges to earn rewards
           </p>
           <div className="flex flex-wrap gap-2">
-            <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-              <Coins className="h-4 w-4 mr-2" />
-              Earn {POINT_VALUES.BOUNTY_SUBMIT} coins per bounty submission!
+            <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-xs sm:text-sm">
+              <Coins className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+              +{POINT_VALUES.BOUNTY_SUBMIT} coins/bounty
             </Badge>
-            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-              <Zap className="h-4 w-4 mr-2" />
-              Instant coins for micro-tasks!
+            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-xs sm:text-sm">
+              <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+              Instant coins
             </Badge>
           </div>
         </div>
@@ -280,20 +280,20 @@ export default function Bounties() {
 
       {/* Earning Tasks Section */}
       {earningTasks.length > 0 && (
-        <section className="py-8 px-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
+        <section className="py-6 sm:py-8 px-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
           <div className="container mx-auto">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <div className="flex items-center gap-2">
-                <Gift className="h-6 w-6 text-emerald-500" />
-                <h2 className="text-xl font-bold">Partner's Earning Tasks</h2>
-                <Badge variant="secondary" className="ml-2">New</Badge>
+                <Gift className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-500" />
+                <h2 className="text-lg sm:text-xl font-bold">Earning Tasks</h2>
+                <Badge variant="secondary" className="text-[10px] sm:text-xs">New</Badge>
               </div>
-              <p className="text-sm text-muted-foreground hidden sm:block">
-                Complete simple tasks & earn instantly!
+              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                Complete simple tasks & earn!
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {earningTasks.map((task) => {
                 const isCompleted = userCompletions.includes(task.id);
                 return (

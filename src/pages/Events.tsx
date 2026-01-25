@@ -265,22 +265,22 @@ export default function Events() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       {/* Header Section */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md">
-        <div className="px-4 pt-4 pb-3">
+        <div className="px-4 pt-3 sm:pt-4 pb-2 sm:pb-3">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div>
-              <h1 className="text-xl font-bold text-foreground">Event, Competitions & Challenges</h1>
-              <p className="text-sm text-muted-foreground">Participate and Showcase Your Talents</p>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground">Events & Competitions</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Participate and Showcase Your Talents</p>
             </div>
             {isLoggedIn && (
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setShowMySubmissions(true)}
-                className="text-xs"
+                className="text-xs h-8"
               >
                 My Events
               </Button>
@@ -288,53 +288,53 @@ export default function Events() {
           </div>
 
           {/* Campus Toggle */}
-          <div className="flex rounded-xl bg-muted/50 p-1 mb-4">
+          <div className="flex rounded-xl bg-muted/50 p-0.5 sm:p-1 mb-3 sm:mb-4">
             <button
               onClick={() => setCampusMode("on-campus")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                 campusMode === "on-campus"
                   ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground"
               }`}
             >
-              <Building2 className="w-4 h-4" />
+              <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               On Campus
             </button>
             <button
               onClick={() => setCampusMode("beyond-campus")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                 campusMode === "beyond-campus"
                   ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground"
               }`}
             >
-              <Globe className="w-4 h-4" />
+              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Beyond Campus
             </button>
           </div>
 
           {/* Search Bar */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative mb-3 sm:mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by name or location"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-12 rounded-xl bg-muted/50 border-0 text-base"
+              className="pl-9 sm:pl-10 h-10 sm:h-12 rounded-xl bg-muted/50 border-0 text-sm sm:text-base"
             />
           </div>
 
           {/* Category Horizontal Scroll */}
           <ScrollArea className="w-full">
-            <div className="flex gap-2 pb-3">
+            <div className="flex gap-2 pb-2 sm:pb-3">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                  className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap active:scale-95 ${
                     selectedCategory === cat
                       ? "bg-primary text-primary-foreground shadow-md"
-                      : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      : "bg-muted/60 text-muted-foreground"
                   }`}
                 >
                   {cat}

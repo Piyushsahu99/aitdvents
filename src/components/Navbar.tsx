@@ -133,48 +133,45 @@ export const Navbar = () => {
         ? 'bg-background/98 backdrop-blur-xl shadow-lg border-border/80' 
         : 'bg-background/95 backdrop-blur-md border-border/50'
     }`}>
-      <div className="container mx-auto px-4">
-        <div className="flex h-14 sm:h-16 items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex h-14 lg:h-16 items-center justify-between gap-2">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 sm:space-x-3 group">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-lg sm:rounded-xl blur-md group-hover:bg-primary/30 transition-all duration-300" />
+              <div className="absolute inset-0 bg-primary/20 rounded-lg blur-md group-hover:bg-primary/30 transition-all duration-300" />
               <img 
                 src={logo} 
                 alt="AITD Events" 
-                className="h-9 w-9 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-lg" 
+                className="h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-lg relative z-10 group-hover:scale-105 transition-transform duration-300 shadow-lg" 
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-base sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="text-sm sm:text-base lg:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 aitd.events
               </span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground -mt-0.5 sm:-mt-1 hidden xs:block">Learn • Compete • Grow</span>
+              <span className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground -mt-0.5 hidden sm:block">Learn • Compete • Grow</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-2 xl:space-x-3">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-center">
             {primaryNavLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative px-3 xl:px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 group ${
+                  className={`relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5 group ${
                     isActive(link.path)
                       ? "text-primary-foreground"
                       : "text-foreground hover:text-primary"
                   }`}
                 >
                   {isActive(link.path) && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-xl animate-gradient" style={{ backgroundSize: '200% 200%' }} />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-xl" />
                   )}
-                  <Icon className={`h-4 w-4 relative z-10 transition-transform duration-300 ${isActive(link.path) ? '' : 'group-hover:scale-110 group-hover:rotate-6'}`} />
+                  <Icon className={`h-4 w-4 relative z-10 ${isActive(link.path) ? '' : 'group-hover:scale-110'}`} />
                   <span className="relative z-10">{link.name}</span>
-                  {!isActive(link.path) && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                  )}
                 </Link>
               );
             })}
@@ -272,7 +269,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className="lg:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
             <CartIcon />
             {user && <PointsWidget />}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -280,12 +277,12 @@ export const Navbar = () => {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-xl h-10 w-10 border-2 border-primary/20 bg-primary/5 active:scale-95 transition-transform"
+                  className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 border border-primary/20 bg-primary/5 active:scale-95 transition-transform"
                 >
-                  {isOpen ? <X className="h-5 w-5 text-primary" /> : <Menu className="h-5 w-5 text-primary" />}
+                  {isOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5 text-primary" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[88vw] max-w-[380px] p-0 border-l-2 border-primary/20">
+              <SheetContent side="right" className="w-[85vw] max-w-[340px] sm:max-w-[380px] p-0 border-l border-primary/20">
                 <div className="flex flex-col h-full bg-gradient-to-b from-background to-muted/20">
                   {/* Header with gradient */}
                   <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/10">

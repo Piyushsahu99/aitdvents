@@ -94,68 +94,68 @@ export default function Jobs() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-20 lg:pb-0">
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-20 px-4 overflow-hidden bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-yellow-500/10">
+      <section className="relative py-8 sm:py-12 lg:py-20 px-4 overflow-hidden bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-yellow-500/10">
         <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-orange-500/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-amber-500/20 rounded-full blur-3xl animate-float-delayed" />
+          <div className="absolute top-10 left-10 w-32 sm:w-48 lg:w-72 h-32 sm:h-48 lg:h-72 bg-orange-500/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-amber-500/20 rounded-full blur-3xl" />
         </div>
         
         <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="text-center mb-10 animate-fade-in-up">
-            <Badge className="mb-4 bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20">
+          <div className="text-center mb-6 sm:mb-10">
+            <Badge className="mb-3 sm:mb-4 bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20 text-xs sm:text-sm">
               <Sparkles className="h-3 w-3 mr-1.5" />
               Career Opportunities
             </Badge>
-            <h1 className="text-3xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
               Jobs & Internships
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-              Launch your career with opportunities from top companies. Find internships, jobs, and more.
+            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 sm:mb-6">
+              Launch your career with opportunities from top companies
             </p>
             
             {/* Post Job Button */}
             <Button 
               onClick={handlePostJob}
-              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
+              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg h-10 sm:h-11 text-sm sm:text-base"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Post a Job / Internship
+              Post Job / Internship
             </Button>
           </div>
 
-          {/* Stats Row - Real Data */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 animate-fade-in-up stagger-1">
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
             {[
               { label: "Open Positions", value: jobs.length, icon: Briefcase },
               { label: "Companies", value: new Set(jobs.map(j => j.company)).size, icon: Building },
               { label: "Categories", value: new Set(jobs.map(j => j.category)).size, icon: TrendingUp },
               { label: "Job Types", value: new Set(jobs.map(j => j.type)).size, icon: Users },
             ].map((stat, idx) => (
-              <div key={idx} className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 text-center hover:shadow-lg transition-all hover:-translate-y-1">
-                <stat.icon className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              <div key={idx} className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center">
+                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1.5 sm:mb-2 text-orange-500" />
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{stat.value}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Coin Earning Banner */}
-          <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in-up stagger-2">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-yellow-500/20">
-                <Coins className="h-5 w-5 text-yellow-500" />
+          {/* Coin Banner */}
+          <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-full bg-yellow-500/20">
+                <Coins className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
               </div>
-              <div>
-                <p className="font-semibold text-foreground">Earn AITD Coins while job hunting!</p>
-                <p className="text-sm text-muted-foreground">Complete bounties, courses & events to earn rewards</p>
+              <div className="text-center sm:text-left">
+                <p className="font-semibold text-sm sm:text-base text-foreground">Earn AITD Coins!</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Complete bounties & courses</p>
               </div>
             </div>
             <Link to="/rewards">
-              <Button variant="outline" className="border-yellow-500/30 text-yellow-600 hover:bg-yellow-500/10">
-                <Gift className="h-4 w-4 mr-2" />
-                View Rewards
+              <Button variant="outline" size="sm" className="border-yellow-500/30 text-yellow-600 hover:bg-yellow-500/10 h-8 sm:h-9 text-xs sm:text-sm">
+                <Gift className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+                Rewards
               </Button>
             </Link>
           </div>
@@ -163,26 +163,26 @@ export default function Jobs() {
       </section>
 
       {/* Telegram Banner */}
-      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 py-3 px-4">
-        <div className="container mx-auto max-w-6xl flex items-center justify-center gap-2 text-white text-sm sm:text-base">
-          <Send className="h-4 w-4 animate-pulse" />
-          <span className="font-medium">Join our Telegram for daily job updates!</span>
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 py-2.5 sm:py-3 px-4">
+        <div className="container mx-auto max-w-6xl flex items-center justify-center gap-2 text-white text-xs sm:text-sm">
+          <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="font-medium">Join Telegram for daily job updates!</span>
           <a 
             href="https://t.me/aitdevents" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="ml-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-xs font-semibold transition-colors"
+            className="ml-1 sm:ml-2 px-2 sm:px-3 py-0.5 sm:py-1 bg-white/20 hover:bg-white/30 rounded-full text-[10px] sm:text-xs font-semibold transition-colors"
           >
-            Join Now →
+            Join →
           </a>
         </div>
       </div>
 
       {/* Main Content */}
-      <section className="py-8 sm:py-12 px-4">
+      <section className="py-6 sm:py-8 lg:py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           {/* Search & Filter */}
-          <div className="mb-8 space-y-4 animate-fade-in">
+          <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
             <SearchBar
               placeholder="Search jobs, companies..."
               value={search}
@@ -195,7 +195,7 @@ export default function Jobs() {
                 <button
                   key={cat}
                   onClick={() => setCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all active:scale-95 ${
                     category === cat
                       ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg"
                       : "bg-card border border-border hover:border-orange-500/50 text-foreground"

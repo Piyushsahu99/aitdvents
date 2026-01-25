@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Trophy, Briefcase, Menu, Calendar, ShoppingBag } from "lucide-react";
+import { Home, Trophy, Briefcase, Menu, Calendar, ShoppingBag, BookOpen, Users, MessageCircle, Sparkles, Video, FileText, GraduationCap, Target, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -24,33 +24,36 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
     items: [
       { name: "Store", path: "/store", icon: ShoppingBag },
       { name: "Hackathons", path: "/hackathons", icon: Trophy },
-      { name: "Courses", path: "/courses", icon: BookOpen },
+      { name: "Live Chat", path: "/live-chat", icon: MessageCircle },
     ],
   },
   {
     category: "Learning",
     items: [
-      { name: "My Courses", path: "/my-courses", icon: BookOpen },
-      { name: "Practice", path: "/practice", icon: Trophy },
-      { name: "Scholarships", path: "/scholarships", icon: BookOpen },
+      { name: "Courses", path: "/courses", icon: BookOpen },
+      { name: "My Courses", path: "/my-courses", icon: GraduationCap },
+      { name: "Study Materials", path: "/study-materials", icon: FileText },
+      { name: "Practice", path: "/practice", icon: Target },
+      { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
     ],
   },
   {
     category: "Connect",
     items: [
-      { name: "Network", path: "/network", icon: Briefcase },
-      { name: "Groups", path: "/groups", icon: Briefcase },
-      { name: "Mentorship", path: "/mentorship", icon: Briefcase },
-      { name: "Community", path: "/community", icon: Briefcase },
+      { name: "Network", path: "/network", icon: Users },
+      { name: "Groups", path: "/groups", icon: Users },
+      { name: "Community", path: "/community", icon: MessageCircle },
+      { name: "Mentorship", path: "/mentorship", icon: Users },
     ],
   },
   {
     category: "Tools",
     items: [
-      { name: "AI Chat", path: "/ai-chat", icon: Menu },
-      { name: "AI Tools", path: "/ai-tools", icon: Menu },
-      { name: "Reels", path: "/reels", icon: Menu },
-      { name: "Blogs", path: "/blogs", icon: Menu },
+      { name: "AI Chat", path: "/ai-chat", icon: Sparkles },
+      { name: "AI Tools", path: "/ai-tools", icon: Sparkles },
+      { name: "Reels", path: "/reels", icon: Video },
+      { name: "Blogs", path: "/blogs", icon: FileText },
+      { name: "Resume", path: "/resume", icon: FileText },
     ],
   },
 ];
@@ -65,8 +68,8 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/95 backdrop-blur-xl border-t border-border safe-area-bottom">
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/98 backdrop-blur-xl border-t border-border/50 safe-area-bottom">
+      <div className="flex items-center justify-around h-14 sm:h-16 px-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -75,15 +78,15 @@ export function MobileBottomNav() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex flex-col items-center justify-center flex-1 h-full py-2 transition-all duration-200 touch-manipulation",
+                "flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all duration-150 touch-manipulation active:scale-95",
                 active
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground active:scale-95"
+                  : "text-muted-foreground"
               )}
             >
               <div
                 className={cn(
-                  "flex items-center justify-center w-10 h-10 rounded-2xl transition-all duration-200",
+                  "flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-all",
                   active && "bg-primary/10"
                 )}
               >
@@ -101,27 +104,27 @@ export function MobileBottomNav() {
           <SheetTrigger asChild>
             <button
               className={cn(
-                "flex flex-col items-center justify-center flex-1 h-full py-2 transition-all duration-200 touch-manipulation",
-                "text-muted-foreground hover:text-foreground active:scale-95"
+                "flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all duration-150 touch-manipulation active:scale-95",
+                "text-muted-foreground"
               )}
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-2xl">
+              <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl">
                 <Menu className="h-5 w-5" />
               </div>
               <span className="text-[10px] font-medium mt-0.5">More</span>
             </button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[70vh] rounded-t-3xl p-0">
-            <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full mx-auto mt-3 mb-4" />
-            <ScrollArea className="h-full px-4 pb-8">
-              <div className="space-y-6">
+          <SheetContent side="bottom" className="h-[65vh] rounded-t-3xl p-0 bg-background">
+            <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mx-auto mt-2.5 mb-3" />
+            <ScrollArea className="h-full px-3 pb-6">
+              <div className="space-y-4">
                 {allNavItems.map((category) => (
                   <div key={category.category}>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-2">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 px-1">
                       {category.category}
                     </p>
-                    <div className="grid grid-cols-4 gap-3">
-                      {category.items.map((item) => {
+                    <div className="bg-card/50 rounded-xl border border-border/30 overflow-hidden">
+                      {category.items.map((item, idx) => {
                         const Icon = item.icon;
                         const active = isActive(item.path);
                         return (
@@ -130,16 +133,23 @@ export function MobileBottomNav() {
                             to={item.path}
                             onClick={() => setIsOpen(false)}
                             className={cn(
-                              "flex flex-col items-center p-3 rounded-2xl transition-all duration-200 touch-manipulation active:scale-95",
+                              "flex items-center justify-between px-3 py-2.5 text-sm transition-colors active:bg-muted/50",
                               active
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted/50 hover:bg-muted"
+                                ? "bg-primary/10 text-primary font-medium"
+                                : "text-foreground",
+                              idx !== category.items.length - 1 && "border-b border-border/30"
                             )}
                           >
-                            <Icon className="h-5 w-5 mb-1.5" />
-                            <span className="text-[10px] font-medium text-center line-clamp-1">
-                              {item.name}
-                            </span>
+                            <div className="flex items-center gap-2.5">
+                              <div className={cn(
+                                "p-1.5 rounded-lg",
+                                active ? "bg-primary/20" : "bg-muted/50"
+                              )}>
+                                <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
+                              </div>
+                              <span>{item.name}</span>
+                            </div>
+                            <ChevronRight className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground/40")} />
                           </Link>
                         );
                       })}

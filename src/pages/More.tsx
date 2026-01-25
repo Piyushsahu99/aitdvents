@@ -71,27 +71,27 @@ export default function More() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">More Resources</h1>
-        <p className="text-muted-foreground">
-          Explore additional features and tools to enhance your journey
+    <div className="container mx-auto px-4 py-6 sm:py-8 pb-24 lg:pb-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">More Resources</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Explore additional features and tools
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         {resources.map((resource) => (
           <Link
             key={resource.title}
             to={resource.link}
-            className={`group p-6 rounded-xl border transition-all hover:shadow-[var(--shadow-hover)] hover:scale-105 ${resource.color}`}
+            className={`group p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl border transition-all active:scale-[0.98] hover:shadow-lg ${resource.color}`}
           >
-            <resource.icon className="h-12 w-12 mb-4 text-primary group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-semibold mb-2 flex items-center justify-between">
-              {resource.title}
-              <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <resource.icon className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mb-3 sm:mb-4 text-primary group-hover:scale-110 transition-transform" />
+            <h3 className="text-sm sm:text-base lg:text-xl font-semibold mb-1 sm:mb-2 flex items-center justify-between">
+              <span className="line-clamp-1">{resource.title}</span>
+              <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
             </h3>
-            <p className="text-muted-foreground">{resource.description}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{resource.description}</p>
           </Link>
         ))}
       </div>

@@ -304,6 +304,33 @@ export default function Home() {
                 <div className="absolute inset-4 bg-gradient-to-tr from-amber-300/20 to-orange-500/20 rounded-full blur-2xl scale-75 animate-float" />
                 <div className="absolute -inset-4 bg-gradient-to-bl from-orange-300/15 to-yellow-400/15 rounded-full blur-3xl scale-110 animate-float-delayed opacity-60" />
                 
+                {/* Sparkle effects */}
+                <div className="absolute top-4 left-8 sm:top-8 sm:left-12 w-3 h-3 sm:w-4 sm:h-4 animate-sparkle z-20">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-amber-400 drop-shadow-lg">
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div className="absolute top-1/4 right-4 sm:right-8 w-2.5 h-2.5 sm:w-3 sm:h-3 animate-sparkle-delayed z-20">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-orange-400 drop-shadow-lg">
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div className="absolute bottom-1/4 left-4 sm:left-6 w-2 h-2 sm:w-2.5 sm:h-2.5 animate-twinkle z-20">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-yellow-400 drop-shadow-lg">
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div className="absolute bottom-8 right-8 sm:bottom-12 sm:right-16 w-3 h-3 sm:w-4 sm:h-4 animate-twinkle-delayed z-20">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-amber-300 drop-shadow-lg">
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div className="absolute top-1/2 left-0 w-2 h-2 animate-twinkle-slow z-20">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-orange-300 drop-shadow-lg">
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                
                 <img 
                   src={aitdMascot} 
                   alt="AITD Events Mascot - A friendly student holding QR code" 

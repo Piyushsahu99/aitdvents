@@ -20,45 +20,46 @@ export function PageBanner({ page, position = "top" }: PageBannerProps) {
   if (visibleBanners.length === 0) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {visibleBanners.map((banner) => (
         <div
           key={banner.id}
-          className="relative overflow-hidden rounded-xl border"
+          className="relative overflow-hidden rounded-lg sm:rounded-xl border"
           style={{
             background: banner.background_color || "linear-gradient(135deg, hsl(var(--primary)/0.1), hsl(var(--accent)/0.1))",
           }}
         >
-          <div className="flex flex-col md:flex-row items-center gap-4 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 p-3 sm:p-4 md:p-6">
             {banner.image_url && (
               <img
                 src={banner.image_url}
                 alt={banner.title || "Banner"}
-                className="w-full md:w-48 h-32 md:h-24 object-cover rounded-lg"
+                className="w-full sm:w-32 md:w-48 h-28 sm:h-20 md:h-24 object-cover rounded-lg"
+                loading="lazy"
               />
             )}
-            <div className="flex-1 text-center md:text-left">
+            <div className="flex-1 text-center sm:text-left">
               {banner.title && (
-                <h3 className="text-lg md:text-xl font-bold mb-1">{banner.title}</h3>
+                <h3 className="text-base sm:text-lg md:text-xl font-bold mb-1">{banner.title}</h3>
               )}
               {banner.description && (
-                <p className="text-sm text-muted-foreground">{banner.description}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{banner.description}</p>
               )}
             </div>
             {banner.link_url && (
               <Link to={banner.link_url}>
-                <Button className="shrink-0">
+                <Button size="sm" className="shrink-0 text-xs sm:text-sm h-9 sm:h-10">
                   {banner.link_text || "Learn More"}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
               </Link>
             )}
           </div>
           <button
             onClick={() => setDismissedIds([...dismissedIds, banner.id])}
-            className="absolute top-2 right-2 p-1 rounded-full hover:bg-background/50 transition-colors"
+            className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 p-1 rounded-full hover:bg-background/50 transition-colors"
           >
-            <X className="h-4 w-4 text-muted-foreground" />
+            <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </button>
         </div>
       ))}

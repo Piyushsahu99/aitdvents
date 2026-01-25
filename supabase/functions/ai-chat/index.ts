@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const corsHeaders = {
@@ -62,12 +63,42 @@ serve(async (req) => {
   }
 
   try {
-    // Check rate limit
+    // SECURITY: Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('No authorization header provided');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Please log in to use AI chat' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create Supabase client with user's JWT to verify authentication
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    // Verify the user is authenticated
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      console.error('User authentication failed:', userError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`AI chat request by user: ${user.id}`);
+
+    // Check rate limit (per user instead of just IP for authenticated users)
     const clientIP = getClientIP(req);
-    const rateCheck = checkRateLimit(clientIP);
+    const rateLimitKey = `${user.id}-${clientIP}`;
+    const rateCheck = checkRateLimit(rateLimitKey);
     
     if (!rateCheck.allowed) {
-      console.log(`Rate limit exceeded for IP: ${clientIP}`);
+      console.log(`Rate limit exceeded for user: ${user.id}`);
       return new Response(JSON.stringify({ 
         error: 'Too many requests. Please try again later.',
         retryAfter: rateCheck.retryAfter
@@ -80,6 +111,7 @@ serve(async (req) => {
         },
       });
     }
+
     const body = await req.json();
     
     // Validate input

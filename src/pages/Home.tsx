@@ -308,27 +308,6 @@ export default function Home() {
                   className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow"
                   loading="eager"
                 />
-                
-                {/* Floating badges around mascot */}
-                <div className="absolute -top-2 -left-4 sm:top-4 sm:left-0 bg-white dark:bg-card shadow-lg rounded-xl px-3 py-2 flex items-center gap-2 animate-float border border-orange-200 dark:border-orange-800/50">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
-                    <Trophy className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-foreground">{stats.bounties}+ Bounties</p>
-                    <p className="text-[10px] text-muted-foreground">Win Real Cash</p>
-                  </div>
-                </div>
-                
-                <div className="absolute -bottom-2 -right-4 sm:bottom-8 sm:right-0 bg-white dark:bg-card shadow-lg rounded-xl px-3 py-2 flex items-center gap-2 animate-float-delayed border border-orange-200 dark:border-orange-800/50">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                    <Calendar className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-foreground">{stats.events}+ Events</p>
-                    <p className="text-[10px] text-muted-foreground">Hackathons & More</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

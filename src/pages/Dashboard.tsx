@@ -80,7 +80,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         <div className="flex justify-center py-12">
           <div className="text-muted-foreground">Loading dashboard...</div>
         </div>
@@ -89,80 +89,81 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
       {/* Email Verification Banner */}
       {!isEmailVerified && user?.email && (
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <EmailVerificationBanner email={user.email} />
         </div>
       )}
 
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
           Student Dashboard
         </h1>
-        <p className="text-muted-foreground">Track your progress and earnings</p>
+        <p className="text-sm sm:text-base text-muted-foreground">Track your progress and earnings</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Stats Cards - Responsive Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
         <Card className="hover:shadow-[var(--shadow-hover)] transition-all">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
-            <Target className="h-4 w-4 text-primary" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:p-4 pb-1 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Submissions</CardTitle>
+            <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalSubmissions}</div>
-            <p className="text-xs text-muted-foreground mt-1">All time</p>
+          <CardContent className="p-3 sm:p-4 pt-0">
+            <div className="text-xl sm:text-2xl font-bold">{stats.totalSubmissions}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">All time</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-[var(--shadow-hover)] transition-all">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approved</CardTitle>
-            <Trophy className="h-4 w-4 text-accent" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:p-4 pb-1 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Approved</CardTitle>
+            <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-accent">{stats.approvedSubmissions}</div>
-            <Progress value={(stats.approvedSubmissions / Math.max(stats.totalSubmissions, 1)) * 100} className="mt-2" />
+          <CardContent className="p-3 sm:p-4 pt-0">
+            <div className="text-xl sm:text-2xl font-bold text-accent">{stats.approvedSubmissions}</div>
+            <Progress value={(stats.approvedSubmissions / Math.max(stats.totalSubmissions, 1)) * 100} className="mt-1.5 sm:mt-2 h-1.5 sm:h-2" />
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-[var(--shadow-hover)] transition-all">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
-            <Zap className="h-4 w-4 text-secondary" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:p-4 pb-1 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Pending</CardTitle>
+            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-secondary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-secondary">{stats.pendingSubmissions}</div>
-            <p className="text-xs text-muted-foreground mt-1">Awaiting review</p>
+          <CardContent className="p-3 sm:p-4 pt-0">
+            <div className="text-xl sm:text-2xl font-bold text-secondary">{stats.pendingSubmissions}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">Awaiting review</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-[var(--shadow-hover)] transition-all">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
-            <DollarSign className="h-4 w-4 text-primary" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:p-4 pb-1 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Earnings</CardTitle>
+            <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">₹{stats.totalEarnings.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground mt-1">From approved bounties</p>
+          <CardContent className="p-3 sm:p-4 pt-0">
+            <div className="text-xl sm:text-2xl font-bold">₹{stats.totalEarnings.toLocaleString()}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">From bounties</p>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="submissions" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
-          <TabsTrigger value="submissions">My Submissions</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
+      <Tabs defaultValue="submissions" className="space-y-4 sm:space-y-6">
+        <TabsList className="w-full sm:w-auto grid grid-cols-2 sm:inline-flex sm:w-[300px] lg:w-[400px]">
+          <TabsTrigger value="submissions" className="text-xs sm:text-sm">My Submissions</TabsTrigger>
+          <TabsTrigger value="activity" className="text-xs sm:text-sm">Activity</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="submissions" className="space-y-4">
+        <TabsContent value="submissions" className="space-y-3 sm:space-y-4">
           {submissions.length === 0 ? (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Award className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground mb-4">No submissions yet</p>
-                <Button onClick={() => navigate("/bounties")}>Browse Bounties</Button>
+              <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12">
+                <Award className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-3 sm:mb-4" />
+                <p className="text-muted-foreground mb-3 sm:mb-4 text-sm sm:text-base">No submissions yet</p>
+                <Button onClick={() => navigate("/bounties")} size="sm" className="text-xs sm:text-sm">Browse Bounties</Button>
               </CardContent>
             </Card>
           ) : (
@@ -170,39 +171,39 @@ export default function Dashboard() {
               const bounty = Array.isArray(submission.bounties) ? submission.bounties[0] : submission.bounties;
               return (
                 <Card key={submission.id} className="hover:shadow-[var(--shadow-hover)] transition-all">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg mb-1">{bounty?.title || "Untitled Bounty"}</CardTitle>
-                        <CardDescription className="flex items-center gap-2">
-                          <Calendar className="h-3 w-3" />
-                          Submitted {new Date(submission.submitted_at).toLocaleDateString()}
+                  <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm sm:text-lg mb-0.5 sm:mb-1 truncate">{bounty?.title || "Untitled Bounty"}</CardTitle>
+                        <CardDescription className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                          <Calendar className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">Submitted {new Date(submission.submitted_at).toLocaleDateString()}</span>
                         </CardDescription>
                       </div>
-                      <Badge variant={getStatusColor(submission.status)}>
+                      <Badge variant={getStatusColor(submission.status)} className="text-[10px] sm:text-xs flex-shrink-0">
                         {submission.status}
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-3">{submission.description}</p>
-                    <div className="flex items-center gap-4 text-sm">
+                  <CardContent className="p-3 sm:p-6 pt-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 line-clamp-2">{submission.description}</p>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                       <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4 text-primary" />
+                        <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                         <span className="font-medium">{bounty?.prize_amount || "N/A"}</span>
                       </div>
-                      {bounty?.category && <Badge variant="outline">{bounty.category}</Badge>}
+                      {bounty?.category && <Badge variant="outline" className="text-[10px] sm:text-xs">{bounty.category}</Badge>}
                       {submission.score && (
                         <div className="flex items-center gap-1">
-                          <Trophy className="h-4 w-4 text-accent" />
+                          <Trophy className="h-3 w-3 sm:h-4 sm:w-4 text-accent" />
                           <span className="font-medium">{submission.score}/100</span>
                         </div>
                       )}
                     </div>
                     {submission.feedback && (
-                      <div className="mt-4 p-3 bg-muted rounded-lg">
-                        <p className="text-sm font-medium mb-1">Feedback:</p>
-                        <p className="text-sm text-muted-foreground">{submission.feedback}</p>
+                      <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-muted rounded-lg">
+                        <p className="text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">Feedback:</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{submission.feedback}</p>
                       </div>
                     )}
                   </CardContent>
@@ -214,33 +215,33 @@ export default function Dashboard() {
 
         <TabsContent value="activity">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 Recent Activity
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <div className="space-y-2 sm:space-y-4">
                 {submissions.slice(0, 5).map((submission) => {
                   const bounty = Array.isArray(submission.bounties) ? submission.bounties[0] : submission.bounties;
                   return (
-                    <div key={submission.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
-                      <div className="h-2 w-2 rounded-full bg-primary" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{bounty?.title || "Untitled Bounty"}</p>
-                        <p className="text-xs text-muted-foreground">
+                    <div key={submission.id} className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 rounded-lg bg-muted/50">
+                      <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm font-medium truncate">{bounty?.title || "Untitled Bounty"}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">
                           {new Date(submission.submitted_at).toLocaleDateString()}
                         </p>
                       </div>
-                      <Badge variant={getStatusColor(submission.status)} className="text-xs">
+                      <Badge variant={getStatusColor(submission.status)} className="text-[10px] sm:text-xs flex-shrink-0">
                         {submission.status}
                       </Badge>
                     </div>
                   );
                 })}
                 {submissions.length === 0 && (
-                  <p className="text-sm text-muted-foreground text-center py-8">
+                  <p className="text-xs sm:text-sm text-muted-foreground text-center py-6 sm:py-8">
                     No activity yet. Start by submitting to bounties!
                   </p>
                 )}

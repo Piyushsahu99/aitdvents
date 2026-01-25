@@ -483,6 +483,145 @@ All colors MUST be HSL.
     }
   }
 
+  /* Shooting star animations */
+  .animate-shooting-star {
+    animation: shootingStar 8s ease-in-out infinite;
+  }
+
+  .animate-shooting-star-delayed {
+    animation: shootingStar 10s ease-in-out 3s infinite;
+  }
+
+  .animate-shooting-star-slow {
+    animation: shootingStar 12s ease-in-out 6s infinite;
+  }
+
+  @keyframes shootingStar {
+    0%, 100% {
+      opacity: 0;
+      transform: translateX(-100px) translateY(100px) rotate(-45deg);
+    }
+    5% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    15% {
+      opacity: 1;
+      transform: translateX(calc(100vw + 100px)) translateY(-100vh) rotate(-45deg);
+    }
+    16%, 100% {
+      opacity: 0;
+      transform: translateX(calc(100vw + 100px)) translateY(-100vh) rotate(-45deg);
+    }
+  }
+
+  .animate-shooting-star-reverse {
+    animation: shootingStarReverse 14s ease-in-out 2s infinite;
+  }
+
+  @keyframes shootingStarReverse {
+    0%, 100% {
+      opacity: 0;
+      transform: translateX(100vw) translateY(-50px) rotate(45deg);
+    }
+    20% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    30% {
+      opacity: 1;
+      transform: translateX(-100px) translateY(100vh) rotate(45deg);
+    }
+    31%, 100% {
+      opacity: 0;
+      transform: translateX(-100px) translateY(100vh) rotate(45deg);
+    }
+  }
+
+  /* Floating particles */
+  .animate-particle {
+    animation: particle 15s ease-in-out infinite;
+  }
+
+  .animate-particle-delayed {
+    animation: particle 18s ease-in-out 5s infinite;
+  }
+
+  .animate-particle-slow {
+    animation: particle 22s ease-in-out 8s infinite;
+  }
+
+  @keyframes particle {
+    0%, 100% {
+      opacity: 0.2;
+      transform: translateY(0) translateX(0) scale(1);
+    }
+    25% {
+      opacity: 0.6;
+      transform: translateY(-30px) translateX(15px) scale(1.2);
+    }
+    50% {
+      opacity: 0.4;
+      transform: translateY(-50px) translateX(-10px) scale(0.8);
+    }
+    75% {
+      opacity: 0.7;
+      transform: translateY(-20px) translateX(20px) scale(1.1);
+    }
+  }
+
+  /* Orbit animation */
+  .animate-orbit {
+    animation: orbit 20s linear infinite;
+  }
+
+  .animate-orbit-reverse {
+    animation: orbit 25s linear infinite reverse;
+  }
+
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg) translateX(50px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg) translateX(50px) rotate(-360deg);
+    }
+  }
+
+  /* Rising bubbles */
+  .animate-rise {
+    animation: rise 8s ease-in-out infinite;
+  }
+
+  .animate-rise-delayed {
+    animation: rise 10s ease-in-out 2s infinite;
+  }
+
+  @keyframes rise {
+    0%, 100% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.5);
+    }
+    10% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 0.8;
+      transform: translateY(-100px) scale(1);
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-200px) scale(0.3);
+    }
+  }
+
   /* Glassmorphism */
   .glass {
     background: hsl(var(--background) / 0.8);

@@ -10,10 +10,10 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.resume-builder]
-verify_jwt = false
+verify_jwt = true
 
 [functions.scrape-events]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-order-confirmation]
 verify_jwt = false

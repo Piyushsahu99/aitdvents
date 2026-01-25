@@ -64,9 +64,26 @@ export default function Network() {
 
   const fetchProfiles = async () => {
     try {
+      // Select only non-sensitive fields - exclude phone, email to prevent data harvesting
       const { data, error } = await supabase
         .from("student_profiles")
-        .select("*")
+        .select(`
+          id,
+          user_id,
+          full_name,
+          bio,
+          college,
+          graduation_year,
+          skills,
+          linkedin_url,
+          github_url,
+          portfolio_url,
+          avatar_url,
+          is_looking_for_team,
+          interests,
+          is_public
+        `)
+        .eq("is_public", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;

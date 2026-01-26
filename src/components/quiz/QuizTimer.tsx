@@ -44,8 +44,9 @@ export function QuizTimer({
   }, [isRunning, timeLeft, onComplete]);
 
   const progress = (timeLeft / seconds) * 100;
-  const isLow = timeLeft <= 5;
-  const isCritical = timeLeft <= 3;
+  const isLow = timeLeft <= 10 && timeLeft > 5;
+  const isCritical = timeLeft <= 5;
+  const isUrgent = timeLeft <= 3;
 
   const sizeClasses = {
     sm: "w-16 h-16",
@@ -64,7 +65,12 @@ export function QuizTimer({
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className={cn("relative", sizeClasses[size])}>
+    <div className={cn(
+      "relative", 
+      sizeClasses[size],
+      isUrgent && "animate-pulse",
+      isCritical && !isUrgent && "animate-bounce"
+    )}>
       <svg className="w-full h-full transform -rotate-90">
         {/* Background circle */}
         <circle
@@ -75,19 +81,38 @@ export function QuizTimer({
           stroke="hsl(var(--muted))"
           strokeWidth="6"
         />
-        {/* Progress circle */}
+        {/* Progress circle with gradient */}
+        <defs>
+          <linearGradient id={`timer-gradient-${timeLeft}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            {isUrgent ? (
+              <>
+                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="100%" stopColor="#dc2626" />
+              </>
+            ) : isCritical ? (
+              <>
+                <stop offset="0%" stopColor="#f59e0b" />
+                <stop offset="100%" stopColor="#ef4444" />
+              </>
+            ) : isLow ? (
+              <>
+                <stop offset="0%" stopColor="#10b981" />
+                <stop offset="100%" stopColor="#f59e0b" />
+              </>
+            ) : (
+              <>
+                <stop offset="0%" stopColor="hsl(var(--primary))" />
+                <stop offset="100%" stopColor="hsl(var(--accent))" />
+              </>
+            )}
+          </linearGradient>
+        </defs>
         <circle
           cx="50%"
           cy="50%"
           r={radius}
           fill="none"
-          stroke={
-            isCritical
-              ? "hsl(var(--destructive))"
-              : isLow
-              ? "hsl(var(--warning, 45 93% 47%))"
-              : "hsl(var(--primary))"
-          }
+          stroke={`url(#timer-gradient-${timeLeft})`}
           strokeWidth="6"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -100,11 +125,17 @@ export function QuizTimer({
         className={cn(
           "absolute inset-0 flex items-center justify-center font-bold",
           textClasses[size],
-          isCritical && "text-destructive animate-pulse"
+          isUrgent && "text-destructive animate-pulse",
+          isCritical && !isUrgent && "text-orange-500",
+          isLow && "text-yellow-600"
         )}
       >
         {timeLeft}
       </div>
+      {/* Ring effect for critical time */}
+      {isUrgent && (
+        <div className="absolute inset-0 rounded-full border-4 border-destructive/30 animate-ping" />
+      )}
     </div>
   );
 }

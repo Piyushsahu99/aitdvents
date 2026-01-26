@@ -2432,6 +2432,195 @@ export type Database = {
           },
         ]
       }
+      quiz_participant_answers: {
+        Row: {
+          answered_at: string
+          id: string
+          is_correct: boolean
+          participant_id: string
+          points_earned: number
+          question_id: string
+          selected_option_index: number
+          time_taken_ms: number
+        }
+        Insert: {
+          answered_at?: string
+          id?: string
+          is_correct?: boolean
+          participant_id: string
+          points_earned?: number
+          question_id: string
+          selected_option_index: number
+          time_taken_ms?: number
+        }
+        Update: {
+          answered_at?: string
+          id?: string
+          is_correct?: boolean
+          participant_id?: string
+          points_earned?: number
+          question_id?: string
+          selected_option_index?: number
+          time_taken_ms?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_participant_answers_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_participant_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_participants: {
+        Row: {
+          device_id: string | null
+          final_rank: number | null
+          id: string
+          joined_at: string
+          participant_name: string
+          quiz_id: string
+          total_score: number
+          user_id: string | null
+        }
+        Insert: {
+          device_id?: string | null
+          final_rank?: number | null
+          id?: string
+          joined_at?: string
+          participant_name: string
+          quiz_id: string
+          total_score?: number
+          user_id?: string | null
+        }
+        Update: {
+          device_id?: string | null
+          final_rank?: number | null
+          id?: string
+          joined_at?: string
+          participant_name?: string
+          quiz_id?: string
+          total_score?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_participants_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          correct_option_index: number
+          created_at: string
+          id: string
+          image_url: string | null
+          options: Json
+          order_index: number
+          points: number
+          question_text: string
+          quiz_id: string
+          time_limit_seconds: number
+        }
+        Insert: {
+          correct_option_index: number
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          options?: Json
+          order_index?: number
+          points?: number
+          question_text: string
+          quiz_id: string
+          time_limit_seconds?: number
+        }
+        Update: {
+          correct_option_index?: number
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          options?: Json
+          order_index?: number
+          points?: number
+          question_text?: string
+          quiz_id?: string
+          time_limit_seconds?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          current_question_idx: number | null
+          description: string | null
+          event_id: string | null
+          id: string
+          max_participants: number | null
+          quiz_code: string
+          starts_at: string | null
+          status: Database["public"]["Enums"]["quiz_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          current_question_idx?: number | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          max_participants?: number | null
+          quiz_code: string
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["quiz_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          current_question_idx?: number | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          max_participants?: number | null
+          quiz_code?: string
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["quiz_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reel_likes: {
         Row: {
           created_at: string | null
@@ -3223,6 +3412,7 @@ export type Database = {
             Returns: boolean
           }
       generate_certificate_number: { Args: never; Returns: string }
+      generate_quiz_code: { Args: never; Returns: string }
       get_public_profile: {
         Args: { profile_user_id: string }
         Returns: {
@@ -3296,6 +3486,13 @@ export type Database = {
         | "other"
       product_condition: "new" | "like_new" | "good" | "fair" | "old"
       product_status: "pending" | "approved" | "rejected" | "sold" | "archived"
+      quiz_status:
+        | "draft"
+        | "waiting"
+        | "active"
+        | "question_active"
+        | "question_ended"
+        | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3434,6 +3631,14 @@ export const Constants = {
       ],
       product_condition: ["new", "like_new", "good", "fair", "old"],
       product_status: ["pending", "approved", "rejected", "sold", "archived"],
+      quiz_status: [
+        "draft",
+        "waiting",
+        "active",
+        "question_active",
+        "question_ended",
+        "completed",
+      ],
     },
   },
 } as const

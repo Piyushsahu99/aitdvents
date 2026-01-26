@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck, Gamepad2 } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
 import { JobEditor } from "@/components/admin/JobEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
@@ -31,6 +31,7 @@ import { AdminQuickActions } from "@/components/admin/AdminQuickActions";
 import { AdminAnalyticsChart } from "@/components/admin/AdminAnalyticsChart";
 import { LeaderboardCertificateManager } from "@/components/admin/LeaderboardCertificateManager";
 import { AmbassadorProgramManager } from "@/components/admin/AmbassadorProgramManager";
+import { QuizManager } from "@/components/admin/QuizManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -576,6 +577,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="study-materials" className="text-xs sm:text-sm px-2 sm:px-3"><BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Materials</span><span className="sm:hidden">Mat</span></TabsTrigger>
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
               <TabsTrigger value="leaderboard-certs" className="text-xs sm:text-sm px-2 sm:px-3"><Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Leaderboard</span><span className="sm:hidden">Lead</span></TabsTrigger>
+              <TabsTrigger value="quiz" className="text-xs sm:text-sm px-2 sm:px-3"><Gamepad2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Live Quiz</span><span className="sm:hidden">Quiz</span></TabsTrigger>
             </TabsList>
           </div>
 
@@ -1073,6 +1075,11 @@ export default function AdminDashboard() {
           {/* Leaderboard Certificates Tab */}
           <TabsContent value="leaderboard-certs">
             <LeaderboardCertificateManager />
+          </TabsContent>
+
+          {/* Live Quiz Tab */}
+          <TabsContent value="quiz">
+            <QuizManager />
           </TabsContent>
         </Tabs>
       </div>

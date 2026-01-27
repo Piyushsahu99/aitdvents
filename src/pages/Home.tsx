@@ -666,8 +666,8 @@ export default function Home() {
         </section>
       )}
 
-      {/* AITD Hiring Banner - Featured */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 relative overflow-hidden">
+      {/* Games Arena Promo Banner */}
+      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-purple-600 via-primary to-pink-500 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[20%] right-[10%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[15%] left-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-black/10 rounded-full blur-3xl animate-float-delayed" />
@@ -677,66 +677,54 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="text-center lg:text-left text-white">
               <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm animate-pulse">
-                <Rocket className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
-                We Are Hiring!
+                <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
+                Games Arena
               </Badge>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
-                Join AITD Events <span className="opacity-90">Team</span>
+                Play, Compete & <span className="opacity-90">Win!</span>
               </h2>
               <p className="text-sm sm:text-base lg:text-lg opacity-90 mb-4 sm:mb-6 max-w-xl mx-auto lg:mx-0">
-                Be part of our student-driven community! We're looking for passionate students to join multiple exciting roles.
+                Join live quizzes hosted by top brands, compete in real-time, and win amazing rewards including cash prizes and certificates!
               </p>
               
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-6 max-w-lg mx-auto lg:mx-0">
-                {["Graphic Designer", "Video Editor", "Event Manager", "Sponsorship Team", "Marketing & PR", "Community Lead"].map((role) => (
-                  <div key={role} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/15 rounded-full px-3 py-1.5 backdrop-blur-sm border border-white/20">
-                    <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                    <span className="truncate">{role}</span>
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 max-w-sm mx-auto lg:mx-0">
+                {[
+                  { icon: Trophy, label: "Win Prizes" },
+                  { icon: Users, label: "Compete Live" },
+                  { icon: Zap, label: "Instant Results" },
+                ].map((item) => (
+                  <div key={item.label} className="flex flex-col items-center gap-1.5 text-xs sm:text-sm bg-white/15 rounded-xl px-3 py-3 backdrop-blur-sm border border-white/20">
+                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span>{item.label}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 mb-6 text-xs sm:text-sm">
-                <div className="flex items-center gap-1.5 bg-white/20 rounded-lg px-3 py-2">
-                  <Gift className="w-4 h-4" />
-                  <span>Free Event Access</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white/20 rounded-lg px-3 py-2">
-                  <FileText className="w-4 h-4" />
-                  <span>Offer Letter</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white/20 rounded-lg px-3 py-2">
-                  <GraduationCap className="w-4 h-4" />
-                  <span>Certificate</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <a href="https://forms.gle/12yBH78tNfAzhDFm6" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-white text-orange-600 hover:bg-white/90 text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all font-semibold w-full sm:w-auto">
-                    Apply Now
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </a>
-                <Link to="/jobs">
-                  <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all w-full sm:w-auto">
-                    View in Jobs
-                    <Briefcase className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
+              <Link to="/quiz">
+                <Button size="lg" className="bg-white text-purple-600 hover:bg-white/90 text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all font-semibold">
+                  <Gamepad2 className="mr-2 h-4 w-4" />
+                  Enter Games Arena
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
 
             <div className="relative flex justify-center lg:justify-end">
-              <div className="relative max-w-sm lg:max-w-md">
-                <img
-                  src="/images/aitd-hiring-2025.png"
-                  alt="AITD Events is Hiring - Join our team as Graphic Designer, Video Editor, Event Manager, and more"
-                  className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white/20"
-                />
-                <div className="absolute -bottom-3 -right-3 bg-white text-orange-600 rounded-full px-4 py-2 shadow-lg font-bold text-sm animate-bounce">
-                  Limited Seats!
-                </div>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-sm lg:max-w-md">
+                {[
+                  { title: "Live Quiz", icon: Gamepad2, color: "from-purple-400 to-pink-400", badge: "Popular" },
+                  { title: "IPL Auction", icon: Trophy, color: "from-blue-400 to-cyan-400", badge: "Coming Soon" },
+                  { title: "Spin & Win", icon: Target, color: "from-orange-400 to-amber-400", badge: "Coming Soon" },
+                  { title: "Predictions", icon: Lightbulb, color: "from-green-400 to-emerald-400", badge: "Coming Soon" },
+                ].map((game) => (
+                  <div key={game.title} className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${game.color} flex items-center justify-center mb-2 shadow-lg`}>
+                      <game.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-sm">{game.title}</h3>
+                    <Badge className="mt-1 text-[10px] bg-white/20 border-white/30">{game.badge}</Badge>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

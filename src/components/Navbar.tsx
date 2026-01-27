@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ const primaryNavLinks = [
   { name: "Events", path: "/events", icon: Calendar },
   { name: "Bounties", path: "/bounties", icon: DollarSign },
   { name: "Jobs", path: "/jobs", icon: Briefcase },
-  { name: "Chat", path: "/live-chat", icon: MessageCircle },
+  { name: "Quiz", path: "/quiz", icon: Gamepad2 },
 ];
 
 // Secondary navigation items - shown in "More" dropdown
@@ -48,6 +48,7 @@ const moreNavLinks = [
     items: [
       { name: "Hackathons", path: "/hackathons", icon: Code },
       { name: "Rewards", path: "/rewards", icon: Trophy },
+      { name: "Live Chat", path: "/live-chat", icon: MessageCircle },
     ]
   },
   { 

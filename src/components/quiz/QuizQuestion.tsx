@@ -52,6 +52,12 @@ export function QuizQuestion({
     }
   }, [showCorrectAnswer, selectedAnswer, correctAnswer]);
 
+  const handleAnswer = (index: number) => {
+    if (hasAnswered) return;
+    setIsTimerActive(false);
+    onAnswer(index);
+  };
+
   // Keyboard shortcuts for answering
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -77,13 +83,7 @@ export function QuizQuestion({
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [hasAnswered, options.length, handleAnswer]);
-
-  const handleAnswer = (index: number) => {
-    if (hasAnswered) return;
-    setIsTimerActive(false);
-    onAnswer(index);
-  };
+  }, [hasAnswered, options.length]);
 
   const handleTimeUp = () => {
     setIsTimerActive(false);

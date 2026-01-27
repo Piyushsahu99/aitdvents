@@ -39,6 +39,7 @@ import {
   QrCode,
   Globe,
   Lightbulb,
+  Gamepad2,
 } from "lucide-react";
 
 interface Course {
@@ -194,7 +195,7 @@ export default function Home() {
     { icon: BookOpen, title: "Courses", link: "/courses", gradient: "from-blue-500 to-cyan-400", coins: POINT_VALUES.COURSE_ENROLL },
     { icon: Trophy, title: "Bounties", link: "/bounties", gradient: "from-emerald-500 to-teal-400", coins: POINT_VALUES.BOUNTY_SUBMIT },
     { icon: Calendar, title: "Events", link: "/events", gradient: "from-orange-500 to-amber-400", coins: POINT_VALUES.EVENT_REGISTER },
-    { icon: MessageCircle, title: "Live Chat", link: "/live-chat", gradient: "from-teal-500 to-cyan-400", coins: 0 },
+    { icon: Gamepad2, title: "Live Quiz", link: "/quiz", gradient: "from-purple-500 to-pink-400", coins: 50 },
     { icon: Briefcase, title: "Jobs", link: "/jobs", gradient: "from-orange-500 to-amber-400", coins: 0 },
     { icon: FileText, title: "Notes", link: "/study-materials", gradient: "from-blue-500 to-indigo-400", coins: POINT_VALUES.STUDY_MATERIAL_UPLOAD },
     { icon: Target, title: "Practice", link: "/practice", gradient: "from-teal-500 to-emerald-400", coins: 0 },
@@ -301,9 +302,9 @@ export default function Home() {
                 </span>
               </h1>
               
-              {/* Subheading */}
+              {/* Subheading - Improved tagline */}
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-fade-in-up stagger-1">
-                Join India's fastest-growing platform for students to learn new skills, win bounties & land dream jobs
+                A youth-driven, collaborative platform revolutionizing campus engagement and student community building across India
               </p>
 
               {/* CTA Buttons with orange theme */}

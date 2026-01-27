@@ -203,7 +203,7 @@ export default function About() {
             MEETS OPPORTUNITY
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-            India's Largest Platform Connecting Students with Career-Defining Opportunities
+            A youth-driven, collaborative platform revolutionizing campus engagement and student community building across India
           </p>
         </div>
       </section>
@@ -386,12 +386,15 @@ export default function About() {
         </div>
       </section>
 
-      {/* Solution Section */}
+      {/* Our Mission/Motive Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl md:text-5xl font-bold mb-12 text-center">
-            THE SOLUTION
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-center">
+            OUR MISSION
           </h2>
+          <p className="text-xl text-muted-foreground text-center mb-12 max-w-3xl mx-auto leading-relaxed">
+            To empower every student in India with equal access to career-defining opportunities, bridging the gap between talent and success through technology and community.
+          </p>
           <div className="space-y-8">
             <Card className="p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
               <div className="flex items-start gap-4">
@@ -399,10 +402,11 @@ export default function About() {
                   <Rocket className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">All-in-One Platform</h3>
+                  <h3 className="text-2xl font-bold mb-2">One Platform, Endless Opportunities</h3>
                   <p className="text-muted-foreground">
-                    AITD Events brings everything together - internships, hackathons, scholarships, 
-                    competitions, freelance tasks, workshops, and mentorship - all in one place.
+                    We're building India's largest student opportunity ecosystem - aggregating internships, hackathons, scholarships, 
+                    competitions, live quizzes, freelance tasks, workshops, and mentorship programs all under one roof. 
+                    No more scattered searches across dozens of platforms.
                   </p>
                 </div>
               </div>
@@ -414,10 +418,11 @@ export default function About() {
                   <GraduationCap className="h-8 w-8 text-accent" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">Personalized Discovery</h3>
+                  <h3 className="text-2xl font-bold mb-2">Youth-Driven Innovation</h3>
                   <p className="text-muted-foreground">
-                    AI-powered recommendations match you with opportunities based on your skills, 
-                    interests, and career goals. Never miss what's meant for you.
+                    Built by students, for students. Every feature is designed based on real campus needs - from AI-powered 
+                    opportunity matching to gamified learning with AITD Coins. We understand what students need 
+                    because we've been there ourselves.
                   </p>
                 </div>
               </div>
@@ -429,10 +434,11 @@ export default function About() {
                   <Trophy className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">Build Your Brand</h3>
+                  <h3 className="text-2xl font-bold mb-2">Community-Powered Growth</h3>
                   <p className="text-muted-foreground">
-                    Track achievements, earn badges, build portfolio, and create a verified profile 
-                    that stands out to recruiters and companies.
+                    Our campus ambassador network spans colleges across India, creating a collaborative ecosystem where 
+                    students help students succeed. Share knowledge, earn rewards, build networks, and grow together 
+                    as a community of ambitious achievers.
                   </p>
                 </div>
               </div>

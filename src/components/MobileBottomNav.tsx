@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Trophy, Briefcase, Menu, Calendar, ShoppingBag, BookOpen, Users, MessageCircle, Sparkles, Video, FileText, GraduationCap, Target, ChevronRight } from "lucide-react";
+import { Home, Trophy, Briefcase, Menu, Calendar, ShoppingBag, BookOpen, Users, MessageCircle, Sparkles, Video, FileText, GraduationCap, Target, ChevronRight, Gamepad2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Calendar, label: "Events", path: "/events" },
-  { icon: Trophy, label: "Bounties", path: "/bounties" },
+  { icon: Gamepad2, label: "Quiz", path: "/quiz" },
   { icon: Briefcase, label: "Jobs", path: "/jobs" },
 ];
 
@@ -23,6 +23,7 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
     category: "Main",
     items: [
       { name: "Store", path: "/store", icon: ShoppingBag },
+      { name: "Bounties", path: "/bounties", icon: Trophy },
       { name: "Hackathons", path: "/hackathons", icon: Trophy },
       { name: "Live Chat", path: "/live-chat", icon: MessageCircle },
     ],

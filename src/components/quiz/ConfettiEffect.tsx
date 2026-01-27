@@ -3,7 +3,7 @@ import confetti from "canvas-confetti";
 
 interface ConfettiEffectProps {
   trigger: boolean;
-  type?: "success" | "celebration" | "fireworks";
+  type?: "success" | "celebration" | "fireworks" | "playerJoined";
 }
 
 export function ConfettiEffect({ trigger, type = "success" }: ConfettiEffectProps) {
@@ -12,6 +12,20 @@ export function ConfettiEffect({ trigger, type = "success" }: ConfettiEffectProp
 
     const duration = 3000;
     const animationEnd = Date.now() + duration;
+
+    if (type === "playerJoined") {
+      // Quick burst for new player joining
+      confetti({
+        particleCount: 30,
+        spread: 50,
+        startVelocity: 20,
+        origin: { x: 0.5, y: 0.3 },
+        colors: ["#F97316", "#FBBF24", "#22C55E"],
+        gravity: 1.5,
+        scalar: 0.8,
+      });
+      return;
+    }
 
     if (type === "fireworks") {
       // Fireworks effect for big wins
@@ -36,6 +50,8 @@ export function ConfettiEffect({ trigger, type = "success" }: ConfettiEffectProp
           colors: ["#FFD700", "#FFA500", "#FF6B6B", "#4ECDC4", "#95E1D3"],
         });
       }, 250);
+
+      return () => clearInterval(interval);
     } else if (type === "celebration") {
       // Big celebration effect for winners
       const count = 200;
@@ -93,7 +109,44 @@ export function ConfettiEffect({ trigger, type = "success" }: ConfettiEffectProp
 }
 
 // Utility function to trigger confetti programmatically
-export function fireConfetti(type: "success" | "celebration" | "fireworks" = "success") {
-  const event = new CustomEvent("confetti", { detail: { type } });
-  window.dispatchEvent(event);
+export function fireConfetti(type: "success" | "celebration" | "fireworks" | "playerJoined" = "success") {
+  if (type === "playerJoined") {
+    confetti({
+      particleCount: 30,
+      spread: 50,
+      startVelocity: 20,
+      origin: { x: 0.5, y: 0.3 },
+      colors: ["#F97316", "#FBBF24", "#22C55E"],
+      gravity: 1.5,
+      scalar: 0.8,
+    });
+  } else if (type === "celebration") {
+    const count = 200;
+    const defaults = {
+      origin: { y: 0.7 },
+      colors: ["#FFD700", "#FFA500", "#FF6B6B", "#4ECDC4", "#95E1D3"],
+    };
+
+    confetti({
+      ...defaults,
+      particleCount: Math.floor(count * 0.25),
+      spread: 26,
+      startVelocity: 55,
+    });
+
+    confetti({
+      ...defaults,
+      particleCount: Math.floor(count * 0.35),
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+    });
+  } else {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#FFD700", "#FFA500", "#4ECDC4"],
+    });
+  }
 }

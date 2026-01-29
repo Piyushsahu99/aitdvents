@@ -113,6 +113,14 @@ export default function Auth() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check for recovery token in URL hash fragment (Supabase sends type=recovery in hash)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    if (hashParams.get('type') === 'recovery') {
+      setShowResetPassword(true);
+      // Clean up URL to prevent issues on refresh
+      window.history.replaceState({}, '', '/auth');
+    }
+
     checkSession();
     if (adminInviteCode) {
       validateAdminInvite();
@@ -136,6 +144,17 @@ export default function Auth() {
       }
       setShowVerificationError(true);
     }
+
+    // Listen for PASSWORD_RECOVERY auth event
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setShowResetPassword(true);
+        // Clean up URL
+        window.history.replaceState({}, '', '/auth');
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [adminInviteCode, isResetFlow, isVerifiedFlow, errorCode, errorDescription]);
 
   const checkSession = async () => {

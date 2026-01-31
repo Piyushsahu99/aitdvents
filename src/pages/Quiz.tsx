@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,8 +24,9 @@ import {
   Crown,
   Target,
   Gavel,
-  Dice1,
-  CircleDot
+  CircleDot,
+  Gift,
+  Star
 } from "lucide-react";
 
 export default function Quiz() {
@@ -85,6 +85,7 @@ export default function Quiz() {
       gradient: "from-purple-500 to-pink-500",
       available: true,
       badge: "Popular",
+      badgeColor: "bg-green-500/20 text-green-600 border-green-500/30",
     },
     {
       id: "ipl-auction",
@@ -94,15 +95,17 @@ export default function Quiz() {
       gradient: "from-blue-500 to-cyan-500",
       available: false,
       badge: "Coming Soon",
+      badgeColor: "bg-blue-500/20 text-blue-600 border-blue-500/30",
     },
     {
       id: "spin-wheel",
-      icon: CircleDot,
+      icon: Gift,
       title: "Spin & Win",
       description: "Lucky wheel with instant rewards",
       gradient: "from-orange-500 to-amber-500",
       available: false,
       badge: "Coming Soon",
+      badgeColor: "bg-orange-500/20 text-orange-600 border-orange-500/30",
     },
     {
       id: "prediction",
@@ -112,29 +115,31 @@ export default function Quiz() {
       gradient: "from-green-500 to-emerald-500",
       available: false,
       badge: "Coming Soon",
+      badgeColor: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30",
     },
   ];
 
   // No code entered yet - Show Games Hub
   if (!activeCode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-        <Navbar />
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5 py-4 sm:py-6">
+        <div className="container mx-auto px-3 sm:px-4">
           {/* Hero Section */}
           <motion.div 
-            className="text-center mb-8 sm:mb-12"
+            className="text-center mb-6 sm:mb-10"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             <motion.div
-              className="inline-flex items-center gap-2 mb-4"
+              className="inline-flex items-center gap-2 mb-3"
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               <div className="relative">
-                <Gamepad2 className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-primary" />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-purple-500 shadow-lg shadow-primary/25">
+                  <Gamepad2 className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+                </div>
                 <motion.div
                   className="absolute -top-1 -right-1"
                   animate={{ rotate: [0, 15, -15, 0] }}
@@ -144,57 +149,58 @@ export default function Quiz() {
                 </motion.div>
               </div>
             </motion.div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
               <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Games Arena
               </span>
             </h1>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
               Play exciting games, compete with friends, and win amazing rewards!
             </p>
           </motion.div>
 
-          {/* Join Quiz Card */}
+          {/* Join Quiz Card - Featured */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="max-w-md mx-auto mb-10 sm:mb-14"
+            className="max-w-md mx-auto mb-8 sm:mb-12"
           >
-            <Card className="relative overflow-hidden border-2 border-primary/20 shadow-xl shadow-primary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5" />
-              <CardHeader className="relative pb-4 sm:pb-6 text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center mb-3">
-                  <Zap className="h-6 w-6 text-white" />
+            <Card className="relative overflow-hidden border-2 border-primary/30 shadow-2xl shadow-primary/10">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500" />
+              <CardHeader className="relative pb-4 text-center">
+                <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center mb-3 shadow-lg">
+                  <Zap className="h-7 w-7 text-white" />
                 </div>
-                <CardTitle className="text-lg sm:text-xl">Join a Live Quiz</CardTitle>
-                <CardDescription className="text-xs sm:text-sm">Enter the code to start playing</CardDescription>
+                <CardTitle className="text-xl sm:text-2xl">Join a Live Quiz</CardTitle>
+                <CardDescription className="text-sm">Enter the 6-digit code to start playing</CardDescription>
               </CardHeader>
-              <CardContent className="relative space-y-3 sm:space-y-4 pb-6">
+              <CardContent className="relative space-y-4 pb-6">
                 <div className="relative">
                   <Input
                     placeholder="ABC123"
                     value={inputCode}
                     onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                     onKeyDown={(e) => e.key === "Enter" && handleCodeSubmit()}
-                    className="text-center text-xl sm:text-2xl font-mono tracking-[0.3em] h-14 sm:h-16 border-2 focus:border-primary bg-background/80 backdrop-blur-sm"
+                    className="text-center text-2xl sm:text-3xl font-mono tracking-[0.4em] h-16 sm:h-18 border-2 focus:border-primary bg-background/80 backdrop-blur-sm uppercase"
                     maxLength={6}
                   />
-                  <motion.div
-                    className="absolute inset-0 rounded-md pointer-events-none"
-                    animate={{ 
-                      boxShadow: inputCode ? ["0 0 0 0 rgba(249, 115, 22, 0)", "0 0 0 4px rgba(249, 115, 22, 0.1)", "0 0 0 0 rgba(249, 115, 22, 0)"] : "none"
-                    }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  />
+                  {inputCode && (
+                    <motion.div
+                      className="absolute inset-0 rounded-md pointer-events-none border-2 border-primary"
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                  )}
                 </div>
                 <Button
                   onClick={handleCodeSubmit}
-                  disabled={!inputCode.trim()}
-                  className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90"
+                  disabled={!inputCode.trim() || inputCode.length < 6}
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 shadow-lg shadow-primary/25"
                   size="lg"
                 >
-                  <span>Join Quiz</span>
+                  <span>Join Now</span>
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </CardContent>
@@ -203,42 +209,45 @@ export default function Quiz() {
 
           {/* Games Grid */}
           <div className="mb-8">
-            <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-center">
-              <Crown className="inline h-5 w-5 text-yellow-500 mr-2" />
-              All Games
-            </h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="flex items-center justify-center gap-2 mb-5">
+              <Crown className="h-5 w-5 text-yellow-500" />
+              <h2 className="text-lg sm:text-xl font-bold">All Games</h2>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
               {gameOptions.map((game, index) => (
                 <motion.div
                   key={game.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
+                  whileHover={game.available ? { scale: 1.02, y: -4 } : {}}
                 >
                   <Card 
-                    className={`relative overflow-hidden h-full transition-all duration-300 ${
+                    className={`relative overflow-hidden h-full transition-all duration-300 group ${
                       game.available 
-                        ? "cursor-pointer hover:shadow-xl hover:-translate-y-1 hover:border-primary/50" 
-                        : "opacity-70"
+                        ? "cursor-pointer hover:shadow-xl hover:border-primary/50" 
+                        : "opacity-60"
                     }`}
                     onClick={() => game.available && game.id === "quiz" && document.querySelector<HTMLInputElement>('input')?.focus()}
                   >
-                    <div className={`absolute inset-0 bg-gradient-to-br ${game.gradient} opacity-10`} />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${game.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
                     <CardContent className="relative p-4 sm:p-5 flex flex-col items-center text-center">
-                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${game.gradient} flex items-center justify-center mb-3 shadow-lg`}>
-                        <game.icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
-                      </div>
-                      <Badge 
-                        className={`mb-2 text-[10px] ${
-                          game.available 
-                            ? "bg-green-500/20 text-green-600 border-green-500/30" 
-                            : "bg-muted text-muted-foreground"
-                        }`}
+                      <motion.div 
+                        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${game.gradient} flex items-center justify-center mb-3 shadow-lg`}
+                        whileHover={game.available ? { rotate: [0, -5, 5, 0] } : {}}
+                        transition={{ duration: 0.3 }}
                       >
+                        <game.icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
+                      </motion.div>
+                      <Badge 
+                        className={`mb-2 text-[10px] border ${game.badgeColor}`}
+                        variant="outline"
+                      >
+                        {game.available && <Star className="h-2.5 w-2.5 mr-1 fill-current" />}
                         {game.badge}
                       </Badge>
                       <h3 className="font-semibold text-sm sm:text-base mb-1">{game.title}</h3>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">{game.description}</p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight">{game.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -251,21 +260,22 @@ export default function Quiz() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="grid grid-cols-3 gap-3 sm:gap-4 max-w-lg mx-auto"
+            className="grid grid-cols-3 gap-3 sm:gap-4 max-w-md mx-auto"
           >
             {[
-              { icon: Users, value: "10K+", label: "Players" },
-              { icon: Trophy, value: "500+", label: "Quizzes" },
-              { icon: Sparkles, value: "₹50K+", label: "Won" },
+              { icon: Users, value: "10K+", label: "Players", color: "text-blue-500" },
+              { icon: Trophy, value: "500+", label: "Quizzes", color: "text-yellow-500" },
+              { icon: Sparkles, value: "₹50K+", label: "Won", color: "text-green-500" },
             ].map((stat, index) => (
-              <div 
+              <motion.div 
                 key={stat.label}
-                className="text-center p-3 sm:p-4 rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border"
+                className="text-center p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-muted/80 to-muted/40 border backdrop-blur-sm"
+                whileHover={{ scale: 1.05 }}
               >
-                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1 text-primary" />
+                <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-1 ${stat.color}`} />
                 <div className="text-lg sm:text-xl font-bold">{stat.value}</div>
                 <div className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
@@ -276,9 +286,8 @@ export default function Quiz() {
   // Loading quiz
   if (isLoadingQuiz) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-        <Navbar />
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)]">
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5">
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[60vh]">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -300,9 +309,8 @@ export default function Quiz() {
   // Quiz not found
   if (quizError || !quiz) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-destructive/5">
-        <Navbar />
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] text-center">
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-destructive/5">
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -335,9 +343,8 @@ export default function Quiz() {
   // Quiz is in draft mode
   if (quiz.status === "draft") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-        <Navbar />
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] text-center">
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -354,8 +361,7 @@ export default function Quiz() {
   // Quiz is waiting - show lobby or join form
   if (quiz.status === "waiting") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-        <Navbar />
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5">
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
           <AnimatePresence mode="wait">
             {!participant ? (
@@ -400,8 +406,7 @@ export default function Quiz() {
   // Quiz is active with question
   if (quiz.status === "question_active" || quiz.status === "question_ended") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-        <Navbar />
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5">
         <div className="container mx-auto px-2 sm:px-3 md:px-4 py-4 sm:py-6 md:py-8 max-w-4xl">
           <AnimatePresence mode="wait">
             {currentQuestion ? (
@@ -445,8 +450,7 @@ export default function Quiz() {
   // Quiz is completed - show results
   if (quiz.status === "completed") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-yellow-500/5 to-primary/5">
-        <Navbar />
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-yellow-500/5 to-primary/5">
         <div className="container mx-auto px-2 sm:px-3 md:px-4 py-4 sm:py-6 md:py-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -466,9 +470,8 @@ export default function Quiz() {
 
   // Quiz is active (between questions)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <Navbar />
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] text-center">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 0.8, repeat: Infinity }}

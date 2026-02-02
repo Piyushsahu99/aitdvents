@@ -509,31 +509,37 @@ export default function Bounties() {
       <section className="py-8 px-4">
         <div className="container mx-auto">
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="p-6 animate-pulse">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-14 h-14 rounded-xl bg-muted" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+              {[...Array(8)].map((_, i) => (
+                <Card key={i} className="p-5 animate-pulse">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-muted" />
                     <div className="flex-1 space-y-2">
                       <div className="h-5 bg-muted rounded w-3/4" />
                       <div className="h-4 bg-muted rounded w-1/2" />
                     </div>
                   </div>
-                  <div className="h-12 bg-muted rounded mb-4" />
-                  <div className="h-10 bg-muted rounded" />
+                  <div className="h-12 bg-muted rounded mb-3" />
+                  <div className="flex items-center justify-between pt-3 border-t">
+                    <div className="h-6 w-20 bg-muted rounded" />
+                    <div className="h-6 w-16 bg-muted rounded" />
+                  </div>
                 </Card>
               ))}
             </div>
           ) : filteredBounties.length === 0 ? (
-            <div className="text-center py-16">
-              <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground text-lg">
-                No bounties found. Check back soon for new opportunities!
+            <div className="text-center py-20 bg-gradient-to-br from-muted/50 to-muted/30 rounded-3xl border border-dashed border-muted-foreground/20">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <Trophy className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-foreground text-xl font-semibold mb-2">No bounties found</p>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                Check back soon for new opportunities to earn rewards!
               </p>
             </div>
           ) : (
             <div className={viewMode === 'grid' 
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
               : "space-y-4"
             }>
               {filteredBounties.map((bounty) => {

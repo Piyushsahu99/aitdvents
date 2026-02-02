@@ -195,43 +195,65 @@ export default function Hackathons() {
 
       {/* Hackathons Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Card key={i}>
-              <CardHeader>
-                <Skeleton className="h-4 w-3/4 mb-2" />
-                <Skeleton className="h-3 w-1/2" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+          {[...Array(8)].map((i) => (
+            <Card key={i} className="overflow-hidden animate-pulse">
+              <div className="aspect-[4/3] bg-muted" />
+              <CardHeader className="space-y-2">
+                <div className="h-5 w-20 bg-muted rounded-full" />
+                <div className="h-5 bg-muted rounded w-3/4" />
+                <div className="h-4 bg-muted rounded w-1/2" />
               </CardHeader>
-              <CardContent>
-                <Skeleton className="h-20 w-full" />
+              <CardContent className="space-y-3">
+                <div className="h-16 bg-muted rounded" />
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="h-4 bg-muted rounded" />
+                  <div className="h-4 bg-muted rounded" />
+                </div>
               </CardContent>
+              <CardFooter>
+                <div className="h-10 bg-muted rounded w-full" />
+              </CardFooter>
             </Card>
           ))}
         </div>
       ) : filteredHackathons.length === 0 ? (
-        <div className="text-center py-12">
-          <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <p className="text-xl text-muted-foreground">No hackathons found</p>
-          <p className="text-sm text-muted-foreground mt-2">Try adjusting your search or filters</p>
+        <div className="text-center py-20 bg-gradient-to-br from-muted/50 to-muted/30 rounded-3xl border border-dashed border-muted-foreground/20">
+          <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <Trophy className="w-8 h-8 text-primary" />
+          </div>
+          <p className="text-foreground text-xl font-semibold mb-2">No hackathons found</p>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+            Try adjusting your search or filters to find hackathons
+          </p>
+          <Button onClick={handleSubmitHackathon} className="mt-6 gap-2">
+            <Plus className="h-4 w-4" />
+            Submit a Hackathon
+          </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
           {filteredHackathons.map((hackathon) => {
             const daysUntilStart = getDaysUntil(hackathon.start_date);
             const daysUntilDeadline = getDaysUntil(hackathon.registration_deadline);
             const themes = Array.isArray(hackathon.themes) ? hackathon.themes : [];
 
             return (
-              <Card key={hackathon.id} className="group hover:shadow-lg transition-all duration-300 hover:scale-[1.02] overflow-hidden">
-                {hackathon.banner_url && (
-                  <div className="h-40 overflow-hidden">
+              <Card key={hackathon.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted/30">
+                  {hackathon.banner_url ? (
                     <img 
                       src={hackathon.banner_url} 
                       alt={hackathon.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 via-accent/20 to-primary/30 flex items-center justify-center">
+                      <Trophy className="h-12 w-12 text-primary/50" />
+                    </div>
+                  )}
+                </div>
                 
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2 mb-2">

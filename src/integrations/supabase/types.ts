@@ -53,6 +53,42 @@ export type Database = {
         }
         Relationships: []
       }
+      activity_log: {
+        Row: {
+          action_description: string | null
+          action_type: string
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action_description?: string | null
+          action_type: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action_description?: string | null
+          action_type?: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       admin_invites: {
         Row: {
           created_at: string | null
@@ -678,6 +714,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      announcements: {
+        Row: {
+          content: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_pinned: boolean | null
+          is_read_by: string[] | null
+          priority: string | null
+          published_at: string | null
+          published_by: string | null
+          target_audience: string | null
+          target_users: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_pinned?: boolean | null
+          is_read_by?: string[] | null
+          priority?: string | null
+          published_at?: string | null
+          published_by?: string | null
+          target_audience?: string | null
+          target_users?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_pinned?: boolean | null
+          is_read_by?: string[] | null
+          priority?: string | null
+          published_at?: string | null
+          published_by?: string | null
+          target_audience?: string | null
+          target_users?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       assignment_submissions: {
         Row: {
@@ -1364,6 +1448,86 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_tasks: {
+        Row: {
+          actual_hours: number | null
+          assigned_by: string | null
+          assigned_to: string | null
+          attachments: string[] | null
+          category: string | null
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          estimated_hours: number | null
+          id: string
+          parent_task_id: string | null
+          points_reward: number | null
+          priority: string | null
+          recurrence_pattern: Json | null
+          recurring: boolean | null
+          started_at: string | null
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_hours?: number | null
+          assigned_by?: string | null
+          assigned_to?: string | null
+          attachments?: string[] | null
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          estimated_hours?: number | null
+          id?: string
+          parent_task_id?: string | null
+          points_reward?: number | null
+          priority?: string | null
+          recurrence_pattern?: Json | null
+          recurring?: boolean | null
+          started_at?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_hours?: number | null
+          assigned_by?: string | null
+          assigned_to?: string | null
+          attachments?: string[] | null
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          estimated_hours?: number | null
+          id?: string
+          parent_task_id?: string | null
+          points_reward?: number | null
+          priority?: string | null
+          recurrence_pattern?: Json | null
+          recurring?: boolean | null
+          started_at?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_tasks_parent_fk"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "crm_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_login_rewards: {
         Row: {
           bonus_description: string | null
@@ -1869,6 +2033,110 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      kpi_definitions: {
+        Row: {
+          calculation_type: string | null
+          color: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          entity_type: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          metric_source: string | null
+          name: string
+          target_period: string | null
+          target_value: number
+          updated_at: string | null
+        }
+        Insert: {
+          calculation_type?: string | null
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          entity_type?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          metric_source?: string | null
+          name: string
+          target_period?: string | null
+          target_value: number
+          updated_at?: string | null
+        }
+        Update: {
+          calculation_type?: string | null
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          entity_type?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          metric_source?: string | null
+          name?: string
+          target_period?: string | null
+          target_value?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      kpi_records: {
+        Row: {
+          created_at: string | null
+          current_value: number | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          kpi_id: string
+          percentage: number | null
+          period_end: string
+          period_start: string
+          target_value: number
+          trend: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_value?: number | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kpi_id: string
+          percentage?: number | null
+          period_end: string
+          period_start: string
+          target_value: number
+          trend?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_value?: number | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kpi_id?: string
+          percentage?: number | null
+          period_end?: string
+          period_start?: string
+          target_value?: number
+          trend?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kpi_records_kpi_id_fkey"
+            columns: ["kpi_id"]
+            isOneToOne: false
+            referencedRelation: "kpi_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lesson_progress: {
         Row: {
@@ -3200,6 +3468,44 @@ export type Database = {
         }
         Relationships: []
       }
+      task_comments: {
+        Row: {
+          attachments: string[] | null
+          comment: string
+          created_at: string | null
+          id: string
+          is_internal: boolean | null
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          attachments?: string[] | null
+          comment: string
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          attachments?: string[] | null
+          comment?: string
+          created_at?: string | null
+          id?: string
+          is_internal?: boolean | null
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_comments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "crm_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_completions: {
         Row: {
           bonus_earned: number | null
@@ -3246,6 +3552,168 @@ export type Database = {
             columns: ["task_id"]
             isOneToOne: false
             referencedRelation: "earning_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          department: string | null
+          email: string
+          full_name: string
+          id: string
+          join_date: string | null
+          notes: string | null
+          phone: string | null
+          reporting_to: string | null
+          role_title: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          department?: string | null
+          email: string
+          full_name: string
+          id?: string
+          join_date?: string | null
+          notes?: string | null
+          phone?: string | null
+          reporting_to?: string | null
+          role_title?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          department?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          join_date?: string | null
+          notes?: string | null
+          phone?: string | null
+          reporting_to?: string | null
+          role_title?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_reporting_fk"
+            columns: ["reporting_to"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_permissions: {
+        Row: {
+          can_assign_tasks: boolean | null
+          can_manage_bounties: boolean | null
+          can_manage_events: boolean | null
+          can_manage_hackathons: boolean | null
+          can_manage_jobs: boolean | null
+          can_manage_reels: boolean | null
+          can_manage_scholarships: boolean | null
+          can_manage_store: boolean | null
+          can_manage_study_materials: boolean | null
+          can_send_announcements: boolean | null
+          can_view_analytics: boolean | null
+          can_view_users: boolean | null
+          created_at: string | null
+          id: string
+          team_member_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          can_assign_tasks?: boolean | null
+          can_manage_bounties?: boolean | null
+          can_manage_events?: boolean | null
+          can_manage_hackathons?: boolean | null
+          can_manage_jobs?: boolean | null
+          can_manage_reels?: boolean | null
+          can_manage_scholarships?: boolean | null
+          can_manage_store?: boolean | null
+          can_manage_study_materials?: boolean | null
+          can_send_announcements?: boolean | null
+          can_view_analytics?: boolean | null
+          can_view_users?: boolean | null
+          created_at?: string | null
+          id?: string
+          team_member_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          can_assign_tasks?: boolean | null
+          can_manage_bounties?: boolean | null
+          can_manage_events?: boolean | null
+          can_manage_hackathons?: boolean | null
+          can_manage_jobs?: boolean | null
+          can_manage_reels?: boolean | null
+          can_manage_scholarships?: boolean | null
+          can_manage_store?: boolean | null
+          can_manage_study_materials?: boolean | null
+          can_send_announcements?: boolean | null
+          can_view_analytics?: boolean | null
+          can_view_users?: boolean | null
+          created_at?: string | null
+          id?: string
+          team_member_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_permissions_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: true
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_logs: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          hours: number
+          id: string
+          logged_at: string | null
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          hours: number
+          id?: string
+          logged_at?: string | null
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          hours?: number
+          id?: string
+          logged_at?: string | null
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_logs_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "crm_tasks"
             referencedColumns: ["id"]
           },
         ]
@@ -3435,6 +3903,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_team_member_permissions: { Args: never; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -3443,6 +3912,17 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_core_team: { Args: never; Returns: boolean }
+      log_activity: {
+        Args: {
+          p_action_description: string
+          p_action_type: string
+          p_entity_id?: string
+          p_entity_type?: string
+          p_metadata?: Json
+        }
+        Returns: string
+      }
       spend_points: {
         Args: {
           p_action_type: string

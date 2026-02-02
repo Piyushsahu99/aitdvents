@@ -50,6 +50,10 @@ import Certificates from "./pages/Certificates";
 import RSVP from "./pages/RSVP";
 import LiveChatPage from "./pages/LiveChatPage";
 import Quiz from "./pages/Quiz";
+import QuizDiscover from "./pages/QuizDiscover";
+import CreateQuiz from "./pages/CreateQuiz";
+import MyQuizzes from "./pages/MyQuizzes";
+import QuizHost from "./pages/QuizHost";
 import TeamPanel from "./pages/TeamPanel";
 
 const queryClient = new QueryClient();
@@ -107,6 +111,10 @@ const App = () => (
               <Route path="/rsvp" element={<RSVP />} />
               <Route path="/live-chat" element={<LiveChatPage />} />
               <Route path="/quiz" element={<Quiz />} />
+              <Route path="/quiz-discover" element={<QuizDiscover />} />
+              <Route path="/create-quiz" element={<CreateQuiz />} />
+              <Route path="/my-quizzes" element={<MyQuizzes />} />
+              <Route path="/quiz-host/:quizId" element={<QuizHost />} />
               <Route path="/team-panel" element={<TeamPanel />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

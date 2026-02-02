@@ -1,170 +1,86 @@
 
-# Password Reset Fix and Admin/Team Management Improvements
+# Events Page Responsiveness and UI Improvements
 
-## Overview
+## Problem Summary
 
-This plan addresses two main issues:
-1. **Forgot Password Not Working** - Fix the password reset flow to properly handle recovery tokens
-2. **Improved Admin and Team Member Management** - Enhance the UI and functionality for managing admins and team members
+The Events page has significant responsiveness issues, particularly on laptop screens:
 
----
-
-## Issue 1: Password Reset Flow Fix
-
-### Problem Analysis
-The current password reset flow has a critical issue. When users click the reset link from their email, they're redirected to a URL like:
-```
-/auth#access_token=...&type=recovery
-```
-
-However, the code only checks for `?reset=true` query parameter and doesn't handle the actual recovery session from the URL hash fragment. This causes the reset form to not appear when users click the email link.
-
-### Solution
-Update the Auth page to:
-1. Detect the `type=recovery` in the URL hash fragment
-2. Listen for `PASSWORD_RECOVERY` events from the auth state change listener
-3. Automatically show the password reset form when a recovery session is detected
-
-### Implementation
-
-**File: `src/pages/Auth.tsx`**
-
-Add logic to handle recovery flow:
-- Parse URL hash on mount to detect `type=recovery`
-- In `onAuthStateChange`, handle the `PASSWORD_RECOVERY` event
-- Automatically show the reset password form when recovery is detected
-- Clear the hash from URL after detecting recovery to prevent issues on refresh
+1. **Single Column Grid**: The events grid uses `grid grid-cols-1` which displays only 1 card per row on all screen sizes, wasting space on larger screens
+2. **Inconsistent Card Sizing**: EventCard has complex aspect ratio logic that doesn't adapt well
+3. **Missing Visual Polish**: Compared to other pages (Jobs, Home), the Events page lacks hero section appeal and animations
+4. **Poor Laptop Experience**: Large empty spaces on laptop/desktop screens
 
 ---
 
-## Issue 2: Admin Management Improvements
+## Solution Overview
 
-### Current State
-- Basic invite system with email + code generation
-- Simple table view of invites
-- No ability to revoke invites or remove admins
+### 1. Fix Events Grid Layout
 
-### Enhancements
-
-**File: `src/components/admin/AdminInviteManager.tsx`**
-
-Transform into a comprehensive **Admin & Team Manager** with:
-
-1. **Two-Tab Layout**:
-   - **Admin Invites Tab**: Current invite functionality
-   - **Current Admins Tab**: View and manage existing admins
-
-2. **Enhanced Invite Features**:
-   - Ability to revoke pending invites
-   - Resend invite email option
-   - Visual countdown showing time until expiration
-   - Bulk invite capability
-
-3. **Current Admins Section**:
-   - List all users with admin role
-   - Show when they became admin
-   - Option to remove admin privileges (with confirmation)
-   - Display invite history (who invited them)
-
-4. **UI Improvements**:
-   - Better visual hierarchy with cards
-   - Status indicators with animations
-   - Search/filter for large lists
-   - Mobile-responsive design
-
----
-
-## Issue 3: Ambassador Team Management Improvements
-
-### Current State
-- Basic add member form
-- Simple table display
-- No edit or remove functionality for ambassadors
-
-### Enhancements
-
-**File: `src/components/ambassador/TeamManager.tsx`**
-
-1. **Edit Team Members**:
-   - Click to edit member details
-   - Change role (volunteer to core team and vice versa)
-   - Update contact information
-
-2. **Remove Team Members**:
-   - Delete button with confirmation dialog
-   - Cascade updates to related data
-
-3. **Enhanced UI**:
-   - Avatar placeholders with initials
-   - Status badges with colors
-   - Animated transitions when adding/removing
-   - Empty state illustrations
-
-4. **Additional Features**:
-   - Email team members directly (mailto links)
-   - Phone call shortcut on mobile
-   - Export team list as CSV
-
----
-
-## Technical Implementation Details
-
-### Password Reset Fix (Auth.tsx)
-
-```typescript
-// Add inside useEffect - detect recovery from URL hash
-useEffect(() => {
-  // Check for recovery in hash fragment
-  const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  if (hashParams.get('type') === 'recovery') {
-    setShowResetPassword(true);
-    // Clean up URL
-    window.history.replaceState({}, '', '/auth');
-  }
-}, []);
-
-// In onAuthStateChange listener
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'PASSWORD_RECOVERY') {
-    setShowResetPassword(true);
-  }
-});
+**Current (line 398 in Events.tsx):**
+```tsx
+<div className="grid grid-cols-1 gap-5">
 ```
 
-### Admin Manager Database Query
-
-Add a new function to fetch current admins:
-```typescript
-const fetchCurrentAdmins = async () => {
-  const { data } = await supabase
-    .from("user_roles")
-    .select(`
-      id,
-      user_id,
-      role,
-      created_at,
-      profiles:student_profiles!user_id(full_name, email)
-    `)
-    .eq("role", "admin");
-};
+**Updated:**
+```tsx
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
 ```
 
-### Team Manager Edit/Delete
+This creates:
+- Mobile (< 640px): 1 column
+- Tablet (640-1024px): 2 columns
+- Laptop (1024-1280px): 3 columns
+- Desktop (> 1280px): 4 columns
 
-Add edit and delete functionality:
-```typescript
-const handleDeleteMember = async (memberId: string) => {
-  const { error } = await supabase
-    .from("ambassador_team_members")
-    .delete()
-    .eq("id", memberId);
-  
-  if (!error) {
-    toast.success("Team member removed");
-    fetchMembers();
-  }
-};
+### 2. Redesign EventCard for Grid Layouts
+
+The current EventCard is optimized for single-column mobile view. For multi-column grids, we need:
+
+**Image Section:**
+- Fixed aspect ratio: `aspect-[4/3]` for consistent card heights
+- Use `object-cover` consistently (not switching between cover/contain)
+- Add hover zoom effect on desktop
+
+**Content Section:**
+- Compact padding for grid view
+- Better truncation for titles (2 lines max)
+- Smaller icons and text for grid density
+
+**Responsive Adaptations:**
+```tsx
+// Image container - consistent aspect ratio
+<div className="relative w-full aspect-[4/3] overflow-hidden bg-muted/30">
+
+// Image styling - always cover for consistency in grid
+<img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 ```
+
+### 3. Enhanced Loading Skeleton Grid
+
+Update loading skeleton to match new grid layout:
+```tsx
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+  {[...Array(8)].map((_, i) => (
+    <div key={i} className="bg-card rounded-2xl overflow-hidden animate-pulse shadow-md">
+      <div className="aspect-[4/3] bg-muted" />
+      <div className="p-4 space-y-3">
+        ...
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+### 4. Visual Improvements to Events Page
+
+**Header Section Enhancements:**
+- Add subtle gradient background to header
+- Improve spacing and visual hierarchy
+- Add event count badge
+
+**Empty State:**
+- Better visual appeal with illustrations
+- More prominent CTA button
 
 ---
 
@@ -172,25 +88,97 @@ const handleDeleteMember = async (memberId: string) => {
 
 | File | Changes |
 |------|---------|
-| `src/pages/Auth.tsx` | Add recovery token detection and PASSWORD_RECOVERY event handling |
-| `src/components/admin/AdminInviteManager.tsx` | Enhance with current admins tab, revoke functionality, and UI improvements |
-| `src/components/ambassador/TeamManager.tsx` | Add edit/delete functionality, improved UI |
+| `src/pages/Events.tsx` | Update grid layout, loading skeleton, improve header styling |
+| `src/components/EventCard.tsx` | Simplify responsive logic, consistent aspect ratio, compact design for grids |
 
 ---
 
-## Security Considerations
+## Technical Details
 
-1. **Admin Removal**: Only super admins (first admin) can remove other admins
-2. **Self-Protection**: Users cannot remove their own admin role
-3. **Audit Trail**: Log admin role changes for security tracking
-4. **RLS Policies**: Existing policies already protect against unauthorized access
+### EventCard.tsx Changes
+
+```tsx
+// Simplified image container
+<div className="relative w-full aspect-[4/3] overflow-hidden bg-muted/30">
+  {hasPoster ? (
+    <>
+      <img
+        src={poster_url || image}
+        alt={title}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+    </>
+  ) : (
+    // Gradient placeholder - unchanged
+  )}
+  
+  // Badges positioned absolutely
+</div>
+
+// Content section - tighter spacing
+<div className="p-3 sm:p-4 flex-1 flex flex-col">
+  <h3 className="font-bold text-sm sm:text-base line-clamp-2 mb-2">
+    {title}
+  </h3>
+  
+  // Event details with smaller icons
+  <div className="space-y-1.5 text-xs sm:text-sm flex-1">
+    ...
+  </div>
+  
+  // Button
+  <Button size="sm" className="w-full mt-3 h-9">
+    View Details
+  </Button>
+</div>
+```
+
+### Events.tsx Grid Changes
+
+```tsx
+// Main events grid
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+  {filteredEvents.map((event, index) => (
+    <EventCard key={event.id} {...event} gradientIndex={index % 6} onClick={() => setSelectedEvent(event)} />
+  ))}
+</div>
+
+// My Submissions grid
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  ...
+</div>
+```
+
+---
+
+## Visual Comparison
+
+```text
+BEFORE (Laptop 1440px wide):
++------------------------------------------+
+|  [       Event Card (Full Width)       ] |
+|  [       Event Card (Full Width)       ] |
+|  [       Event Card (Full Width)       ] |
++------------------------------------------+
+(Lots of wasted horizontal space)
+
+AFTER (Laptop 1440px wide):
++------------------------------------------+
+|  [Card 1]  [Card 2]  [Card 3]  [Card 4] |
+|  [Card 5]  [Card 6]  [Card 7]  [Card 8] |
++------------------------------------------+
+(Efficient use of space, consistent sizing)
+```
 
 ---
 
 ## Expected Outcome
 
 After implementation:
-- Users will be able to successfully reset their passwords via email link
-- Admins can invite, view, and manage other administrators
-- Ambassadors can fully manage their team members with edit/delete capabilities
-- All interfaces will have improved visual design and user experience
+- Events display in a responsive grid (1/2/3/4 columns based on screen size)
+- Consistent card heights due to fixed aspect ratio
+- Better visual polish matching other pages in the app
+- Improved laptop/desktop experience
+- Cards look great on all screen sizes with proper image handling

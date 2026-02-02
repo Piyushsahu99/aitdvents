@@ -32,6 +32,7 @@ import { AdminAnalyticsChart } from "@/components/admin/AdminAnalyticsChart";
 import { LeaderboardCertificateManager } from "@/components/admin/LeaderboardCertificateManager";
 import { AmbassadorProgramManager } from "@/components/admin/AmbassadorProgramManager";
 import { QuizManager } from "@/components/admin/QuizManager";
+import { CRMDashboard } from "@/components/crm/CRMDashboard";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -578,6 +579,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
               <TabsTrigger value="leaderboard-certs" className="text-xs sm:text-sm px-2 sm:px-3"><Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Leaderboard</span><span className="sm:hidden">Lead</span></TabsTrigger>
               <TabsTrigger value="quiz" className="text-xs sm:text-sm px-2 sm:px-3"><Gamepad2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Live Quiz</span><span className="sm:hidden">Quiz</span></TabsTrigger>
+              <TabsTrigger value="crm" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CRM</TabsTrigger>
             </TabsList>
           </div>
 

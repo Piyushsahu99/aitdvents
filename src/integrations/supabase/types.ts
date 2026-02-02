@@ -2836,44 +2836,121 @@ export type Database = {
           },
         ]
       }
+      quiz_registrations: {
+        Row: {
+          id: string
+          quiz_id: string | null
+          registered_at: string | null
+          reminder_sent: boolean | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          quiz_id?: string | null
+          registered_at?: string | null
+          reminder_sent?: boolean | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          quiz_id?: string | null
+          registered_at?: string | null
+          reminder_sent?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_registrations_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quizzes: {
         Row: {
+          allow_late_join: boolean | null
+          answer_reveal_seconds: number | null
+          auto_advance: boolean | null
+          banner_image: string | null
+          category: string | null
+          countdown_seconds: number | null
           created_at: string
           created_by: string | null
           current_question_idx: number | null
           description: string | null
+          difficulty: string | null
           event_id: string | null
           id: string
+          is_public: boolean | null
           max_participants: number | null
+          organizer_name: string | null
+          prizes: Json | null
           quiz_code: string
+          registration_open: boolean | null
+          scheduled_start: string | null
+          show_live_leaderboard: boolean | null
+          shuffle_options: boolean | null
+          shuffle_questions: boolean | null
           starts_at: string | null
           status: Database["public"]["Enums"]["quiz_status"]
           title: string
           updated_at: string
         }
         Insert: {
+          allow_late_join?: boolean | null
+          answer_reveal_seconds?: number | null
+          auto_advance?: boolean | null
+          banner_image?: string | null
+          category?: string | null
+          countdown_seconds?: number | null
           created_at?: string
           created_by?: string | null
           current_question_idx?: number | null
           description?: string | null
+          difficulty?: string | null
           event_id?: string | null
           id?: string
+          is_public?: boolean | null
           max_participants?: number | null
+          organizer_name?: string | null
+          prizes?: Json | null
           quiz_code: string
+          registration_open?: boolean | null
+          scheduled_start?: string | null
+          show_live_leaderboard?: boolean | null
+          shuffle_options?: boolean | null
+          shuffle_questions?: boolean | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["quiz_status"]
           title: string
           updated_at?: string
         }
         Update: {
+          allow_late_join?: boolean | null
+          answer_reveal_seconds?: number | null
+          auto_advance?: boolean | null
+          banner_image?: string | null
+          category?: string | null
+          countdown_seconds?: number | null
           created_at?: string
           created_by?: string | null
           current_question_idx?: number | null
           description?: string | null
+          difficulty?: string | null
           event_id?: string | null
           id?: string
+          is_public?: boolean | null
           max_participants?: number | null
+          organizer_name?: string | null
+          prizes?: Json | null
           quiz_code?: string
+          registration_open?: boolean | null
+          scheduled_start?: string | null
+          show_live_leaderboard?: boolean | null
+          shuffle_options?: boolean | null
+          shuffle_questions?: boolean | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["quiz_status"]
           title?: string

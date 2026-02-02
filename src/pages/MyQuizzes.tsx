@@ -1,0 +1,346 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Plus, 
+  Gamepad2, 
+  Play, 
+  Users, 
+  Clock,
+  Trash2,
+  Settings,
+  QrCode,
+  Copy,
+  Loader2,
+  Eye,
+  BarChart3
+} from "lucide-react";
+import { format } from "date-fns";
+
+interface Quiz {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  quiz_code: string;
+  created_at: string;
+  max_participants: number | null;
+  is_public: boolean;
+  category: string;
+  difficulty: string;
+  auto_advance: boolean;
+}
+
+interface Registration {
+  id: string;
+  quiz_id: string;
+  registered_at: string;
+  quiz: {
+    title: string;
+    status: string;
+    quiz_code: string;
+    scheduled_start: string | null;
+  };
+}
+
+export default function MyQuizzes() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [myQuizzes, setMyQuizzes] = useState<Quiz[]>([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    setUserId(user.id);
+    fetchMyQuizzes(user.id);
+    fetchRegistrations(user.id);
+  };
+
+  const fetchMyQuizzes = async (uid: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("quizzes")
+        .select("*")
+        .eq("created_by", uid)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setMyQuizzes((data || []) as Quiz[]);
+    } catch (err) {
+      console.error("Failed to fetch quizzes:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchRegistrations = async (uid: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("quiz_registrations")
+        .select(`
+          id,
+          quiz_id,
+          registered_at,
+          quiz:quizzes(title, status, quiz_code, scheduled_start)
+        `)
+        .eq("user_id", uid)
+        .order("registered_at", { ascending: false });
+
+      if (error) throw error;
+      setRegistrations((data || []) as unknown as Registration[]);
+    } catch (err) {
+      console.error("Failed to fetch registrations:", err);
+    }
+  };
+
+  const deleteQuiz = async (quizId: string) => {
+    if (!confirm("Are you sure you want to delete this quiz? This cannot be undone.")) return;
+
+    try {
+      const { error } = await supabase.from("quizzes").delete().eq("id", quizId);
+      if (error) throw error;
+      
+      setMyQuizzes((prev) => prev.filter((q) => q.id !== quizId));
+      toast({ title: "Quiz deleted" });
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to delete quiz";
+      toast({ title: "Error", description: errorMessage, variant: "destructive" });
+    }
+  };
+
+  const copyQuizCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast({ title: "Copied!", description: `Quiz code ${code} copied to clipboard` });
+  };
+
+  const getStatusBadge = (status: string) => {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+      draft: "secondary",
+      waiting: "outline",
+      active: "default",
+      question_active: "default",
+      question_ended: "default",
+      completed: "destructive",
+    };
+    return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5 py-6">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+              <Gamepad2 className="h-8 w-8 text-primary" />
+              My Quizzes
+            </h1>
+            <p className="text-muted-foreground">Manage your quizzes and registrations</p>
+          </div>
+          <Button 
+            onClick={() => navigate("/create-quiz")} 
+            className="gap-2 bg-gradient-to-r from-primary to-purple-500"
+          >
+            <Plus className="h-4 w-4" />
+            Create Quiz
+          </Button>
+        </div>
+
+        <Tabs defaultValue="created">
+          <TabsList className="mb-6">
+            <TabsTrigger value="created">
+              Created ({myQuizzes.length})
+            </TabsTrigger>
+            <TabsTrigger value="registered">
+              Registered ({registrations.length})
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Created Quizzes */}
+          <TabsContent value="created">
+            {myQuizzes.length === 0 ? (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <Gamepad2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No quizzes yet</h3>
+                  <p className="text-muted-foreground mb-6">Create your first quiz and start hosting!</p>
+                  <Button onClick={() => navigate("/create-quiz")} className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    Create Quiz
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {myQuizzes.map((quiz, idx) => (
+                  <motion.div
+                    key={quiz.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <Card>
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-bold text-lg">{quiz.title}</h3>
+                              {getStatusBadge(quiz.status)}
+                              {quiz.is_public && (
+                                <Badge variant="outline" className="text-xs">Public</Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Code: <span className="font-mono font-bold">{quiz.quiz_code}</span>
+                              {" · "}
+                              Created {format(new Date(quiz.created_at), "MMM d, yyyy")}
+                            </p>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span className="capitalize">{quiz.category}</span>
+                              <span className="capitalize">{quiz.difficulty}</span>
+                              {quiz.auto_advance && <span>Auto-advance</span>}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyQuizCode(quiz.quiz_code)}
+                              className="gap-1"
+                            >
+                              <Copy className="h-3 w-3" />
+                              Copy Code
+                            </Button>
+                            
+                            {quiz.status === "draft" && (
+                              <Button
+                                size="sm"
+                                onClick={() => navigate(`/quiz-host/${quiz.id}`)}
+                                className="gap-1"
+                              >
+                                <Play className="h-3 w-3" />
+                                Start
+                              </Button>
+                            )}
+
+                            {["waiting", "active", "question_active", "question_ended"].includes(quiz.status) && (
+                              <Button
+                                size="sm"
+                                onClick={() => navigate(`/quiz-host/${quiz.id}`)}
+                                className="gap-1"
+                              >
+                                <Eye className="h-3 w-3" />
+                                Host Panel
+                              </Button>
+                            )}
+
+                            {quiz.status === "completed" && (
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => navigate(`/quiz-host/${quiz.id}`)}
+                                className="gap-1"
+                              >
+                                <BarChart3 className="h-3 w-3" />
+                                Results
+                              </Button>
+                            )}
+
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteQuiz(quiz.id)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Registered Quizzes */}
+          <TabsContent value="registered">
+            {registrations.length === 0 ? (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No registrations yet</h3>
+                  <p className="text-muted-foreground mb-6">Discover and register for upcoming quizzes!</p>
+                  <Button onClick={() => navigate("/quiz-discover")} className="gap-2">
+                    Discover Quizzes
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {registrations.map((reg, idx) => (
+                  <motion.div
+                    key={reg.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <Card>
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-bold">{reg.quiz?.title}</h3>
+                              {getStatusBadge(reg.quiz?.status || "draft")}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Registered {format(new Date(reg.registered_at), "MMM d, yyyy")}
+                            </p>
+                          </div>
+
+                          <Button
+                            onClick={() => navigate(`/quiz?code=${reg.quiz?.quiz_code}`)}
+                            disabled={!["waiting", "active", "question_active"].includes(reg.quiz?.status || "")}
+                          >
+                            Join
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}

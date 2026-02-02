@@ -266,25 +266,47 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
-      {/* Header Section */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md">
-        <div className="px-4 pt-3 sm:pt-4 pb-2 sm:pb-3">
+      {/* Header Section with gradient accent */}
+      <div className="sticky top-0 z-40 bg-gradient-to-b from-primary/5 via-background/95 to-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="container mx-auto px-4 pt-4 sm:pt-5 pb-2 sm:pb-3">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div>
-              <h1 className="text-lg sm:text-xl font-bold text-foreground">Events & Competitions</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">Participate and Showcase Your Talents</p>
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent items-center justify-center shadow-md">
+                <Calendar className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <h1 className="text-xl sm:text-2xl font-bold text-foreground">Events & Competitions</h1>
+                  {!loading && (
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-0 text-xs font-semibold">
+                      {filteredEvents.length} events
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Discover opportunities to showcase your talents</p>
+              </div>
             </div>
-            {isLoggedIn && (
+            <div className="flex items-center gap-2">
+              {isLoggedIn && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowMySubmissions(true)}
+                  className="text-xs h-8 rounded-lg"
+                >
+                  My Events
+                </Button>
+              )}
               <Button 
-                variant="ghost" 
                 size="sm" 
-                onClick={() => setShowMySubmissions(true)}
-                className="text-xs h-8"
+                onClick={handleHostEvent}
+                className="text-xs h-8 rounded-lg gap-1.5 bg-gradient-to-r from-primary to-accent text-white border-0 shadow-md hidden sm:flex"
               >
-                My Events
+                <Plus className="w-3.5 h-3.5" />
+                Host Event
               </Button>
-            )}
+            </div>
           </div>
 
           {/* Campus Toggle */}
@@ -347,7 +369,7 @@ export default function Events() {
 
         {/* Info banner for On Campus mode */}
         {campusMode === "on-campus" && (
-          <div className="px-4 pb-3">
+          <div className="container mx-auto px-4 pb-3">
             <div className="bg-info/10 border border-info/20 rounded-xl p-3 flex items-center gap-3">
               <Building2 className="w-5 h-5 text-info flex-shrink-0" />
               <div className="text-sm">
@@ -363,10 +385,10 @@ export default function Events() {
       </div>
 
       {/* Events List */}
-      <div className="px-4 py-4">
+      <div className="container mx-auto px-4 py-5 sm:py-6">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
-            {[...Array(8)].map((_, i) => (
+            {[...Array(12)].map((_, i) => (
               <div key={i} className="bg-card rounded-2xl overflow-hidden animate-pulse shadow-md">
                 <div className="aspect-[4/3] bg-muted" />
                 <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
@@ -379,17 +401,22 @@ export default function Events() {
             ))}
           </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="text-center py-16 bg-muted/30 rounded-2xl">
-            <Calendar className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-            <p className="text-muted-foreground text-lg font-medium">No events found</p>
-            <p className="text-sm text-muted-foreground mt-1">
+          <div className="text-center py-20 bg-gradient-to-br from-muted/50 to-muted/30 rounded-3xl border border-dashed border-muted-foreground/20">
+            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <Calendar className="w-8 h-8 text-primary" />
+            </div>
+            <p className="text-foreground text-xl font-semibold mb-2">No events found</p>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               {search || selectedCategory !== "All" 
-                ? "Try adjusting your search or filter" 
+                ? "Try adjusting your search or filter to find what you're looking for" 
                 : campusMode === "on-campus"
-                  ? "No campus events available. Be the first to host one!"
-                  : "Check back soon for new events!"}
+                  ? "No campus events available right now. Be the first to host one!"
+                  : "Check back soon for new events and opportunities!"}
             </p>
-            <Button onClick={handleHostEvent} className="mt-4 gap-2">
+            <Button 
+              onClick={handleHostEvent} 
+              className="mt-6 gap-2 bg-gradient-to-r from-primary to-accent text-white border-0 shadow-lg h-11 px-6 rounded-xl"
+            >
               <Plus className="h-4 w-4" />
               Host an Event
             </Button>

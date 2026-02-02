@@ -70,25 +70,25 @@ export const EventCard = ({
       className="group relative bg-card rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl active:scale-[0.98] h-full flex flex-col border-0 shadow-md sm:shadow-lg"
       onClick={onClick}
     >
-      {/* Poster/Image Section - Responsive aspect ratio */}
-      <div className={`relative ${hasPoster ? 'w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-auto md:max-h-[280px] lg:max-h-[320px]' : 'h-36 sm:h-40 md:h-44'} overflow-hidden bg-muted/30`}>
+      {/* Poster/Image Section - Fixed aspect ratio for consistent grid */}
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted/30">
         {hasPoster ? (
           <>
             <img
               src={poster_url || image}
               alt={title}
-              className="w-full h-full object-cover sm:object-contain group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
           </>
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${gradientClass} relative`}>
-            {/* Abstract geometric patterns - responsive sizing */}
+            {/* Abstract geometric patterns */}
             <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 border-2 border-white/20 rotate-45" />
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 border-2 border-white/15 rotate-12" />
-              <div className="absolute top-1/2 left-1/2 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 -translate-x-1/2 -translate-y-1/2 border border-white/10 rounded-full" />
+              <div className="absolute top-3 right-3 w-14 h-14 sm:w-16 sm:h-16 border-2 border-white/20 rotate-45" />
+              <div className="absolute bottom-5 left-5 w-10 h-10 sm:w-12 sm:h-12 border-2 border-white/15 rotate-12" />
+              <div className="absolute top-1/2 left-1/2 w-20 h-20 sm:w-24 sm:h-24 -translate-x-1/2 -translate-y-1/2 border border-white/10 rounded-full" />
             </div>
           </div>
         )}

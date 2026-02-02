@@ -365,15 +365,15 @@ export default function Events() {
       {/* Events List */}
       <div className="px-4 py-4">
         {loading ? (
-          <div className="grid grid-cols-1 gap-4">
-            {[...Array(4)].map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+            {[...Array(8)].map((_, i) => (
               <div key={i} className="bg-card rounded-2xl overflow-hidden animate-pulse shadow-md">
                 <div className="aspect-[4/3] bg-muted" />
-                <div className="p-4 space-y-3">
-                  <div className="h-5 bg-muted rounded w-3/4" />
-                  <div className="h-4 bg-muted rounded w-full" />
-                  <div className="h-4 bg-muted rounded w-2/3" />
-                  <div className="h-10 bg-muted rounded mt-4" />
+                <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                  <div className="h-4 sm:h-5 bg-muted rounded w-3/4" />
+                  <div className="h-3 sm:h-4 bg-muted rounded w-full" />
+                  <div className="h-3 sm:h-4 bg-muted rounded w-2/3" />
+                  <div className="h-8 sm:h-9 bg-muted rounded mt-3" />
                 </div>
               </div>
             ))}
@@ -395,7 +395,7 @@ export default function Events() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
             {filteredEvents.map((event: any, index: number) => (
               <EventCard
                 key={event.id}

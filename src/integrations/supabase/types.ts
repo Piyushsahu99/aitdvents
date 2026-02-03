@@ -2459,6 +2459,51 @@ export type Database = {
           },
         ]
       }
+      onboarding_checklists: {
+        Row: {
+          checklist_items: Json | null
+          completed_at: string | null
+          id: string
+          mentor_id: string | null
+          started_at: string | null
+          status: string | null
+          team_member_id: string | null
+        }
+        Insert: {
+          checklist_items?: Json | null
+          completed_at?: string | null
+          id?: string
+          mentor_id?: string | null
+          started_at?: string | null
+          status?: string | null
+          team_member_id?: string | null
+        }
+        Update: {
+          checklist_items?: Json | null
+          completed_at?: string | null
+          id?: string
+          mentor_id?: string | null
+          started_at?: string | null
+          status?: string | null
+          team_member_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_checklists_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "onboarding_checklists_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
@@ -2628,6 +2673,69 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      performance_reviews: {
+        Row: {
+          created_at: string | null
+          goals: string | null
+          id: string
+          improvements: string | null
+          manager_rating: number | null
+          overall_feedback: string | null
+          review_period: string
+          reviewer_id: string | null
+          self_rating: number | null
+          status: string | null
+          strengths: string | null
+          team_member_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          goals?: string | null
+          id?: string
+          improvements?: string | null
+          manager_rating?: number | null
+          overall_feedback?: string | null
+          review_period: string
+          reviewer_id?: string | null
+          self_rating?: number | null
+          status?: string | null
+          strengths?: string | null
+          team_member_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          goals?: string | null
+          id?: string
+          improvements?: string | null
+          manager_rating?: number | null
+          overall_feedback?: string | null
+          review_period?: string
+          reviewer_id?: string | null
+          self_rating?: number | null
+          status?: string | null
+          strengths?: string | null
+          team_member_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "performance_reviews_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       points_transactions: {
         Row: {
@@ -3633,52 +3741,171 @@ export type Database = {
           },
         ]
       }
+      team_documents: {
+        Row: {
+          created_at: string | null
+          document_type: string
+          expires_at: string | null
+          file_name: string
+          file_url: string
+          id: string
+          is_verified: boolean | null
+          team_member_id: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_type: string
+          expires_at?: string | null
+          file_name: string
+          file_url: string
+          id?: string
+          is_verified?: boolean | null
+          team_member_id?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_type?: string
+          expires_at?: string | null
+          file_name?: string
+          file_url?: string
+          id?: string
+          is_verified?: boolean | null
+          team_member_id?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_documents_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_leaves: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          end_date: string
+          id: string
+          leave_type: string
+          reason: string | null
+          start_date: string
+          status: string | null
+          team_member_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          end_date: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          start_date: string
+          status?: string | null
+          team_member_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          start_date?: string
+          status?: string | null
+          team_member_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_leaves_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_leaves_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_members: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string | null
           department: string | null
           email: string
+          emergency_contact: string | null
           full_name: string
           id: string
+          is_remote: boolean | null
           join_date: string | null
           notes: string | null
           phone: string | null
           reporting_to: string | null
           role_title: string | null
+          skills: string[] | null
           status: string | null
+          stipend_amount: number | null
+          timezone: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
           department?: string | null
           email: string
+          emergency_contact?: string | null
           full_name: string
           id?: string
+          is_remote?: boolean | null
           join_date?: string | null
           notes?: string | null
           phone?: string | null
           reporting_to?: string | null
           role_title?: string | null
+          skills?: string[] | null
           status?: string | null
+          stipend_amount?: number | null
+          timezone?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
           department?: string | null
           email?: string
+          emergency_contact?: string | null
           full_name?: string
           id?: string
+          is_remote?: boolean | null
           join_date?: string | null
           notes?: string | null
           phone?: string | null
           reporting_to?: string | null
           role_title?: string | null
+          skills?: string[] | null
           status?: string | null
+          stipend_amount?: number | null
+          timezone?: string | null
           updated_at?: string | null
           user_id?: string
         }

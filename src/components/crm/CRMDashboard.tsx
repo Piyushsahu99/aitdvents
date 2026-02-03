@@ -3,12 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, ClipboardList, BarChart3, Bell, Activity, Target, TrendingUp, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { Users, ClipboardList, BarChart3, Bell, Activity, Target, TrendingUp, Clock, CheckCircle2, AlertCircle, Timer, Calendar, LayoutGrid } from "lucide-react";
 import { TaskManager } from "./TaskManager";
+import { TaskKanban } from "./TaskKanban";
 import { TeamMemberManager } from "./TeamMemberManager";
 import { KPIDashboard } from "./KPIDashboard";
 import { ActivityLogViewer } from "./ActivityLogViewer";
 import { AnnouncementManager } from "./AnnouncementManager";
+import { TimeLogManager } from "./TimeLogManager";
+import { LeaveManager } from "./LeaveManager";
 import { useTasks } from "@/hooks/useTasks";
 
 export function CRMDashboard() {
@@ -139,6 +142,18 @@ export function CRMDashboard() {
               <ClipboardList className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Tasks
             </TabsTrigger>
+            <TabsTrigger value="kanban" className="text-xs sm:text-sm gap-1.5">
+              <LayoutGrid className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Kanban
+            </TabsTrigger>
+            <TabsTrigger value="time" className="text-xs sm:text-sm gap-1.5">
+              <Timer className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Time
+            </TabsTrigger>
+            <TabsTrigger value="leave" className="text-xs sm:text-sm gap-1.5">
+              <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Leave
+            </TabsTrigger>
             <TabsTrigger value="team" className="text-xs sm:text-sm gap-1.5">
               <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Team
@@ -259,6 +274,18 @@ export function CRMDashboard() {
 
         <TabsContent value="tasks">
           <TaskManager />
+        </TabsContent>
+
+        <TabsContent value="kanban">
+          <TaskKanban />
+        </TabsContent>
+
+        <TabsContent value="time">
+          <TimeLogManager />
+        </TabsContent>
+
+        <TabsContent value="leave">
+          <LeaveManager />
         </TabsContent>
 
         <TabsContent value="team">

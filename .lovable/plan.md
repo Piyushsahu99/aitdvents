@@ -1,314 +1,249 @@
 
-# Quiz Platform Enhancement Plan
-## Making Quizzes Accessible to All Users with Slido/Kahoot-like Features
+
+# Games Arena Expansion - Implementation Plan
+## Adding Spin & Win, Lucky Draw, and IPL Auction Games
 
 ---
 
-## Current State Analysis
+## Overview
 
-The platform already has a solid quiz foundation with:
-- Quiz creation flow (`CreateQuiz.tsx`) with 4 steps: Basic Info, Questions, Settings, Prizes
-- Real-time participation via Supabase Realtime (`useQuizRealtime.ts`)
-- Host control panel (`QuizHost.tsx`) with lobby management, question control, and leaderboard
-- Anonymous guest participation via device ID
-- Auto-advance and customization settings
-- Confetti celebrations and animated results
+This implementation adds three new interactive games to the existing Games Arena hub at `/quiz`:
 
-### Existing Database Schema
+1. **Spin & Win** - Animated prize wheel with AITD Coins rewards
+2. **Lucky Draw** - Fair random winner selection with verifiable results
+3. **IPL Auction** - Virtual cricket auction with 200+ real players and unlimited participation
+
+All games integrate with the existing AITD Coins economy and feature celebration animations.
+
+---
+
+## Phase 1: Database Schema
+
+### New Tables
+
 | Table | Purpose |
 |-------|---------|
-| `quizzes` | Core quiz data with settings, status, prizes |
-| `quiz_questions` | Questions with options, time limits, points |
-| `quiz_participants` | Players with scores and ranks |
-| `quiz_participant_answers` | Individual answer tracking |
-| `quiz_registrations` | Pre-registration for scheduled quizzes |
+| `spin_wheels` | Configurable wheel settings and themes |
+| `spin_wheel_segments` | Prize segments with probabilities |
+| `spin_results` | User spin history |
+| `lucky_draws` | Draw configurations and status |
+| `lucky_draw_entries` | Participant entries |
+| `lucky_draw_winners` | Selected winners with verification hash |
+| `ipl_players` | 200+ cricket players with photos and stats |
+| `ipl_auctions` | Auction room configurations |
+| `auction_teams` | User teams with virtual budgets |
+| `auction_bids` | Real-time bidding history |
+| `auction_sold_players` | Players purchased by teams |
+
+### Key Schema Details
+
+**Spin Wheels:**
+- Configurable cost per spin (AITD coins)
+- Daily/total spin limits
+- Weighted probability segments
+- Jackpot markers
+
+**Lucky Draw:**
+- Multiple draw types (random/weighted)
+- Scheduled draws with countdown
+- SHA-256 verification hash for fairness
+- Multiple winner support
+
+**IPL Auction:**
+- Virtual currency (separate from AITD coins)
+- Team size constraints
+- Real-time bid tracking
+- Player categories (Platinum/Gold/Silver/Bronze)
 
 ---
 
-## Proposed Enhancements
+## Phase 2: Spin & Win Game
 
-### Part 1: Enhanced Quiz Discovery Hub
+### Features
+- Animated spinning wheel using CSS transforms and framer-motion
+- 6-12 configurable prize segments
+- Daily free spins + coin-based additional spins
+- Jackpot celebrations with fireworks confetti
+- Spin history tracking
 
-**1.1 Improved Games Arena Landing**
-- Add a "Host a Quiz" prominent CTA button on the main `/quiz` page
-- Show trending/featured quizzes carousel
-- Display live quizzes count with real-time updates
-- Add category-based browsing
-
-**1.2 Quiz Discovery Page Improvements**
-- Add search with filters (category, difficulty, status, date range)
-- Sort options: Most participants, Recently created, Starting soon
-- Quiz preview cards with participant count, prize info, and scheduled time
-- "Notify me" bell for upcoming scheduled quizzes
-
----
-
-### Part 2: Quiz Creation Wizard Enhancements
-
-**2.1 Step 1: Basic Info Improvements**
-| Field | Description |
-|-------|-------------|
-| Banner Image Upload | Custom header image for quiz cards |
-| Scheduled Start Time | Date/time picker for future quizzes |
-| Registration Toggle | Open/close registration independently |
-| Custom Quiz Code | Let hosts set memorable codes (e.g., "TECH101") |
-| Quiz Duration Estimate | Auto-calculate based on questions |
-
-**2.2 Step 2: Questions Builder**
-| Feature | Description |
-|---------|-------------|
-| Question Image Upload | Add images to questions |
-| Bulk Import | Import from CSV/JSON |
-| AI Question Generator | Generate quiz questions using AI |
-| Question Templates | Pre-made question banks by category |
-| Question Reordering | Drag-and-drop reorder |
-| Question Preview | Live preview of how question looks |
-
-**2.3 Step 3: Advanced Settings**
-| Setting | Description |
-|---------|-------------|
-| Require Registration | Only registered users can join |
-| Team Mode | Allow team-based participation |
-| Answer Streak Bonus | Extra points for consecutive correct answers |
-| Custom Branding | Logo and color theme |
-| Participant Moderation | Approve participants before they can join |
-
-**2.4 Step 4: Prizes & Rewards**
-| Feature | Description |
-|---------|-------------|
-| Multiple Prize Tiers | Top 1, 2, 3, Top 10, etc. |
-| AITD Coins Integration | Auto-award coins to winners |
-| Custom Certificates | Generate winner certificates |
-| Sponsor Branding | Add sponsor logos to results |
-
----
-
-### Part 3: Host Control Dashboard
-
-**3.1 Enhanced Host Panel**
-
+### New Files
 ```
-+--------------------------------------------------+
-|  QUIZ HOST DASHBOARD                    [End Quiz]|
-+--------------------------------------------------+
-|  [Lobby View]  [Questions]  [Participants]  [Stats]|
-+--------------------------------------------------+
-|                                                    |
-|  +----------------+  +-------------------------+  |
-|  | Current Status |  |    Quick Actions        |  |
-|  | ⚡ Live: Q3/10 |  | [Skip] [Pause] [Reveal] |  |
-|  +----------------+  +-------------------------+  |
-|                                                    |
-|  +------------------------------------------+     |
-|  |          Live Question Preview           |     |
-|  |  Q3: What is React's virtual DOM?        |     |
-|  |  ⏱️ 15s remaining  |  45% answered       |     |
-|  +------------------------------------------+     |
-|                                                    |
-|  +------------------------------------------+     |
-|  |          Answer Distribution             |     |
-|  |  A: ███████ 35%                          |     |
-|  |  B: ████████████ 45% ✓                   |     |
-|  |  C: ███ 12%                              |     |
-|  |  D: ██ 8%                                |     |
-|  +------------------------------------------+     |
-+--------------------------------------------------+
+src/pages/SpinWheel.tsx
+src/components/games/SpinWheelCanvas.tsx
+src/components/games/SpinWheelResult.tsx
+src/hooks/useSpinWheel.ts
 ```
 
-**3.2 Host Features**
-| Feature | Description |
-|---------|-------------|
-| Pause/Resume Quiz | Temporarily halt for breaks |
-| Skip Question | Skip a problematic question |
-| Extend Time | Add extra seconds mid-question |
-| Kick Participant | Remove disruptive players |
-| Send Announcement | Broadcast message to all players |
-| Answer Analytics | Real-time answer distribution chart |
-| Export Results | Download CSV of all results |
-
-**3.3 Presentation Mode**
-- Full-screen mode for projector display
-- Large QR code display for joining
-- Sound effects toggle (correct/wrong answers)
-- Background music controls
-- Participant join animations
+### Animation Details
+- CSS `transform: rotate()` with framer-motion
+- 4-6 second spin duration with easing
+- Result pre-calculated server-side for fairness
+- Confetti explosion on prize reveal
 
 ---
 
-### Part 4: Participant Experience
+## Phase 3: Lucky Draw Game
 
-**4.1 Join Flow Improvements**
-| Feature | Description |
-|---------|-------------|
-| One-click Join | Quick join with saved profile |
-| Avatar Selection | Choose fun avatars |
-| Team Join | Join with a team name |
-| Social Login | Google/GitHub quick join |
-| Waiting Room Games | Mini-games while waiting |
+### Features
+- Fair cryptographic random selection
+- Entry modes: free, coin-based, or action-based
+- Scheduled draws with countdown timers
+- Live winner announcement with dramatic reveal
+- Verification page for transparency
 
-**4.2 During Quiz**
-| Feature | Description |
-|---------|-------------|
-| Answer Streak Indicator | Visual streak counter |
-| Position Tracker | Live rank display during quiz |
-| Power-ups (Optional) | 2x points, extra time, skip |
-| Reaction Emojis | Send reactions to host |
-| Chat (Optional) | Live chat with other participants |
-
-**4.3 Results Screen**
-| Feature | Description |
-|---------|-------------|
-| Animated Podium | 3D-style winner podium (already exists) |
-| Achievement Badges | "Perfect Score", "Speed Demon", etc. |
-| Social Sharing | Share results to social media |
-| Certificate Download | Winner certificates with QR verification |
-| Rematch Button | Quick create similar quiz |
-
----
-
-### Part 5: Database Schema Updates
-
-**5.1 New Table: Quiz Templates**
-```sql
-CREATE TABLE public.quiz_templates (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  title text NOT NULL,
-  description text,
-  category text NOT NULL,
-  difficulty text DEFAULT 'medium',
-  questions jsonb NOT NULL DEFAULT '[]',
-  created_by uuid REFERENCES auth.users(id),
-  is_public boolean DEFAULT false,
-  use_count integer DEFAULT 0,
-  created_at timestamptz DEFAULT now()
-);
+### New Files
+```
+src/pages/LuckyDraw.tsx
+src/components/games/LuckyDrawCard.tsx
+src/components/games/LuckyDrawLive.tsx
+src/components/games/LuckyDrawWinners.tsx
+src/hooks/useLuckyDraw.ts
 ```
 
-**5.2 Quizzes Table Enhancements**
-```sql
-ALTER TABLE public.quizzes
-ADD COLUMN IF NOT EXISTS custom_code text UNIQUE,
-ADD COLUMN IF NOT EXISTS logo_url text,
-ADD COLUMN IF NOT EXISTS theme_color text DEFAULT '#7c3aed',
-ADD COLUMN IF NOT EXISTS require_registration boolean DEFAULT false,
-ADD COLUMN IF NOT EXISTS team_mode boolean DEFAULT false,
-ADD COLUMN IF NOT EXISTS streak_bonus_enabled boolean DEFAULT false,
-ADD COLUMN IF NOT EXISTS sound_effects boolean DEFAULT true,
-ADD COLUMN IF NOT EXISTS participant_approval boolean DEFAULT false,
-ADD COLUMN IF NOT EXISTS estimated_duration_minutes integer;
-```
-
-**5.3 New Table: Quiz Announcements**
-```sql
-CREATE TABLE public.quiz_announcements (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  quiz_id uuid REFERENCES quizzes(id) ON DELETE CASCADE,
-  message text NOT NULL,
-  sent_at timestamptz DEFAULT now()
-);
-```
-
-**5.4 Quiz Participants Enhancements**
-```sql
-ALTER TABLE public.quiz_participants
-ADD COLUMN IF NOT EXISTS avatar_url text,
-ADD COLUMN IF NOT EXISTS team_name text,
-ADD COLUMN IF NOT EXISTS streak_count integer DEFAULT 0,
-ADD COLUMN IF NOT EXISTS reaction_sent text[];
-```
+### Winner Selection Algorithm
+1. Collect all valid entries at draw time
+2. Generate cryptographic seed (timestamp + entries hash)
+3. Use Fisher-Yates shuffle with seed
+4. Select top N winners
+5. Store verification hash for audit
 
 ---
 
-### Part 6: UI Components to Create/Modify
+## Phase 4: IPL Auction Game
 
-| Component | Action | Purpose |
-|-----------|--------|---------|
-| `QuizBannerUpload.tsx` | Create | Image upload for quiz banners |
-| `QuestionImageUpload.tsx` | Create | Image upload for questions |
-| `QuizScheduler.tsx` | Create | Date/time picker for scheduling |
-| `HostAnswerChart.tsx` | Create | Real-time answer distribution |
-| `PresentationMode.tsx` | Create | Full-screen host display |
-| `ParticipantAvatar.tsx` | Create | Avatar selector component |
-| `QuizAnnouncement.tsx` | Create | Host-to-players messaging |
-| `StreakIndicator.tsx` | Create | Answer streak display |
-| `CreateQuiz.tsx` | Enhance | Add new fields and features |
-| `QuizHost.tsx` | Enhance | Add new host controls |
-| `Quiz.tsx` | Enhance | Improve join flow |
-| `QuizDiscover.tsx` | Enhance | Better search and filters |
+### Features
+- 200+ IPL cricket players with real photos and stats
+- Virtual budget (85Cr per team by default)
+- Real-time bidding with Supabase Realtime
+- Player categories: Platinum, Gold, Silver, Bronze
+- Team composition rules
+- Animated "SOLD!" celebrations
+
+### New Files
+```
+src/pages/IPLAuction.tsx
+src/pages/CreateAuction.tsx
+src/components/games/AuctionLobby.tsx
+src/components/games/AuctionRoom.tsx
+src/components/games/PlayerCard.tsx
+src/components/games/BidPanel.tsx
+src/components/games/TeamRoster.tsx
+src/components/games/AuctionResults.tsx
+src/hooks/useAuctionRealtime.ts
+src/data/iplPlayers.ts
+```
+
+### Sample Player Data
+```
+{
+  name: "Virat Kohli",
+  role: "Batsman",
+  team: "Royal Challengers Bangalore",
+  nationality: "India",
+  photo_url: "/images/ipl/virat-kohli.jpg",
+  base_price: 200000000, // 2 Cr (virtual)
+  category: "Platinum",
+  stats: {
+    matches: 237,
+    runs: 7263,
+    average: 37.25,
+    strike_rate: 129.95
+  }
+}
+```
+
+### Real-time Features
+- Supabase Realtime for instant bid updates
+- Presence API for active participants
+- Auto-pass after timeout
+- Host controls: pause, skip, extend time
 
 ---
 
-### Part 7: Implementation Priority
+## Phase 5: Celebration Animations
 
-**Phase 1 (Core Enhancements):**
-1. Quiz discovery page improvements with search/filters
-2. Banner image upload for quizzes
-3. Scheduled start time picker
-4. Enhanced host panel with answer distribution chart
-5. Presentation mode for hosts
-6. QR code improvements with custom codes
-
-**Phase 2 (Creator Tools):**
-7. Question image upload
-8. Bulk question import (CSV/JSON)
-9. AI question generator integration
-10. Quiz templates library
-11. Results export (CSV)
-
-**Phase 3 (Participant Experience):**
-12. Avatar selection
-13. Answer streak bonuses
-14. Live rank tracker during quiz
-15. Achievement badges
-16. Enhanced social sharing
-
-**Phase 4 (Advanced Features):**
-17. Team mode
-18. Participant approval/moderation
-19. Custom branding/theming
-20. Host announcements
-21. Sound effects toggle
+### New Confetti Types
+| Type | Effect | Trigger |
+|------|--------|---------|
+| `spinWin` | Spiral confetti | Wheel prize reveal |
+| `jackpot` | Golden coins shower | Jackpot win |
+| `luckyDraw` | Spotlight + burst | Winner announcement |
+| `auctionSold` | Hammer + money rain | Player sold |
+| `teamComplete` | Stadium celebration | Squad completed |
 
 ---
 
-### Part 8: File Changes Summary
+## Phase 6: Games Hub Updates
 
-**Create New:**
-- `src/components/quiz/QuizBannerUpload.tsx`
-- `src/components/quiz/QuestionImageUpload.tsx`
-- `src/components/quiz/QuizScheduler.tsx`
-- `src/components/quiz/HostAnswerChart.tsx`
-- `src/components/quiz/PresentationMode.tsx`
-- `src/components/quiz/ParticipantAvatar.tsx`
-- `src/components/quiz/StreakIndicator.tsx`
-- `src/components/quiz/QuizFilters.tsx`
-- `src/components/quiz/QuizBulkImport.tsx`
-- `src/hooks/useQuizTemplates.ts`
+### Changes to `/quiz` Page
+- Update game cards from "Coming Soon" to active
+- Add navigation to new game pages
+- Show live player counts for each game
+- Add quick join codes support
 
-**Modify:**
-- `src/pages/CreateQuiz.tsx` - Add new fields, image uploads, scheduling
-- `src/pages/QuizHost.tsx` - Add answer chart, pause/skip controls, presentation mode
-- `src/pages/Quiz.tsx` - Improve join flow, add avatar selection
-- `src/pages/QuizDiscover.tsx` - Enhanced search, filters, sorting
-- `src/pages/MyQuizzes.tsx` - Add template saving, duplicate quiz
-- `src/components/quiz/QuizCard.tsx` - Show banner images, scheduled time
-- `src/components/quiz/QuizLobby.tsx` - Add avatar display, countdown to start
-- `src/components/quiz/QuizQuestion.tsx` - Add streak indicator
-- `src/components/quiz/QuizResults.tsx` - Add achievement badges
+---
 
-**Database Migration:**
-- New tables: `quiz_templates`, `quiz_announcements`
-- Extend `quizzes` with scheduling, theming, and mode fields
-- Extend `quiz_participants` with avatars and streaks
+## File Changes Summary
+
+### New Pages
+- `src/pages/SpinWheel.tsx`
+- `src/pages/LuckyDraw.tsx`
+- `src/pages/IPLAuction.tsx`
+- `src/pages/CreateAuction.tsx`
+
+### New Components (12 files)
+- `src/components/games/SpinWheelCanvas.tsx`
+- `src/components/games/SpinWheelResult.tsx`
+- `src/components/games/LuckyDrawCard.tsx`
+- `src/components/games/LuckyDrawLive.tsx`
+- `src/components/games/LuckyDrawWinners.tsx`
+- `src/components/games/AuctionLobby.tsx`
+- `src/components/games/AuctionRoom.tsx`
+- `src/components/games/PlayerCard.tsx`
+- `src/components/games/BidPanel.tsx`
+- `src/components/games/TeamRoster.tsx`
+- `src/components/games/AuctionResults.tsx`
+- `src/components/games/AuctionCountdown.tsx`
+
+### New Hooks
+- `src/hooks/useSpinWheel.ts`
+- `src/hooks/useLuckyDraw.ts`
+- `src/hooks/useAuctionRealtime.ts`
+
+### New Data
+- `src/data/iplPlayers.ts` (200+ players with stats)
+
+### Modified Files
+- `src/App.tsx` - Add routes for new pages
+- `src/pages/Quiz.tsx` - Update game cards to active with links
+- `src/components/quiz/ConfettiEffect.tsx` - Add new celebration types
+
+### Database Migration
+- Create 11 new tables for games
+- Enable RLS policies
+- Enable Realtime for auction_bids table
+- Add storage bucket for player photos
+
+---
+
+## Implementation Order
+
+1. **Database Migration** - Create all tables with RLS
+2. **Confetti Enhancements** - Add new celebration types
+3. **Spin & Win** - Complete wheel game
+4. **Lucky Draw** - Random selection system
+5. **IPL Players Data** - Seed player database
+6. **IPL Auction** - Real-time bidding system
+7. **Games Hub Updates** - Connect all games
+8. **Testing & Polish** - Animations and mobile responsiveness
 
 ---
 
 ## Technical Notes
 
-- All image uploads will use existing Supabase Storage infrastructure
-- Real-time features will continue using Supabase Realtime channels
-- AI question generation will use Lovable AI (Gemini) for generating quiz questions
-- Quiz codes will support both auto-generated (6-char) and custom codes with validation
-- RLS policies will ensure creators can only manage their own quizzes
+- All games use virtual currency (except Spin & Win which uses AITD coins)
+- IPL Auction budgets are isolated per auction room
+- Lucky Draw uses SHA-256 for verifiable fairness
+- Real-time updates via Supabase Realtime channels
+- Mobile-first responsive design throughout
 
-This enhancement transforms the quiz feature into a comprehensive Slido/Kahoot-like platform where any user can host professional interactive quizzes with real-time participation, customization, and engaging celebrations.

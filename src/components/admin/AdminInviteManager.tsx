@@ -176,6 +176,32 @@ export function AdminInviteManager() {
 
     setCreating(true);
     try {
+      // First, try direct admin addition via RPC if user exists
+      const { data: rpcResult } = await supabase.rpc("add_admin_by_email", {
+        admin_email: newEmail.toLowerCase().trim()
+      });
+
+      if (rpcResult && typeof rpcResult === 'object' && 'success' in rpcResult) {
+        if (rpcResult.success) {
+          toast({
+            title: "Admin Added!",
+            description: `${newEmail} is now an admin.`,
+          });
+          setNewEmail("");
+          fetchCurrentAdmins();
+          return;
+        } else if (rpcResult.error === "User is already an admin") {
+          toast({
+            title: "Already an Admin",
+            description: "This user is already an admin.",
+            variant: "destructive",
+          });
+          return;
+        }
+        // If user not found, fall back to invite system
+      }
+
+      // Fall back to invite system for users who haven't signed up yet
       const { data: { user } } = await supabase.auth.getUser();
       
       const { error } = await supabase
@@ -194,7 +220,7 @@ export function AdminInviteManager() {
 
       toast({
         title: "Invite Created!",
-        description: `Admin invite created for ${newEmail}. Copy the invite link to share.`,
+        description: `Admin invite created for ${newEmail}. Copy the invite link to share. If the user already has an account, they need to complete their profile first.`,
       });
       
       setNewEmail("");

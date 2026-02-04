@@ -4156,6 +4156,7 @@ export type Database = {
           bio: string | null
           college: string | null
           created_at: string | null
+          email: string | null
           email_verified: boolean | null
           full_name: string
           github_url: string | null
@@ -4179,6 +4180,7 @@ export type Database = {
           bio?: string | null
           college?: string | null
           created_at?: string | null
+          email?: string | null
           email_verified?: boolean | null
           full_name: string
           github_url?: string | null
@@ -4202,6 +4204,7 @@ export type Database = {
           bio?: string | null
           college?: string | null
           created_at?: string | null
+          email?: string | null
           email_verified?: boolean | null
           full_name?: string
           github_url?: string | null
@@ -4814,6 +4817,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_admin_by_email: { Args: { admin_email: string }; Returns: Json }
+      add_team_member_by_email: {
+        Args: {
+          member_department?: string
+          member_email: string
+          member_name: string
+          member_phone?: string
+          member_role_title?: string
+        }
+        Returns: Json
+      }
       award_points: {
         Args: {
           p_action_type: string
@@ -4868,6 +4882,7 @@ export type Database = {
         }[]
       }
       get_team_member_permissions: { Args: never; Returns: Json }
+      get_user_email: { Args: { target_user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

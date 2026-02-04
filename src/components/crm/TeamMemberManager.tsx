@@ -113,8 +113,11 @@ export function TeamMemberManager() {
   };
 
   const fetchUsers = async () => {
+    // Fetch users with email (email column now exists in student_profiles)
     const { data } = await supabase.from("student_profiles").select("user_id, full_name, email");
-    setUsers(data || []);
+    // Filter out users who are already team members
+    const existingUserIds = members.map(m => m.user_id);
+    setUsers((data || []).filter(u => !existingUserIds.includes(u.user_id)));
   };
 
   const resetForm = () => {
@@ -143,7 +146,42 @@ export function TeamMemberManager() {
 
   const handleAdd = async () => {
     try {
-      // Add team member
+      // First try the RPC method if we have an email (more reliable)
+      if (formData.email) {
+        const { data: rpcResult } = await supabase.rpc("add_team_member_by_email", {
+          member_email: formData.email,
+          member_name: formData.full_name,
+          member_role_title: formData.role_title || null,
+          member_department: formData.department || null,
+          member_phone: formData.phone || null,
+        });
+
+        if (rpcResult && typeof rpcResult === 'object' && 'success' in rpcResult) {
+          if (rpcResult.success) {
+            // Now add permissions to the new member
+            const memberId = (rpcResult as { success: boolean; member_id?: string }).member_id;
+            if (memberId) {
+              await supabase
+                .from("team_permissions")
+                .update(permissions)
+                .eq("team_member_id", memberId);
+            }
+
+            toast({ title: "Success", description: "Team member added successfully" });
+            resetForm();
+            setIsAddOpen(false);
+            fetchMembers();
+            fetchUsers();
+            return;
+          } else {
+            const errorMsg = (rpcResult as { error?: string }).error || "Failed to add team member";
+            toast({ title: "Error", description: errorMsg, variant: "destructive" });
+            return;
+          }
+        }
+      }
+
+      // Fallback to direct insert if RPC fails or no email
       const { data: member, error: memberError } = await supabase
         .from("team_members")
         .insert([{
@@ -160,10 +198,10 @@ export function TeamMemberManager() {
       if (memberError) throw memberError;
 
       // Add core_team role
-      await supabase.from("user_roles").insert([{
+      await supabase.from("user_roles").upsert([{
         user_id: formData.user_id,
         role: "core_team",
-      }]);
+      }], { onConflict: "user_id,role" });
 
       // Add permissions
       await supabase.from("team_permissions").insert([{
@@ -175,6 +213,7 @@ export function TeamMemberManager() {
       resetForm();
       setIsAddOpen(false);
       fetchMembers();
+      fetchUsers();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     }

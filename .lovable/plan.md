@@ -1,369 +1,314 @@
 
-# HRM System Enhancement Plan
+# Quiz Platform Enhancement Plan
+## Making Quizzes Accessible to All Users with Slido/Kahoot-like Features
+
+---
 
 ## Current State Analysis
 
-The platform has a foundational HRM/CRM system with these existing components:
+The platform already has a solid quiz foundation with:
+- Quiz creation flow (`CreateQuiz.tsx`) with 4 steps: Basic Info, Questions, Settings, Prizes
+- Real-time participation via Supabase Realtime (`useQuizRealtime.ts`)
+- Host control panel (`QuizHost.tsx`) with lobby management, question control, and leaderboard
+- Anonymous guest participation via device ID
+- Auto-advance and customization settings
+- Confetti celebrations and animated results
 
-### Existing Tables
-- `team_members` - Core team data with role_title, department, status, reporting_to
-- `team_permissions` - Granular 12-permission access control
-- `crm_tasks` - Task management with priority, status, due dates, points
-- `time_logs` - Time tracking (hours, description, logged_at) - **NOT IMPLEMENTED IN UI**
-- `task_comments` - Task comments with attachments, internal flag - **NOT IMPLEMENTED IN UI**
-- `kpi_definitions` / `kpi_records` - Performance metrics
-- `activity_log` - Audit trail
-- `announcements` - Team/user communications
-
-### Existing UI Components
-- `CRMDashboard.tsx` - Overview with 6 tabs
-- `TeamMemberManager.tsx` - Add/edit members and permissions
-- `TaskManager.tsx` - Basic task CRUD with filters
-- `KPIDashboard.tsx` - KPI visualization
-- `ActivityLogViewer.tsx` - Activity log browser
-- `AnnouncementManager.tsx` - Announcement publishing
-- `TeamPanel.tsx` - Core team member's personal dashboard
-
-### Key Gaps Identified
-1. **Time Logging UI** - Table exists but no interface to log/view hours
-2. **Task Comments** - No commenting system on tasks
-3. **Leave Management** - No attendance/leave tracking
-4. **Team Hierarchy** - `reporting_to` exists but not visualized
-5. **Performance Reviews** - No review/feedback system
-6. **Payroll Tracking** - No stipend/compensation management (for volunteer appreciation)
-7. **Document Management** - No HR document storage
-8. **Onboarding Workflows** - No structured onboarding for new team members
+### Existing Database Schema
+| Table | Purpose |
+|-------|---------|
+| `quizzes` | Core quiz data with settings, status, prizes |
+| `quiz_questions` | Questions with options, time limits, points |
+| `quiz_participants` | Players with scores and ranks |
+| `quiz_participant_answers` | Individual answer tracking |
+| `quiz_registrations` | Pre-registration for scheduled quizzes |
 
 ---
 
-## Proposed Improvements
+## Proposed Enhancements
 
-### Part 1: Enhanced Task Management
+### Part 1: Enhanced Quiz Discovery Hub
 
-**1.1 Task Comments & Collaboration**
+**1.1 Improved Games Arena Landing**
+- Add a "Host a Quiz" prominent CTA button on the main `/quiz` page
+- Show trending/featured quizzes carousel
+- Display live quizzes count with real-time updates
+- Add category-based browsing
 
-Add a comment section to each task allowing team members to discuss progress, ask questions, and share updates.
+**1.2 Quiz Discovery Page Improvements**
+- Add search with filters (category, difficulty, status, date range)
+- Sort options: Most participants, Recently created, Starting soon
+- Quiz preview cards with participant count, prize info, and scheduled time
+- "Notify me" bell for upcoming scheduled quizzes
 
+---
+
+### Part 2: Quiz Creation Wizard Enhancements
+
+**2.1 Step 1: Basic Info Improvements**
+| Field | Description |
+|-------|-------------|
+| Banner Image Upload | Custom header image for quiz cards |
+| Scheduled Start Time | Date/time picker for future quizzes |
+| Registration Toggle | Open/close registration independently |
+| Custom Quiz Code | Let hosts set memorable codes (e.g., "TECH101") |
+| Quiz Duration Estimate | Auto-calculate based on questions |
+
+**2.2 Step 2: Questions Builder**
 | Feature | Description |
 |---------|-------------|
-| Threaded comments | Reply to specific comments |
-| @mentions | Tag team members in comments |
-| Attachments | Upload files to comments |
-| Internal/Public | Toggle visibility of comments |
-| Rich text | Basic formatting support |
+| Question Image Upload | Add images to questions |
+| Bulk Import | Import from CSV/JSON |
+| AI Question Generator | Generate quiz questions using AI |
+| Question Templates | Pre-made question banks by category |
+| Question Reordering | Drag-and-drop reorder |
+| Question Preview | Live preview of how question looks |
 
-**1.2 Time Tracking Integration**
+**2.3 Step 3: Advanced Settings**
+| Setting | Description |
+|---------|-------------|
+| Require Registration | Only registered users can join |
+| Team Mode | Allow team-based participation |
+| Answer Streak Bonus | Extra points for consecutive correct answers |
+| Custom Branding | Logo and color theme |
+| Participant Moderation | Approve participants before they can join |
 
-Implement the existing `time_logs` table with a proper UI:
-
+**2.4 Step 4: Prizes & Rewards**
 | Feature | Description |
 |---------|-------------|
-| Log hours | Quick entry form per task |
-| Time summary | Total hours per task/user/week |
-| Timesheet view | Weekly/monthly timesheet report |
-| Actual vs estimated | Compare logged hours to estimates |
-| Export reports | Download time reports as CSV |
-
-**1.3 Task Kanban Board**
-
-Add a drag-and-drop Kanban view alongside the table view:
-
-```
-| Pending | In Progress | Review | Completed |
-|---------|-------------|--------|-----------|
-| [Task1] | [Task3]     | [Task5]| [Task6]   |
-| [Task2] | [Task4]     |        | [Task7]   |
-```
-
-**1.4 Subtasks**
-
-Leverage existing `parent_task_id` column for checklist-style subtasks:
-
-- Break large tasks into smaller items
-- Track completion percentage
-- Collapse/expand subtask groups
+| Multiple Prize Tiers | Top 1, 2, 3, Top 10, etc. |
+| AITD Coins Integration | Auto-award coins to winners |
+| Custom Certificates | Generate winner certificates |
+| Sponsor Branding | Add sponsor logos to results |
 
 ---
 
-### Part 2: Team Management Enhancements
+### Part 3: Host Control Dashboard
 
-**2.1 Organization Chart**
-
-Visualize team hierarchy using `reporting_to` field:
+**3.1 Enhanced Host Panel**
 
 ```
-            [Super Admin]
-                 |
-     +-----------+-----------+
-     |           |           |
-[Marketing]  [Technical]  [Operations]
-     |           |
-  [Member1]   [Member2]
-  [Member3]   [Member4]
++--------------------------------------------------+
+|  QUIZ HOST DASHBOARD                    [End Quiz]|
++--------------------------------------------------+
+|  [Lobby View]  [Questions]  [Participants]  [Stats]|
++--------------------------------------------------+
+|                                                    |
+|  +----------------+  +-------------------------+  |
+|  | Current Status |  |    Quick Actions        |  |
+|  | ⚡ Live: Q3/10 |  | [Skip] [Pause] [Reveal] |  |
+|  +----------------+  +-------------------------+  |
+|                                                    |
+|  +------------------------------------------+     |
+|  |          Live Question Preview           |     |
+|  |  Q3: What is React's virtual DOM?        |     |
+|  |  ⏱️ 15s remaining  |  45% answered       |     |
+|  +------------------------------------------+     |
+|                                                    |
+|  +------------------------------------------+     |
+|  |          Answer Distribution             |     |
+|  |  A: ███████ 35%                          |     |
+|  |  B: ████████████ 45% ✓                   |     |
+|  |  C: ███ 12%                              |     |
+|  |  D: ██ 8%                                |     |
+|  +------------------------------------------+     |
++--------------------------------------------------+
 ```
 
-**2.2 Team Member Profiles**
-
-Enhanced profile cards showing:
-- Avatar and contact info
-- Role and department
-- Join date and tenure
-- Tasks assigned/completed
-- Time logged this month
-- Skills and expertise tags
-- Performance score
-
-**2.3 Leave & Availability Management**
-
-New table and UI for tracking team availability:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| start_date | date | Leave start |
-| end_date | date | Leave end |
-| leave_type | text | vacation/sick/personal |
-| status | text | pending/approved/rejected |
-| approved_by | uuid | Manager who approved |
-| notes | text | Reason/comments |
-
-Features:
-- Request leave form
-- Calendar view of team availability
-- Leave balance tracking
-- Approval workflow (manager approves)
-- Conflict detection (overlapping leaves)
-
-**2.4 Attendance Tracking (Optional)**
-
-Simple check-in/check-out for volunteer tracking:
-- Daily login detection (auto-logged)
-- Streak tracking
-- Monthly attendance summary
-
----
-
-### Part 3: Performance & Analytics
-
-**3.1 Individual Performance Dashboard**
-
-Each team member sees:
-- Personal KPIs and targets
-- Tasks completed vs assigned
-- Average task completion time
-- On-time delivery rate
-- Peer feedback received
-- Monthly/quarterly trends
-
-**3.2 Performance Reviews**
-
-Structured review system:
-
+**3.2 Host Features**
 | Feature | Description |
 |---------|-------------|
-| Review cycles | Quarterly/monthly schedules |
-| Self-assessment | Team member fills own review |
-| Manager review | Reporting manager provides feedback |
-| Goal setting | Set objectives for next period |
-| 360 feedback | Peer feedback option |
+| Pause/Resume Quiz | Temporarily halt for breaks |
+| Skip Question | Skip a problematic question |
+| Extend Time | Add extra seconds mid-question |
+| Kick Participant | Remove disruptive players |
+| Send Announcement | Broadcast message to all players |
+| Answer Analytics | Real-time answer distribution chart |
+| Export Results | Download CSV of all results |
 
-**3.3 Enhanced KPI Management**
-
-- Allow admins to create custom KPIs
-- Individual KPI assignment
-- Real-time progress tracking
-- Automated alerts when targets at risk
+**3.3 Presentation Mode**
+- Full-screen mode for projector display
+- Large QR code display for joining
+- Sound effects toggle (correct/wrong answers)
+- Background music controls
+- Participant join animations
 
 ---
 
-### Part 4: Document & Resource Management
+### Part 4: Participant Experience
 
-**4.1 HR Documents Storage**
+**4.1 Join Flow Improvements**
+| Feature | Description |
+|---------|-------------|
+| One-click Join | Quick join with saved profile |
+| Avatar Selection | Choose fun avatars |
+| Team Join | Join with a team name |
+| Social Login | Google/GitHub quick join |
+| Waiting Room Games | Mini-games while waiting |
 
-New section for storing team documents:
-- Offer letters and certificates
-- Policy documents
-- Training materials
-- ID proofs (encrypted)
+**4.2 During Quiz**
+| Feature | Description |
+|---------|-------------|
+| Answer Streak Indicator | Visual streak counter |
+| Position Tracker | Live rank display during quiz |
+| Power-ups (Optional) | 2x points, extra time, skip |
+| Reaction Emojis | Send reactions to host |
+| Chat (Optional) | Live chat with other participants |
 
-**4.2 Onboarding Checklist**
-
-Structured onboarding for new team members:
-- Automated task creation
-- Document collection checklist
-- Platform orientation tasks
-- Mentor assignment
-- Progress tracking
+**4.3 Results Screen**
+| Feature | Description |
+|---------|-------------|
+| Animated Podium | 3D-style winner podium (already exists) |
+| Achievement Badges | "Perfect Score", "Speed Demon", etc. |
+| Social Sharing | Share results to social media |
+| Certificate Download | Winner certificates with QR verification |
+| Rematch Button | Quick create similar quiz |
 
 ---
 
 ### Part 5: Database Schema Updates
 
-**5.1 New Tables**
-
+**5.1 New Table: Quiz Templates**
 ```sql
--- Leave/Availability Management
-CREATE TABLE public.team_leaves (
+CREATE TABLE public.quiz_templates (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_member_id uuid REFERENCES team_members(id) ON DELETE CASCADE,
-  leave_type text NOT NULL DEFAULT 'vacation',
-  start_date date NOT NULL,
-  end_date date NOT NULL,
-  reason text,
-  status text DEFAULT 'pending',
-  approved_by uuid REFERENCES team_members(id),
-  approved_at timestamptz,
+  title text NOT NULL,
+  description text,
+  category text NOT NULL,
+  difficulty text DEFAULT 'medium',
+  questions jsonb NOT NULL DEFAULT '[]',
+  created_by uuid REFERENCES auth.users(id),
+  is_public boolean DEFAULT false,
+  use_count integer DEFAULT 0,
   created_at timestamptz DEFAULT now()
-);
-
--- Performance Reviews
-CREATE TABLE public.performance_reviews (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_member_id uuid REFERENCES team_members(id) ON DELETE CASCADE,
-  reviewer_id uuid REFERENCES team_members(id),
-  review_period text NOT NULL,
-  self_rating integer,
-  manager_rating integer,
-  strengths text,
-  improvements text,
-  goals text,
-  overall_feedback text,
-  status text DEFAULT 'draft',
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
-
--- HR Documents
-CREATE TABLE public.team_documents (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_member_id uuid REFERENCES team_members(id) ON DELETE CASCADE,
-  document_type text NOT NULL,
-  file_name text NOT NULL,
-  file_url text NOT NULL,
-  uploaded_by uuid,
-  is_verified boolean DEFAULT false,
-  expires_at date,
-  created_at timestamptz DEFAULT now()
-);
-
--- Onboarding Checklists
-CREATE TABLE public.onboarding_checklists (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_member_id uuid REFERENCES team_members(id) ON DELETE CASCADE,
-  checklist_items jsonb DEFAULT '[]',
-  mentor_id uuid REFERENCES team_members(id),
-  started_at timestamptz DEFAULT now(),
-  completed_at timestamptz,
-  status text DEFAULT 'in_progress'
 );
 ```
 
-**5.2 Team Members Table Extensions**
-
+**5.2 Quizzes Table Enhancements**
 ```sql
-ALTER TABLE team_members
-ADD COLUMN IF NOT EXISTS skills text[] DEFAULT '{}',
-ADD COLUMN IF NOT EXISTS bio text,
-ADD COLUMN IF NOT EXISTS emergency_contact text,
-ADD COLUMN IF NOT EXISTS stipend_amount decimal(10,2) DEFAULT 0,
-ADD COLUMN IF NOT EXISTS is_remote boolean DEFAULT false,
-ADD COLUMN IF NOT EXISTS timezone text DEFAULT 'Asia/Kolkata';
+ALTER TABLE public.quizzes
+ADD COLUMN IF NOT EXISTS custom_code text UNIQUE,
+ADD COLUMN IF NOT EXISTS logo_url text,
+ADD COLUMN IF NOT EXISTS theme_color text DEFAULT '#7c3aed',
+ADD COLUMN IF NOT EXISTS require_registration boolean DEFAULT false,
+ADD COLUMN IF NOT EXISTS team_mode boolean DEFAULT false,
+ADD COLUMN IF NOT EXISTS streak_bonus_enabled boolean DEFAULT false,
+ADD COLUMN IF NOT EXISTS sound_effects boolean DEFAULT true,
+ADD COLUMN IF NOT EXISTS participant_approval boolean DEFAULT false,
+ADD COLUMN IF NOT EXISTS estimated_duration_minutes integer;
+```
+
+**5.3 New Table: Quiz Announcements**
+```sql
+CREATE TABLE public.quiz_announcements (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  quiz_id uuid REFERENCES quizzes(id) ON DELETE CASCADE,
+  message text NOT NULL,
+  sent_at timestamptz DEFAULT now()
+);
+```
+
+**5.4 Quiz Participants Enhancements**
+```sql
+ALTER TABLE public.quiz_participants
+ADD COLUMN IF NOT EXISTS avatar_url text,
+ADD COLUMN IF NOT EXISTS team_name text,
+ADD COLUMN IF NOT EXISTS streak_count integer DEFAULT 0,
+ADD COLUMN IF NOT EXISTS reaction_sent text[];
 ```
 
 ---
 
-### Part 6: UI Components to Create
+### Part 6: UI Components to Create/Modify
 
-| Component | Purpose |
-|-----------|---------|
-| `TimeLogManager.tsx` | Log and view time entries |
-| `TaskComments.tsx` | Task discussion thread |
-| `TaskKanban.tsx` | Kanban board view |
-| `TeamOrgChart.tsx` | Visual hierarchy |
-| `TeamMemberProfile.tsx` | Enhanced profile card |
-| `LeaveManager.tsx` | Leave requests & approvals |
-| `PerformanceReview.tsx` | Review forms & history |
-| `OnboardingTracker.tsx` | New member onboarding |
-| `TeamCalendar.tsx` | Availability calendar |
-| `TimesheetReport.tsx` | Weekly/monthly reports |
-
----
-
-### Part 7: Enhanced Team Panel
-
-Update `TeamPanel.tsx` with new tabs:
-
-| Tab | Content |
-|-----|---------|
-| Dashboard | Personal stats, upcoming tasks, notifications |
-| My Tasks | Kanban/list of assigned tasks |
-| Time Log | Personal timesheet entry |
-| Leave | Apply for leave, view balance |
-| My Performance | Personal KPIs, reviews |
-| Documents | Personal HR documents |
-| Team | Org chart, colleague profiles |
+| Component | Action | Purpose |
+|-----------|--------|---------|
+| `QuizBannerUpload.tsx` | Create | Image upload for quiz banners |
+| `QuestionImageUpload.tsx` | Create | Image upload for questions |
+| `QuizScheduler.tsx` | Create | Date/time picker for scheduling |
+| `HostAnswerChart.tsx` | Create | Real-time answer distribution |
+| `PresentationMode.tsx` | Create | Full-screen host display |
+| `ParticipantAvatar.tsx` | Create | Avatar selector component |
+| `QuizAnnouncement.tsx` | Create | Host-to-players messaging |
+| `StreakIndicator.tsx` | Create | Answer streak display |
+| `CreateQuiz.tsx` | Enhance | Add new fields and features |
+| `QuizHost.tsx` | Enhance | Add new host controls |
+| `Quiz.tsx` | Enhance | Improve join flow |
+| `QuizDiscover.tsx` | Enhance | Better search and filters |
 
 ---
 
-### Part 8: Implementation Priority
+### Part 7: Implementation Priority
 
-**Phase 1 (Core):**
-1. Time logging UI using existing table
-2. Task comments system
-3. Kanban board view
-4. Enhanced task details modal
+**Phase 1 (Core Enhancements):**
+1. Quiz discovery page improvements with search/filters
+2. Banner image upload for quizzes
+3. Scheduled start time picker
+4. Enhanced host panel with answer distribution chart
+5. Presentation mode for hosts
+6. QR code improvements with custom codes
 
-**Phase 2 (Team Management):**
-5. Organization chart visualization
-6. Team member profile enhancements
-7. Leave management system
-8. Team calendar
+**Phase 2 (Creator Tools):**
+7. Question image upload
+8. Bulk question import (CSV/JSON)
+9. AI question generator integration
+10. Quiz templates library
+11. Results export (CSV)
 
-**Phase 3 (Performance):**
-9. Performance reviews
-10. Individual KPI dashboards
-11. Reporting enhancements
+**Phase 3 (Participant Experience):**
+12. Avatar selection
+13. Answer streak bonuses
+14. Live rank tracker during quiz
+15. Achievement badges
+16. Enhanced social sharing
 
-**Phase 4 (Polish):**
-12. Document management
-13. Onboarding workflows
-14. Advanced analytics
-
----
-
-### Part 9: Technical Approach
-
-**File Changes:**
-
-| File | Action |
-|------|--------|
-| `src/components/crm/TimeLogManager.tsx` | Create |
-| `src/components/crm/TaskComments.tsx` | Create |
-| `src/components/crm/TaskKanban.tsx` | Create |
-| `src/components/crm/TeamOrgChart.tsx` | Create |
-| `src/components/crm/LeaveManager.tsx` | Create |
-| `src/components/crm/TeamCalendar.tsx` | Create |
-| `src/components/crm/TaskManager.tsx` | Enhance with Kanban toggle |
-| `src/components/crm/CRMDashboard.tsx` | Add new tabs |
-| `src/pages/TeamPanel.tsx` | Add personal time/leave/reviews |
-| `src/hooks/useTimeLog.ts` | Create |
-| `src/hooks/useLeaves.ts` | Create |
-
-**Database Migrations:**
-- New tables: `team_leaves`, `performance_reviews`, `team_documents`, `onboarding_checklists`
-- Extend `team_members` with new columns
-- RLS policies for all new tables
+**Phase 4 (Advanced Features):**
+17. Team mode
+18. Participant approval/moderation
+19. Custom branding/theming
+20. Host announcements
+21. Sound effects toggle
 
 ---
 
-## Summary
+### Part 8: File Changes Summary
 
-This plan transforms the basic HRM into a comprehensive team management system with:
-- Full time tracking with timesheets
-- Task collaboration with comments
-- Kanban workflow visualization
-- Leave and availability management
-- Performance review cycles
-- Organization hierarchy visualization
-- Personal dashboards for each team member
+**Create New:**
+- `src/components/quiz/QuizBannerUpload.tsx`
+- `src/components/quiz/QuestionImageUpload.tsx`
+- `src/components/quiz/QuizScheduler.tsx`
+- `src/components/quiz/HostAnswerChart.tsx`
+- `src/components/quiz/PresentationMode.tsx`
+- `src/components/quiz/ParticipantAvatar.tsx`
+- `src/components/quiz/StreakIndicator.tsx`
+- `src/components/quiz/QuizFilters.tsx`
+- `src/components/quiz/QuizBulkImport.tsx`
+- `src/hooks/useQuizTemplates.ts`
 
-The implementation uses existing database infrastructure (`time_logs`, `task_comments`) and extends it with new capabilities while maintaining the current permission system.
+**Modify:**
+- `src/pages/CreateQuiz.tsx` - Add new fields, image uploads, scheduling
+- `src/pages/QuizHost.tsx` - Add answer chart, pause/skip controls, presentation mode
+- `src/pages/Quiz.tsx` - Improve join flow, add avatar selection
+- `src/pages/QuizDiscover.tsx` - Enhanced search, filters, sorting
+- `src/pages/MyQuizzes.tsx` - Add template saving, duplicate quiz
+- `src/components/quiz/QuizCard.tsx` - Show banner images, scheduled time
+- `src/components/quiz/QuizLobby.tsx` - Add avatar display, countdown to start
+- `src/components/quiz/QuizQuestion.tsx` - Add streak indicator
+- `src/components/quiz/QuizResults.tsx` - Add achievement badges
+
+**Database Migration:**
+- New tables: `quiz_templates`, `quiz_announcements`
+- Extend `quizzes` with scheduling, theming, and mode fields
+- Extend `quiz_participants` with avatars and streaks
+
+---
+
+## Technical Notes
+
+- All image uploads will use existing Supabase Storage infrastructure
+- Real-time features will continue using Supabase Realtime channels
+- AI question generation will use Lovable AI (Gemini) for generating quiz questions
+- Quiz codes will support both auto-generated (6-char) and custom codes with validation
+- RLS policies will ensure creators can only manage their own quizzes
+
+This enhancement transforms the quiz feature into a comprehensive Slido/Kahoot-like platform where any user can host professional interactive quizzes with real-time participation, customization, and engaging celebrations.

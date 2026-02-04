@@ -12,6 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { QuizSettingsForm } from "@/components/quiz/QuizSettings";
+import { QuizBannerUpload } from "@/components/quiz/QuizBannerUpload";
+import { QuizScheduler } from "@/components/quiz/QuizScheduler";
+import { QuizBulkImport } from "@/components/quiz/QuizBulkImport";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -22,7 +25,9 @@ import {
   Trophy,
   Check,
   Loader2,
-  Gamepad2
+  Gamepad2,
+  Code,
+  Image
 } from "lucide-react";
 
 interface Question {
@@ -59,6 +64,10 @@ export default function CreateQuiz() {
   const [difficulty, setDifficulty] = useState("medium");
   const [isPublic, setIsPublic] = useState(true);
   const [maxParticipants, setMaxParticipants] = useState("100");
+  const [bannerImage, setBannerImage] = useState<string | null>(null);
+  const [customCode, setCustomCode] = useState("");
+  const [scheduledStart, setScheduledStart] = useState<Date | null>(null);
+  const [registrationOpen, setRegistrationOpen] = useState(true);
 
   // Step 2: Questions
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -68,6 +77,7 @@ export default function CreateQuiz() {
   const [correctOption, setCorrectOption] = useState(0);
   const [timeLimit, setTimeLimit] = useState(30);
   const [points, setPoints] = useState(10);
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   // Step 3: Settings
   const [settings, setSettings] = useState<QuizSettings>({
@@ -149,6 +159,11 @@ export default function CreateQuiz() {
     }
   };
 
+  const handleBulkImport = (importedQuestions: Question[]) => {
+    setQuestions((prev) => [...prev, ...importedQuestions]);
+    setShowBulkImport(false);
+  };
+
   const createQuiz = async () => {
     setIsCreating(true);
     try {
@@ -162,7 +177,7 @@ export default function CreateQuiz() {
         .eq("user_id", user.user.id)
         .maybeSingle();
 
-      // Create quiz
+      // Create quiz with new fields
       const quizInsertData: Record<string, unknown> = {
         title: title.trim(),
         description: description.trim() || null,
@@ -180,6 +195,11 @@ export default function CreateQuiz() {
         show_live_leaderboard: settings.showLiveLeaderboard,
         allow_late_join: settings.allowLateJoin,
         prizes: prizes.first || prizes.second || prizes.third ? prizes : null,
+        // New fields
+        banner_image: bannerImage,
+        custom_code: customCode.trim().toUpperCase() || null,
+        scheduled_start: scheduledStart?.toISOString() || null,
+        registration_open: registrationOpen,
       };
 
       const { data: quiz, error: quizError } = await supabase
@@ -281,6 +301,18 @@ export default function CreateQuiz() {
                   <CardDescription>Set up the basics of your quiz</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Banner Upload */}
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Image className="h-4 w-4" />
+                      Banner Image
+                    </Label>
+                    <QuizBannerUpload
+                      value={bannerImage}
+                      onChange={setBannerImage}
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <Label>Quiz Title *</Label>
                     <Input
@@ -344,11 +376,34 @@ export default function CreateQuiz() {
                       />
                     </div>
 
-                    <div className="flex items-center justify-between pt-6">
-                      <Label>Make Public</Label>
-                      <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Code className="h-4 w-4" />
+                        Custom Code
+                      </Label>
+                      <Input
+                        placeholder="e.g., TECH101"
+                        value={customCode}
+                        onChange={(e) => setCustomCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
+                        maxLength={10}
+                        className="font-mono uppercase"
+                      />
+                      <p className="text-xs text-muted-foreground">Optional: Set a memorable code</p>
                     </div>
                   </div>
+
+                  <div className="flex items-center justify-between">
+                    <Label>Make Public</Label>
+                    <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+                  </div>
+
+                  {/* Scheduling */}
+                  <QuizScheduler
+                    scheduledStart={scheduledStart}
+                    onScheduleChange={setScheduledStart}
+                    registrationOpen={registrationOpen}
+                    onRegistrationChange={setRegistrationOpen}
+                  />
                 </CardContent>
               </Card>
             )}
@@ -356,12 +411,32 @@ export default function CreateQuiz() {
             {/* Step 2: Questions */}
             {currentStep === 1 && (
               <div className="space-y-6">
+                {/* Bulk Import Toggle */}
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium">{questions.length} question{questions.length !== 1 ? "s" : ""} added</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowBulkImport(!showBulkImport)}
+                  >
+                    {showBulkImport ? "Manual Entry" : "Bulk Import"}
+                  </Button>
+                </div>
+
+                {/* Bulk Import Section */}
+                {showBulkImport ? (
+                  <QuizBulkImport
+                    onImport={handleBulkImport}
+                    existingCount={questions.length}
+                  />
+                ) : (
+                  <>
                 {/* Question Form */}
                 <Card>
                   <CardHeader>
                     <CardTitle>{editingQuestion ? "Edit Question" : "Add Question"}</CardTitle>
                     <CardDescription>
-                      {questions.length} question{questions.length !== 1 ? "s" : ""} added
+                      Add questions one by one
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -472,6 +547,8 @@ export default function CreateQuiz() {
                       ))}
                     </CardContent>
                   </Card>
+                )}
+                  </>
                 )}
               </div>
             )}

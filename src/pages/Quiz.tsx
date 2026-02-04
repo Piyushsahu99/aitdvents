@@ -12,6 +12,7 @@ import { QuizJoinCard } from "@/components/quiz/QuizJoinCard";
 import { useQuizByCode, useQuizRealtime } from "@/hooks/useQuizRealtime";
 import { useQuizParticipant } from "@/hooks/useQuizParticipant";
 import { fireConfetti } from "@/components/quiz/ConfettiEffect";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Gamepad2, 
   Loader2, 
@@ -24,10 +25,15 @@ import {
   Crown,
   Target,
   Gavel,
-  CircleDot,
   Gift,
   Star
 } from "lucide-react";
+
+interface ArenaStats {
+  totalPlayers: number;
+  totalQuizzes: number;
+  totalCoinsWon: number;
+}
 
 export default function Quiz() {
   const [searchParams] = useSearchParams();
@@ -37,6 +43,11 @@ export default function Quiz() {
 
   const [inputCode, setInputCode] = useState(codeFromUrl || "");
   const [activeCode, setActiveCode] = useState(codeFromUrl || "");
+  const [arenaStats, setArenaStats] = useState<ArenaStats>({
+    totalPlayers: 0,
+    totalQuizzes: 0,
+    totalCoinsWon: 0,
+  });
 
   const { quiz, isLoading: isLoadingQuiz, error: quizError } = useQuizByCode(activeCode);
   const { participants, participantCount } = useQuizRealtime(quiz?.id || null);
@@ -50,6 +61,31 @@ export default function Quiz() {
     fetchCurrentQuestion,
     submitAnswer,
   } = useQuizParticipant(quiz?.id || null);
+
+  // Fetch real arena stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [profilesRes, quizzesRes, coinsRes] = await Promise.all([
+          supabase.from("student_profiles").select("id", { count: "exact", head: true }),
+          supabase.from("quizzes").select("id", { count: "exact", head: true }),
+          supabase.from("points_transactions").select("amount").gt("amount", 0),
+        ]);
+
+        const totalCoins = coinsRes.data?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
+
+        setArenaStats({
+          totalPlayers: profilesRes.count || 0,
+          totalQuizzes: quizzesRes.count || 0,
+          totalCoinsWon: totalCoins,
+        });
+      } catch (error) {
+        console.error("Failed to fetch arena stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   // Trigger confetti when new participant joins
   useEffect(() => {
@@ -74,6 +110,12 @@ export default function Quiz() {
   };
 
   const quizUrl = `${window.location.origin}/quiz?code=${quiz?.quiz_code || activeCode}`;
+
+  // Format number with suffix
+  const formatNumber = (num: number): string => {
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K+`;
+    return num.toString();
+  };
 
   // Game options for the games hub
   const gameOptions = [
@@ -275,9 +317,9 @@ export default function Quiz() {
             className="grid grid-cols-3 gap-3 sm:gap-4 max-w-md mx-auto"
           >
             {[
-              { icon: Users, value: "10K+", label: "Players", color: "text-blue-500" },
-              { icon: Trophy, value: "500+", label: "Quizzes", color: "text-yellow-500" },
-              { icon: Sparkles, value: "₹50K+", label: "Won", color: "text-green-500" },
+              { icon: Users, value: formatNumber(arenaStats.totalPlayers), label: "Players", color: "text-blue-500" },
+              { icon: Trophy, value: formatNumber(arenaStats.totalQuizzes), label: "Quizzes", color: "text-yellow-500" },
+              { icon: Sparkles, value: formatNumber(arenaStats.totalCoinsWon), label: "Coins Won", color: "text-green-500" },
             ].map((stat, index) => (
               <motion.div 
                 key={stat.label}

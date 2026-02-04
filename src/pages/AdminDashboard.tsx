@@ -12,14 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck, Gamepad2 } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck, Gamepad2, BarChart3, UserCog } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
 import { JobEditor } from "@/components/admin/JobEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { AdminActivityChart } from "@/components/admin/AdminActivityChart";
 import { AdminInviteManager } from "@/components/admin/AdminInviteManager";
 import { ReelsModerationManager } from "@/components/admin/ReelsModerationManager";
-import { UserManager } from "@/components/admin/UserManager";
+import { EnhancedUserManager } from "@/components/admin/EnhancedUserManager";
 import { MarketplaceManager } from "@/components/admin/MarketplaceManager";
 import { PointsManager } from "@/components/admin/PointsManager";
 import { CouponManager } from "@/components/admin/CouponManager";
@@ -33,6 +33,7 @@ import { LeaderboardCertificateManager } from "@/components/admin/LeaderboardCer
 import { AmbassadorProgramManager } from "@/components/admin/AmbassadorProgramManager";
 import { QuizManager } from "@/components/admin/QuizManager";
 import { CRMDashboard } from "@/components/crm/CRMDashboard";
+import { PlatformMetrics } from "@/components/admin/PlatformMetrics";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -579,7 +580,8 @@ export default function AdminDashboard() {
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
               <TabsTrigger value="leaderboard-certs" className="text-xs sm:text-sm px-2 sm:px-3"><Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Leaderboard</span><span className="sm:hidden">Lead</span></TabsTrigger>
               <TabsTrigger value="quiz" className="text-xs sm:text-sm px-2 sm:px-3"><Gamepad2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Live Quiz</span><span className="sm:hidden">Quiz</span></TabsTrigger>
-              <TabsTrigger value="crm" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CRM</TabsTrigger>
+              <TabsTrigger value="crm" className="text-xs sm:text-sm px-2 sm:px-3"><UserCog className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CRM</TabsTrigger>
+              <TabsTrigger value="metrics" className="text-xs sm:text-sm px-2 sm:px-3"><BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Metrics</span></TabsTrigger>
             </TabsList>
           </div>
 
@@ -1012,7 +1014,7 @@ export default function AdminDashboard() {
 
           {/* Users Tab */}
           <TabsContent value="users">
-            <UserManager />
+            <EnhancedUserManager />
           </TabsContent>
 
           {/* Blogs Tab */}
@@ -1082,6 +1084,11 @@ export default function AdminDashboard() {
           {/* Live Quiz Tab */}
           <TabsContent value="quiz">
             <QuizManager />
+          </TabsContent>
+
+          {/* Platform Metrics Tab */}
+          <TabsContent value="metrics">
+            <PlatformMetrics />
           </TabsContent>
         </Tabs>
       </div>

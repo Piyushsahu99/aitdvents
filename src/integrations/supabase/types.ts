@@ -2808,6 +2808,35 @@ export type Database = {
           },
         ]
       }
+      quiz_announcements: {
+        Row: {
+          id: string
+          message: string
+          quiz_id: string | null
+          sent_at: string | null
+        }
+        Insert: {
+          id?: string
+          message: string
+          quiz_id?: string | null
+          sent_at?: string | null
+        }
+        Update: {
+          id?: string
+          message?: string
+          quiz_id?: string | null
+          sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_announcements_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_participant_answers: {
         Row: {
           answered_at: string
@@ -2858,32 +2887,44 @@ export type Database = {
       }
       quiz_participants: {
         Row: {
+          avatar_url: string | null
           device_id: string | null
           final_rank: number | null
           id: string
           joined_at: string
           participant_name: string
           quiz_id: string
+          reactions_sent: string[] | null
+          streak_count: number | null
+          team_name: string | null
           total_score: number
           user_id: string | null
         }
         Insert: {
+          avatar_url?: string | null
           device_id?: string | null
           final_rank?: number | null
           id?: string
           joined_at?: string
           participant_name: string
           quiz_id: string
+          reactions_sent?: string[] | null
+          streak_count?: number | null
+          team_name?: string | null
           total_score?: number
           user_id?: string | null
         }
         Update: {
+          avatar_url?: string | null
           device_id?: string | null
           final_rank?: number | null
           id?: string
           joined_at?: string
           participant_name?: string
           quiz_id?: string
+          reactions_sent?: string[] | null
+          streak_count?: number | null
+          team_name?: string | null
           total_score?: number
           user_id?: string | null
         }
@@ -2976,6 +3017,48 @@ export type Database = {
           },
         ]
       }
+      quiz_templates: {
+        Row: {
+          category: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          difficulty: string | null
+          id: string
+          is_public: boolean | null
+          questions: Json
+          title: string
+          updated_at: string | null
+          use_count: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          difficulty?: string | null
+          id?: string
+          is_public?: boolean | null
+          questions?: Json
+          title: string
+          updated_at?: string | null
+          use_count?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          difficulty?: string | null
+          id?: string
+          is_public?: boolean | null
+          questions?: Json
+          title?: string
+          updated_at?: string | null
+          use_count?: number | null
+        }
+        Relationships: []
+      }
       quizzes: {
         Row: {
           allow_late_join: boolean | null
@@ -2987,22 +3070,32 @@ export type Database = {
           created_at: string
           created_by: string | null
           current_question_idx: number | null
+          custom_code: string | null
           description: string | null
           difficulty: string | null
+          estimated_duration_minutes: number | null
           event_id: string | null
           id: string
+          is_paused: boolean | null
           is_public: boolean | null
+          logo_url: string | null
           max_participants: number | null
           organizer_name: string | null
+          participant_approval: boolean | null
           prizes: Json | null
           quiz_code: string
           registration_open: boolean | null
+          require_registration: boolean | null
           scheduled_start: string | null
           show_live_leaderboard: boolean | null
           shuffle_options: boolean | null
           shuffle_questions: boolean | null
+          sound_effects: boolean | null
           starts_at: string | null
           status: Database["public"]["Enums"]["quiz_status"]
+          streak_bonus_enabled: boolean | null
+          team_mode: boolean | null
+          theme_color: string | null
           title: string
           updated_at: string
         }
@@ -3016,22 +3109,32 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           current_question_idx?: number | null
+          custom_code?: string | null
           description?: string | null
           difficulty?: string | null
+          estimated_duration_minutes?: number | null
           event_id?: string | null
           id?: string
+          is_paused?: boolean | null
           is_public?: boolean | null
+          logo_url?: string | null
           max_participants?: number | null
           organizer_name?: string | null
+          participant_approval?: boolean | null
           prizes?: Json | null
           quiz_code: string
           registration_open?: boolean | null
+          require_registration?: boolean | null
           scheduled_start?: string | null
           show_live_leaderboard?: boolean | null
           shuffle_options?: boolean | null
           shuffle_questions?: boolean | null
+          sound_effects?: boolean | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["quiz_status"]
+          streak_bonus_enabled?: boolean | null
+          team_mode?: boolean | null
+          theme_color?: string | null
           title: string
           updated_at?: string
         }
@@ -3045,22 +3148,32 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           current_question_idx?: number | null
+          custom_code?: string | null
           description?: string | null
           difficulty?: string | null
+          estimated_duration_minutes?: number | null
           event_id?: string | null
           id?: string
+          is_paused?: boolean | null
           is_public?: boolean | null
+          logo_url?: string | null
           max_participants?: number | null
           organizer_name?: string | null
+          participant_approval?: boolean | null
           prizes?: Json | null
           quiz_code?: string
           registration_open?: boolean | null
+          require_registration?: boolean | null
           scheduled_start?: string | null
           show_live_leaderboard?: boolean | null
           shuffle_options?: boolean | null
           shuffle_questions?: boolean | null
+          sound_effects?: boolean | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["quiz_status"]
+          streak_bonus_enabled?: boolean | null
+          team_mode?: boolean | null
+          theme_color?: string | null
           title?: string
           updated_at?: string
         }

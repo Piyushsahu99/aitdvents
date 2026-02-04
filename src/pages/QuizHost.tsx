@@ -14,6 +14,8 @@ import { QuizJoinCard } from "@/components/quiz/QuizJoinCard";
 import { QuizLeaderboard } from "@/components/quiz/QuizLeaderboard";
 import { QuizCountdown } from "@/components/quiz/QuizCountdown";
 import { LiveLeaderboard } from "@/components/quiz/LiveLeaderboard";
+import { HostAnswerChart } from "@/components/quiz/HostAnswerChart";
+import { PresentationMode } from "@/components/quiz/PresentationMode";
 import { 
   Play, 
   StopCircle, 
@@ -25,7 +27,9 @@ import {
   Pause,
   Loader2,
   ArrowLeft,
-  Zap
+  Zap,
+  Maximize2,
+  Download
 } from "lucide-react";
 
 interface ExtendedQuiz {
@@ -50,6 +54,7 @@ export default function QuizHostPage() {
   const [quizDetails, setQuizDetails] = useState<ExtendedQuiz | null>(null);
   const [showCountdown, setShowCountdown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPresentationMode, setShowPresentationMode] = useState(false);
 
   const { quiz, participants, participantCount, refetchQuiz } = useQuizRealtime(quizId || null);
   const {
@@ -139,6 +144,29 @@ export default function QuizHostPage() {
     await endQuiz();
   };
 
+  const exportResults = () => {
+    const csvContent = [
+      ["Rank", "Name", "Score", "Team"],
+      ...participants.map((p, i) => [
+        p.final_rank || i + 1,
+        p.participant_name,
+        p.total_score,
+        (p as any).team_name || "",
+      ]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${quizDetails?.title || "quiz"}-results.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "Results exported", description: "CSV downloaded successfully" });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
@@ -157,6 +185,29 @@ export default function QuizHostPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5 py-6">
+      {/* Presentation Mode */}
+      <AnimatePresence>
+        {showPresentationMode && (
+          <PresentationMode
+            quizCode={quizDetails.quiz_code}
+            quizUrl={quizUrl}
+            title={quizDetails.title}
+            status={currentStatus || "draft"}
+            currentQuestionIdx={currentQuestionIdx}
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestion ? {
+              question_text: currentQuestion.question_text,
+              options: currentQuestion.options,
+              time_limit_seconds: currentQuestion.time_limit_seconds,
+              points: currentQuestion.points,
+            } : null}
+            participants={participants}
+            participantCount={participantCount}
+            onClose={() => setShowPresentationMode(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Pre-question countdown overlay */}
       <AnimatePresence>
         {showCountdown && (
@@ -185,6 +236,26 @@ export default function QuizHostPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowPresentationMode(true)}
+              className="gap-1.5"
+            >
+              <Maximize2 className="h-4 w-4" />
+              Present
+            </Button>
+            {currentStatus === "completed" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={exportResults}
+                className="gap-1.5"
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+            )}
             <Badge variant={currentStatus === "completed" ? "destructive" : "default"}>
               {currentStatus}
             </Badge>
@@ -297,38 +368,50 @@ export default function QuizHostPage() {
 
             {/* Current Question Display */}
             {currentQuestion && currentStatus !== "draft" && currentStatus !== "waiting" && currentStatus !== "completed" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Timer className="h-5 w-5" />
-                    Current Question
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg font-medium mb-4">{currentQuestion.question_text}</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {currentQuestion.options.map((opt: string, idx: number) => (
-                      <div
-                        key={idx}
-                        className={`p-3 rounded-lg border ${
-                          idx === currentQuestion.correct_option_index
-                            ? "border-green-500 bg-green-500/10"
-                            : "border-border"
-                        }`}
-                      >
-                        <span className="text-sm">{opt}</span>
-                        {idx === currentQuestion.correct_option_index && (
-                          <Badge className="ml-2 bg-green-500">Correct</Badge>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
-                    <span>{currentQuestion.time_limit_seconds}s time limit</span>
-                    <span>{currentQuestion.points} points</span>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Timer className="h-5 w-5" />
+                      Current Question
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-lg font-medium mb-4">{currentQuestion.question_text}</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      {currentQuestion.options.map((opt: string, idx: number) => (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded-lg border ${
+                            idx === currentQuestion.correct_option_index
+                              ? "border-green-500 bg-green-500/10"
+                              : "border-border"
+                          }`}
+                        >
+                          <span className="text-sm">{opt}</span>
+                          {idx === currentQuestion.correct_option_index && (
+                            <Badge className="ml-2 bg-green-500">Correct</Badge>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
+                      <span>{currentQuestion.time_limit_seconds}s time limit</span>
+                      <span>{currentQuestion.points} points</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Answer Distribution Chart */}
+                <HostAnswerChart
+                  quizId={quizId || ""}
+                  questionId={currentQuestion.id}
+                  options={currentQuestion.options}
+                  correctOptionIndex={currentQuestion.correct_option_index}
+                  isQuestionEnded={currentStatus === "question_ended"}
+                  totalParticipants={participantCount}
+                />
+              </div>
             )}
 
             {/* Share Card for Lobby */}

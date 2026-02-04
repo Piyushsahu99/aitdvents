@@ -7,7 +7,8 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft } from "lucide-react";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 
 const authSchema = z.object({
   email: z.string().email("Invalid email").max(255),
@@ -26,6 +27,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   const { toast } = useToast();
 
   const handleAuth = async (type: 'login' | 'signup') => {
@@ -43,11 +46,22 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.message?.includes("already registered")) {
+            setActiveTab("login");
+            toast({
+              title: "Account exists",
+              description: "You already have an account. Please sign in instead.",
+            });
+            setLoading(false);
+            return;
+          }
+          throw error;
+        }
 
         toast({
           title: "Success!",
-          description: "Account created! You can now access all features.",
+          description: "Account created! Please verify your email to continue.",
         });
         onOpenChange(false);
         onSuccess?.();
@@ -57,7 +71,18 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.message?.includes("Invalid login credentials")) {
+            toast({
+              title: "Invalid credentials",
+              description: "Please check your email and password.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+          throw error;
+        }
 
         toast({
           title: "Welcome back!",
@@ -85,6 +110,39 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) throw error;
+      setResetEmailSent(true);
+      toast({
+        title: "Reset email sent!",
+        description: "Check your inbox for the password reset link.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send reset email",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -102,6 +160,86 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
       });
     }
   };
+
+  // Forgot Password View
+  if (showForgotPassword) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md backdrop-blur-xl bg-background/95 border-2 border-primary/20 rounded-2xl p-0 overflow-hidden">
+          <div className="bg-gradient-to-r from-primary to-accent p-6 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <Mail className="h-5 w-5 text-white" />
+              </div>
+            </div>
+            <DialogHeader className="space-y-1">
+              <DialogTitle className="text-2xl font-bold text-white">Reset Password</DialogTitle>
+              <DialogDescription className="text-white/80">
+                {resetEmailSent ? "Check your inbox" : "Enter your email to receive a reset link"}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          <div className="p-6">
+            {resetEmailSent ? (
+              <div className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-green-500/10 flex items-center justify-center">
+                  <Mail className="h-8 w-8 text-green-500" />
+                </div>
+                <p className="text-muted-foreground">
+                  We've sent a password reset link to <strong className="text-foreground">{email}</strong>
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full h-12 rounded-xl"
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setResetEmailSent(false);
+                  }}
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to login
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email" className="text-sm font-medium">Email</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      maxLength={255}
+                      className="pl-10 h-12 rounded-xl bg-muted/50 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all"
+                    />
+                  </div>
+                </div>
+                <Button
+                  className="w-full h-12 rounded-xl font-semibold shadow-lg shadow-primary/25"
+                  onClick={handleForgotPassword}
+                  disabled={loading}
+                >
+                  {loading ? "Sending..." : "Send Reset Link"}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(false)}
+                  className="w-full text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  ← Back to login
+                </button>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -150,7 +288,16 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassword(true)}
+                    className="text-xs text-primary hover:text-primary/80 font-semibold transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
                 <div className="relative group">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
@@ -235,9 +382,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground pl-1">
-                  Minimum 6 characters
-                </p>
+                <PasswordStrengthMeter password={password} showRequirements={false} />
               </div>
               <Button 
                 className="w-full h-12 rounded-xl font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group" 

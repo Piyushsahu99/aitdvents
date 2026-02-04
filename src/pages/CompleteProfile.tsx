@@ -193,6 +193,7 @@ export default function CompleteProfile() {
         .upsert({
           user_id: user.id,
           full_name: validated.full_name,
+          email: user.email, // Save email for admin/team management
           college: validated.college,
           graduation_year: validated.graduation_year,
           phone: formData.phone.startsWith("+") ? formData.phone : `+91${formData.phone}`,

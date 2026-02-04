@@ -3,7 +3,7 @@ import confetti from "canvas-confetti";
 
 interface ConfettiEffectProps {
   trigger: boolean;
-  type?: "success" | "celebration" | "fireworks" | "playerJoined";
+  type?: "success" | "celebration" | "fireworks" | "playerJoined" | "spinWin" | "jackpot" | "luckyDraw" | "auctionSold";
 }
 
 export function ConfettiEffect({ trigger, type = "success" }: ConfettiEffectProps) {
@@ -109,7 +109,7 @@ export function ConfettiEffect({ trigger, type = "success" }: ConfettiEffectProp
 }
 
 // Utility function to trigger confetti programmatically
-export function fireConfetti(type: "success" | "celebration" | "fireworks" | "playerJoined" = "success") {
+export function fireConfetti(type: "success" | "celebration" | "fireworks" | "playerJoined" | "spinWin" | "jackpot" | "luckyDraw" | "auctionSold" = "success") {
   if (type === "playerJoined") {
     confetti({
       particleCount: 30,

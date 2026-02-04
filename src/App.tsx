@@ -56,6 +56,10 @@ import MyQuizzes from "./pages/MyQuizzes";
 import QuizHost from "./pages/QuizHost";
 import TeamPanel from "./pages/TeamPanel";
 import TeamMemberDashboard from "./pages/TeamMemberDashboard";
+import SpinWheel from "./pages/SpinWheel";
+import LuckyDraw from "./pages/LuckyDraw";
+import IPLAuction from "./pages/IPLAuction";
+import CreateAuction from "./pages/CreateAuction";
 
 const queryClient = new QueryClient();
 
@@ -118,6 +122,10 @@ const App = () => (
               <Route path="/quiz-host/:quizId" element={<QuizHost />} />
               <Route path="/team-panel" element={<TeamPanel />} />
               <Route path="/team-dashboard" element={<TeamMemberDashboard />} />
+              <Route path="/spin-wheel" element={<SpinWheel />} />
+              <Route path="/lucky-draw" element={<LuckyDraw />} />
+              <Route path="/ipl-auction" element={<IPLAuction />} />
+              <Route path="/create-auction" element={<CreateAuction />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

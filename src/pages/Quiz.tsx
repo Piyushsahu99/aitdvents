@@ -86,6 +86,7 @@ export default function Quiz() {
       available: true,
       badge: "Popular",
       badgeColor: "bg-green-500/20 text-green-600 border-green-500/30",
+      link: null,
     },
     {
       id: "ipl-auction",
@@ -93,9 +94,10 @@ export default function Quiz() {
       title: "IPL Auction",
       description: "Build your dream cricket team",
       gradient: "from-blue-500 to-cyan-500",
-      available: false,
-      badge: "Coming Soon",
+      available: true,
+      badge: "New",
       badgeColor: "bg-blue-500/20 text-blue-600 border-blue-500/30",
+      link: "/ipl-auction",
     },
     {
       id: "spin-wheel",
@@ -103,19 +105,21 @@ export default function Quiz() {
       title: "Spin & Win",
       description: "Lucky wheel with instant rewards",
       gradient: "from-orange-500 to-amber-500",
-      available: false,
-      badge: "Coming Soon",
+      available: true,
+      badge: "New",
       badgeColor: "bg-orange-500/20 text-orange-600 border-orange-500/30",
+      link: "/spin-wheel",
     },
     {
-      id: "prediction",
+      id: "lucky-draw",
       icon: Target,
-      title: "Predictions",
-      description: "Predict outcomes & win big",
+      title: "Lucky Draw",
+      description: "Fair random draws & win big",
       gradient: "from-green-500 to-emerald-500",
-      available: false,
-      badge: "Coming Soon",
+      available: true,
+      badge: "New",
       badgeColor: "bg-emerald-500/20 text-emerald-600 border-emerald-500/30",
+      link: "/lucky-draw",
     },
   ];
 
@@ -228,7 +232,15 @@ export default function Quiz() {
                         ? "cursor-pointer hover:shadow-xl hover:border-primary/50" 
                         : "opacity-60"
                     }`}
-                    onClick={() => game.available && game.id === "quiz" && document.querySelector<HTMLInputElement>('input')?.focus()}
+                    onClick={() => {
+                      if (game.available) {
+                        if (game.link) {
+                          navigate(game.link);
+                        } else if (game.id === "quiz") {
+                          document.querySelector<HTMLInputElement>('input')?.focus();
+                        }
+                      }
+                    }}
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${game.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
                     <CardContent className="relative p-4 sm:p-5 flex flex-col items-center text-center">

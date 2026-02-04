@@ -848,6 +848,151 @@ export type Database = {
           },
         ]
       }
+      auction_bids: {
+        Row: {
+          auction_id: string
+          bid_amount: number
+          bid_at: string | null
+          id: string
+          player_id: string
+          team_id: string
+        }
+        Insert: {
+          auction_id: string
+          bid_amount: number
+          bid_at?: string | null
+          id?: string
+          player_id: string
+          team_id: string
+        }
+        Update: {
+          auction_id?: string
+          bid_amount?: number
+          bid_at?: string | null
+          id?: string
+          player_id?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "ipl_auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_bids_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "ipl_players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_bids_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "auction_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auction_sold_players: {
+        Row: {
+          auction_id: string
+          id: string
+          player_id: string
+          sold_at: string | null
+          sold_price: number
+          team_id: string
+        }
+        Insert: {
+          auction_id: string
+          id?: string
+          player_id: string
+          sold_at?: string | null
+          sold_price: number
+          team_id: string
+        }
+        Update: {
+          auction_id?: string
+          id?: string
+          player_id?: string
+          sold_at?: string | null
+          sold_price?: number
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_sold_players_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "ipl_auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_sold_players_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "ipl_players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_sold_players_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "auction_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auction_teams: {
+        Row: {
+          auction_id: string
+          id: string
+          is_ready: boolean | null
+          joined_at: string | null
+          overseas_count: number | null
+          players_count: number | null
+          remaining_budget: number
+          team_logo: string | null
+          team_name: string
+          user_id: string
+        }
+        Insert: {
+          auction_id: string
+          id?: string
+          is_ready?: boolean | null
+          joined_at?: string | null
+          overseas_count?: number | null
+          players_count?: number | null
+          remaining_budget: number
+          team_logo?: string | null
+          team_name: string
+          user_id: string
+        }
+        Update: {
+          auction_id?: string
+          id?: string
+          is_ready?: boolean | null
+          joined_at?: string | null
+          overseas_count?: number | null
+          players_count?: number | null
+          remaining_budget?: number
+          team_logo?: string | null
+          team_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_teams_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "ipl_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blogs: {
         Row: {
           ai_generated: boolean | null
@@ -1889,6 +2034,134 @@ export type Database = {
         }
         Relationships: []
       }
+      ipl_auctions: {
+        Row: {
+          bid_increment: number | null
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          current_bid: number | null
+          current_bidder_id: string | null
+          current_player_id: string | null
+          id: string
+          initial_budget: number | null
+          is_public: boolean | null
+          join_code: string | null
+          max_overseas: number | null
+          max_team_size: number | null
+          max_teams: number | null
+          min_team_size: number | null
+          season_name: string | null
+          started_at: string | null
+          status: string | null
+          time_per_player: number | null
+          title: string
+        }
+        Insert: {
+          bid_increment?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_bid?: number | null
+          current_bidder_id?: string | null
+          current_player_id?: string | null
+          id?: string
+          initial_budget?: number | null
+          is_public?: boolean | null
+          join_code?: string | null
+          max_overseas?: number | null
+          max_team_size?: number | null
+          max_teams?: number | null
+          min_team_size?: number | null
+          season_name?: string | null
+          started_at?: string | null
+          status?: string | null
+          time_per_player?: number | null
+          title: string
+        }
+        Update: {
+          bid_increment?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_bid?: number | null
+          current_bidder_id?: string | null
+          current_player_id?: string | null
+          id?: string
+          initial_budget?: number | null
+          is_public?: boolean | null
+          join_code?: string | null
+          max_overseas?: number | null
+          max_team_size?: number | null
+          max_teams?: number | null
+          min_team_size?: number | null
+          season_name?: string | null
+          started_at?: string | null
+          status?: string | null
+          time_per_player?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ipl_auctions_current_player_id_fkey"
+            columns: ["current_player_id"]
+            isOneToOne: false
+            referencedRelation: "ipl_players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ipl_players: {
+        Row: {
+          age: number | null
+          base_price: number | null
+          category: string | null
+          created_at: string | null
+          id: string
+          ipl_team_history: string[] | null
+          is_overseas: boolean | null
+          is_uncapped: boolean | null
+          name: string
+          nationality: string
+          photo_url: string | null
+          role: string
+          stats: Json | null
+          team_name: string | null
+        }
+        Insert: {
+          age?: number | null
+          base_price?: number | null
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          ipl_team_history?: string[] | null
+          is_overseas?: boolean | null
+          is_uncapped?: boolean | null
+          name: string
+          nationality: string
+          photo_url?: string | null
+          role: string
+          stats?: Json | null
+          team_name?: string | null
+        }
+        Update: {
+          age?: number | null
+          base_price?: number | null
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          ipl_team_history?: string[] | null
+          is_overseas?: boolean | null
+          is_uncapped?: boolean | null
+          name?: string
+          nationality?: string
+          photo_url?: string | null
+          role?: string
+          stats?: Json | null
+          team_name?: string | null
+        }
+        Relationships: []
+      }
       issued_certificates: {
         Row: {
           achievement_details: Json | null
@@ -2241,6 +2514,136 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      lucky_draw_entries: {
+        Row: {
+          draw_id: string
+          entered_at: string | null
+          entry_count: number | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          draw_id: string
+          entered_at?: string | null
+          entry_count?: number | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          draw_id?: string
+          entered_at?: string | null
+          entry_count?: number | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lucky_draw_entries_draw_id_fkey"
+            columns: ["draw_id"]
+            isOneToOne: false
+            referencedRelation: "lucky_draws"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lucky_draw_winners: {
+        Row: {
+          draw_id: string
+          id: string
+          prize_details: Json | null
+          prize_rank: number | null
+          selected_at: string | null
+          user_id: string
+          verification_seed: string | null
+        }
+        Insert: {
+          draw_id: string
+          id?: string
+          prize_details?: Json | null
+          prize_rank?: number | null
+          selected_at?: string | null
+          user_id: string
+          verification_seed?: string | null
+        }
+        Update: {
+          draw_id?: string
+          id?: string
+          prize_details?: Json | null
+          prize_rank?: number | null
+          selected_at?: string | null
+          user_id?: string
+          verification_seed?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lucky_draw_winners_draw_id_fkey"
+            columns: ["draw_id"]
+            isOneToOne: false
+            referencedRelation: "lucky_draws"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lucky_draws: {
+        Row: {
+          banner_image: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          draw_type: string | null
+          drawn_at: string | null
+          entry_cost: number | null
+          id: string
+          is_public: boolean | null
+          max_entries: number | null
+          prizes: Json | null
+          scheduled_draw_at: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          verification_hash: string | null
+          winner_count: number | null
+        }
+        Insert: {
+          banner_image?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          draw_type?: string | null
+          drawn_at?: string | null
+          entry_cost?: number | null
+          id?: string
+          is_public?: boolean | null
+          max_entries?: number | null
+          prizes?: Json | null
+          scheduled_draw_at?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          verification_hash?: string | null
+          winner_count?: number | null
+        }
+        Update: {
+          banner_image?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          draw_type?: string | null
+          drawn_at?: string | null
+          entry_cost?: number | null
+          id?: string
+          is_public?: boolean | null
+          max_entries?: number | null
+          prizes?: Json | null
+          scheduled_draw_at?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          verification_hash?: string | null
+          winner_count?: number | null
+        }
+        Relationships: []
       }
       marketplace_products: {
         Row: {
@@ -3565,6 +3968,149 @@ export type Database = {
         }
         Relationships: []
       }
+      spin_results: {
+        Row: {
+          id: string
+          is_jackpot: boolean | null
+          prize_type: string
+          prize_value: number | null
+          segment_id: string
+          spun_at: string | null
+          user_id: string
+          wheel_id: string
+        }
+        Insert: {
+          id?: string
+          is_jackpot?: boolean | null
+          prize_type: string
+          prize_value?: number | null
+          segment_id: string
+          spun_at?: string | null
+          user_id: string
+          wheel_id: string
+        }
+        Update: {
+          id?: string
+          is_jackpot?: boolean | null
+          prize_type?: string
+          prize_value?: number | null
+          segment_id?: string
+          spun_at?: string | null
+          user_id?: string
+          wheel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spin_results_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "spin_wheel_segments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spin_results_wheel_id_fkey"
+            columns: ["wheel_id"]
+            isOneToOne: false
+            referencedRelation: "spin_wheels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spin_wheel_segments: {
+        Row: {
+          color: string
+          icon: string | null
+          id: string
+          is_jackpot: boolean | null
+          label: string
+          order_index: number | null
+          prize_type: string
+          prize_value: number | null
+          probability_weight: number | null
+          wheel_id: string
+        }
+        Insert: {
+          color: string
+          icon?: string | null
+          id?: string
+          is_jackpot?: boolean | null
+          label: string
+          order_index?: number | null
+          prize_type?: string
+          prize_value?: number | null
+          probability_weight?: number | null
+          wheel_id: string
+        }
+        Update: {
+          color?: string
+          icon?: string | null
+          id?: string
+          is_jackpot?: boolean | null
+          label?: string
+          order_index?: number | null
+          prize_type?: string
+          prize_value?: number | null
+          probability_weight?: number | null
+          wheel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spin_wheel_segments_wheel_id_fkey"
+            columns: ["wheel_id"]
+            isOneToOne: false
+            referencedRelation: "spin_wheels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spin_wheels: {
+        Row: {
+          banner_image: string | null
+          cost_per_spin: number | null
+          created_at: string | null
+          created_by: string | null
+          daily_spin_limit: number | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          is_active: boolean | null
+          is_public: boolean | null
+          theme_color: string | null
+          title: string
+          total_spins_allowed: number | null
+        }
+        Insert: {
+          banner_image?: string | null
+          cost_per_spin?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          daily_spin_limit?: number | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_public?: boolean | null
+          theme_color?: string | null
+          title: string
+          total_spins_allowed?: number | null
+        }
+        Update: {
+          banner_image?: string | null
+          cost_per_spin?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          daily_spin_limit?: number | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_public?: boolean | null
+          theme_color?: string | null
+          title?: string
+          total_spins_allowed?: number | null
+        }
+        Relationships: []
+      }
       student_groups: {
         Row: {
           avatar_url: string | null
@@ -4296,6 +4842,7 @@ export type Database = {
             }
             Returns: boolean
           }
+      generate_auction_code: { Args: never; Returns: string }
       generate_certificate_number: { Args: never; Returns: string }
       generate_quiz_code: { Args: never; Returns: string }
       get_public_profile: {

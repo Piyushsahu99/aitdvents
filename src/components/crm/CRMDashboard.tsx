@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, ClipboardList, BarChart3, Bell, Activity, Target, TrendingUp, Clock, CheckCircle2, AlertCircle, Timer, Calendar, LayoutGrid } from "lucide-react";
+import { Users, ClipboardList, BarChart3, Bell, Activity, Target, TrendingUp, Clock, CheckCircle2, AlertCircle, Timer, Calendar, LayoutGrid, GitBranch, CalendarDays } from "lucide-react";
 import { TaskManager } from "./TaskManager";
 import { TaskKanban } from "./TaskKanban";
 import { TeamMemberManager } from "./TeamMemberManager";
@@ -12,6 +12,8 @@ import { ActivityLogViewer } from "./ActivityLogViewer";
 import { AnnouncementManager } from "./AnnouncementManager";
 import { TimeLogManager } from "./TimeLogManager";
 import { LeaveManager } from "./LeaveManager";
+import { TeamOrgChart } from "./TeamOrgChart";
+import { TeamCalendar } from "./TeamCalendar";
 import { useTasks } from "@/hooks/useTasks";
 
 export function CRMDashboard() {
@@ -154,9 +156,17 @@ export function CRMDashboard() {
               <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Leave
             </TabsTrigger>
+            <TabsTrigger value="calendar" className="text-xs sm:text-sm gap-1.5">
+              <CalendarDays className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Calendar
+            </TabsTrigger>
             <TabsTrigger value="team" className="text-xs sm:text-sm gap-1.5">
               <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Team
+            </TabsTrigger>
+            <TabsTrigger value="org" className="text-xs sm:text-sm gap-1.5">
+              <GitBranch className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Org Chart
             </TabsTrigger>
             <TabsTrigger value="kpis" className="text-xs sm:text-sm gap-1.5">
               <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -288,8 +298,16 @@ export function CRMDashboard() {
           <LeaveManager />
         </TabsContent>
 
+        <TabsContent value="calendar">
+          <TeamCalendar />
+        </TabsContent>
+
         <TabsContent value="team">
           <TeamMemberManager />
+        </TabsContent>
+
+        <TabsContent value="org">
+          <TeamOrgChart />
         </TabsContent>
 
         <TabsContent value="kpis">

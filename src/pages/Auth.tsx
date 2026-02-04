@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,12 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import logo from "@/assets/aitd-logo.png";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { RoleSelector } from "@/components/auth/RoleSelector";
 import { 
   Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield, 
   ArrowLeft, RefreshCw, CheckCircle, AlertCircle, User, 
-  Rocket, Trophy, Users, Zap
+  Rocket, Trophy, Users, Zap, Timer
 } from "lucide-react";
 
 // List of common disposable/temporary email domains to block
@@ -103,14 +106,24 @@ export default function Auth() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
-  const [isAdminLogin, setIsAdminLogin] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<"student" | "team" | "admin">("student");
   const [showVerificationPending, setShowVerificationPending] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
   const [showVerificationError, setShowVerificationError] = useState(false);
   const [verificationErrorMessage, setVerificationErrorMessage] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [resendCountdown, setResendCountdown] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Countdown timer for resend functionality
+  useEffect(() => {
+    if (resendCountdown > 0) {
+      const timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCountdown]);
 
   useEffect(() => {
     // Check for recovery token in URL hash fragment (Supabase sends type=recovery in hash)
@@ -373,16 +386,87 @@ export default function Auth() {
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          // Handle specific error cases
+          if (error.message?.includes("Invalid login credentials")) {
+            toast({
+              title: "Invalid credentials",
+              description: "Please check your email and password and try again.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+          if (error.message?.includes("Email not confirmed")) {
+            setPendingEmail(email);
+            setShowVerificationPending(true);
+            toast({
+              title: "Email not verified",
+              description: "Please check your inbox for the verification link.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+          throw error;
+        }
 
+        // Check user roles for routing
         const { data: isAdmin } = await supabase.rpc("is_admin");
+        const { data: isTeamMember } = await supabase.rpc("is_core_team");
         
+        // Role-based routing with selected role preference
+        if (selectedRole === "admin" && isAdmin) {
+          toast({
+            title: "Welcome back, Admin!",
+            description: "You've successfully logged in.",
+          });
+          navigate("/admin");
+          return;
+        }
+        
+        if (selectedRole === "team" && isTeamMember) {
+          toast({
+            title: "Welcome back, Team Member!",
+            description: "You've successfully logged in.",
+          });
+          navigate("/team-panel");
+          return;
+        }
+
+        // If user selected admin/team but doesn't have those roles
+        if (selectedRole === "admin" && !isAdmin) {
+          toast({
+            title: "Access Denied",
+            description: "You don't have admin privileges. Logging in as student.",
+            variant: "destructive",
+          });
+        }
+        
+        if (selectedRole === "team" && !isTeamMember) {
+          toast({
+            title: "Access Denied",
+            description: "You're not a team member. Logging in as student.",
+            variant: "destructive",
+          });
+        }
+
+        // Default: Check for admin/team status anyway for auto-routing
         if (isAdmin) {
           toast({
             title: "Welcome back, Admin!",
             description: "You've successfully logged in.",
           });
           navigate("/admin");
+          return;
+        }
+
+        if (isTeamMember) {
+          toast({
+            title: "Welcome back, Team Member!",
+            description: "You've successfully logged in.",
+          });
+          navigate("/team-panel");
           return;
         }
 
@@ -719,6 +803,7 @@ export default function Auth() {
                   variant="outline"
                   className="w-full h-14 rounded-xl text-base font-medium border-2 hover:bg-muted/50"
                   onClick={async () => {
+                    if (resendCountdown > 0) return;
                     setLoading(true);
                     try {
                       const { error } = await supabase.auth.resend({
@@ -729,6 +814,7 @@ export default function Auth() {
                         },
                       });
                       if (error) throw error;
+                      setResendCountdown(60); // 60 second cooldown
                       toast({
                         title: "Email sent!",
                         description: "Check your inbox for the verification link.",
@@ -743,14 +829,21 @@ export default function Auth() {
                       setLoading(false);
                     }
                   }}
-                  disabled={loading}
+                  disabled={loading || resendCountdown > 0}
                 >
                   {loading ? (
                     <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
+                  ) : resendCountdown > 0 ? (
+                    <>
+                      <Timer className="h-5 w-5 mr-2" />
+                      Resend in {resendCountdown}s
+                    </>
                   ) : (
-                    <Mail className="h-5 w-5 mr-2" />
+                    <>
+                      <Mail className="h-5 w-5 mr-2" />
+                      Resend verification email
+                    </>
                   )}
-                  Resend verification email
                 </Button>
 
                 <button
@@ -1085,12 +1178,22 @@ export default function Auth() {
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
-              {!isLogin && (
-                <p className="text-xs text-muted-foreground pl-1">
-                  Must be at least 6 characters
-                </p>
-              )}
+              {!isLogin && <PasswordStrengthMeter password={password} />}
             </div>
+
+            {/* Remember Me Checkbox for Login */}
+            {isLogin && (
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember-me"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked === true)}
+                />
+                <Label htmlFor="remember-me" className="text-sm text-muted-foreground cursor-pointer">
+                  Remember me on this device
+                </Label>
+              </div>
+            )}
 
             <Button 
               type="submit" 
@@ -1160,20 +1263,19 @@ export default function Auth() {
             </Button>
           </form>
 
-          {/* Admin Login Toggle */}
+          {/* Role Selector */}
           {isLogin && (
-            <div className="mt-5">
-              <button
-                type="button"
-                onClick={() => setIsAdminLogin(!isAdminLogin)}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-warning/30 bg-warning/5 hover:bg-warning/10 text-warning text-sm font-semibold transition-all"
-              >
-                <Shield className="h-4 w-4" />
-                {isAdminLogin ? "Switch to Student Login" : "Login as Admin"}
-              </button>
-              {isAdminLogin && (
-                <p className="text-xs text-center text-muted-foreground mt-2">
+            <div className="mt-5 space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Login as</Label>
+              <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
+              {selectedRole === "admin" && (
+                <p className="text-xs text-center text-muted-foreground">
                   Admins will be redirected to the admin dashboard
+                </p>
+              )}
+              {selectedRole === "team" && (
+                <p className="text-xs text-center text-muted-foreground">
+                  Team members will be redirected to the team panel
                 </p>
               )}
             </div>

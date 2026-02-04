@@ -55,6 +55,7 @@ import CreateQuiz from "./pages/CreateQuiz";
 import MyQuizzes from "./pages/MyQuizzes";
 import QuizHost from "./pages/QuizHost";
 import TeamPanel from "./pages/TeamPanel";
+import TeamMemberDashboard from "./pages/TeamMemberDashboard";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,7 @@ const App = () => (
               <Route path="/my-quizzes" element={<MyQuizzes />} />
               <Route path="/quiz-host/:quizId" element={<QuizHost />} />
               <Route path="/team-panel" element={<TeamPanel />} />
+              <Route path="/team-dashboard" element={<TeamMemberDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

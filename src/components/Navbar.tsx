@@ -66,6 +66,7 @@ const moreNavLinks = [
     items: [
       { name: "AI Chat", path: "/ai-chat", icon: Sparkles },
       { name: "AI Tools", path: "/ai-tools", icon: Wrench },
+      { name: "Learning Hub", path: "/learning", icon: BookOpen },
       { name: "Resume Builder", path: "/resume", icon: FileText },
       { name: "Blogs", path: "/blogs", icon: Rss },
       { name: "Reels", path: "/reels", icon: Video },

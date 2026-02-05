@@ -34,6 +34,7 @@ import { AmbassadorProgramManager } from "@/components/admin/AmbassadorProgramMa
 import { QuizManager } from "@/components/admin/QuizManager";
 import { CRMDashboard } from "@/components/crm/CRMDashboard";
 import { PlatformMetrics } from "@/components/admin/PlatformMetrics";
+import { LearningResourcesManager } from "@/components/admin/LearningResourcesManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -577,6 +578,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="ambassadors" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Ambassadors</span><span className="sm:hidden">Amb</span></TabsTrigger>
               <TabsTrigger value="ambassador-program" className="text-xs sm:text-sm px-2 sm:px-3"><UserCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Amb Program</span><span className="sm:hidden">Prog</span></TabsTrigger>
               <TabsTrigger value="study-materials" className="text-xs sm:text-sm px-2 sm:px-3"><BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Materials</span><span className="sm:hidden">Mat</span></TabsTrigger>
+              <TabsTrigger value="learning" className="text-xs sm:text-sm px-2 sm:px-3"><GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Learning</span><span className="sm:hidden">Learn</span></TabsTrigger>
               <TabsTrigger value="admins" className="text-xs sm:text-sm px-2 sm:px-3"><Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />Admin</TabsTrigger>
               <TabsTrigger value="leaderboard-certs" className="text-xs sm:text-sm px-2 sm:px-3"><Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Leaderboard</span><span className="sm:hidden">Lead</span></TabsTrigger>
               <TabsTrigger value="quiz" className="text-xs sm:text-sm px-2 sm:px-3"><Gamepad2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Live Quiz</span><span className="sm:hidden">Quiz</span></TabsTrigger>
@@ -1069,6 +1071,11 @@ export default function AdminDashboard() {
           {/* Study Materials Tab */}
           <TabsContent value="study-materials">
             <StudyMaterialsManager />
+          </TabsContent>
+
+          {/* Learning Resources Tab */}
+          <TabsContent value="learning">
+            <LearningResourcesManager />
           </TabsContent>
 
           {/* Admins Tab */}

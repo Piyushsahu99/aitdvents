@@ -368,17 +368,20 @@ export function AdminInviteManager() {
 
           <TabsContent value="invites" className="space-y-6">
             {/* Create New Invite */}
-            <div className="p-4 rounded-xl border-2 border-dashed bg-muted/30">
-              <Label htmlFor="invite-email" className="text-sm font-medium mb-2 block">
-                Add New Admin
-              </Label>
-              <div className="flex gap-2">
+            <div className="p-4 rounded-xl border-2 border-dashed bg-gradient-to-r from-primary/5 to-accent/5">
+              <div className="flex items-center gap-2 mb-3">
+                <Shield className="h-4 w-4 text-primary" />
+                <Label htmlFor="invite-email" className="text-sm font-semibold">
+                  Add New Admin
+                </Label>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex-1 relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="invite-email"
                     type="email"
-                    placeholder="Enter email to invite as admin"
+                    placeholder="Enter email (e.g., admin@example.com)"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     className="pl-10 h-11"
@@ -388,15 +391,22 @@ export function AdminInviteManager() {
                 <Button 
                   onClick={createInvite} 
                   disabled={creating || !newEmail}
-                  className="h-11 px-6"
+                  className="h-11 px-6 bg-gradient-to-r from-primary to-accent text-white"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {creating ? "Creating..." : "Create Invite"}
+                  {creating ? "Adding..." : "Add Admin"}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                The invite link will be valid for 7 days. Share it with the new admin.
-              </p>
+              <div className="mt-3 p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground space-y-1">
+                <p className="flex items-center gap-2">
+                  <CheckCircle className="h-3 w-3 text-success" />
+                  <span>If user exists with completed profile → Instant admin access</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <Clock className="h-3 w-3 text-warning" />
+                  <span>If user doesn't exist → Invite link valid for 7 days</span>
+                </p>
+              </div>
             </div>
 
             {/* Invites Table */}

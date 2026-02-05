@@ -1,7 +1,7 @@
-import { Calendar, MapPin, Building2, Users } from "lucide-react";
+import { Calendar, MapPin, Building2, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
+import { ShareButtons } from "@/components/ShareButtons";
 interface EventCardProps {
   title: string;
   description: string;
@@ -146,21 +146,41 @@ export const EventCard = ({
           )}
         </div>
 
-        {/* Action Button - responsive sizing */}
-        <Button 
-          size="sm"
-          className="w-full mt-3 sm:mt-4 h-9 sm:h-10 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary to-accent text-white border-0 shadow-md active:scale-95 transition-all"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onClick) {
-              onClick();
-            } else if (external_link) {
-              window.open(external_link, '_blank');
-            }
-          }}
-        >
-          View Details
-        </Button>
+        {/* Quick Share & Action Buttons */}
+        <div className="mt-3 sm:mt-4 space-y-2">
+          {/* Share buttons row */}
+          <div 
+            className="flex items-center justify-between p-2 rounded-lg bg-muted/50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Share2 className="w-3 h-3" />
+              <span className="hidden sm:inline">Share & earn</span>
+            </div>
+            <ShareButtons 
+              title={title} 
+              url={external_link || `${window.location.origin}/events`}
+              type="event"
+              compact={true}
+              showRewardBadge={false}
+            />
+          </div>
+          
+          <Button 
+            size="sm"
+            className="w-full h-9 sm:h-10 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary to-accent text-white border-0 shadow-md active:scale-95 transition-all"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onClick) {
+                onClick();
+              } else if (external_link) {
+                window.open(external_link, '_blank');
+              }
+            }}
+          >
+            View Details
+          </Button>
+        </div>
       </div>
     </div>
   );

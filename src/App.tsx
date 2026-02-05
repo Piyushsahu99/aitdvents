@@ -16,6 +16,7 @@ import Blogs from "./pages/Blogs";
 import Reels from "./pages/Reels";
 import Alumni from "./pages/Alumni";
 import AITools from "./pages/AITools";
+import Learning from "./pages/Learning";
 import AIChat from "./pages/AIChat";
 import Mentorship from "./pages/Mentorship";
 import Practice from "./pages/Practice";
@@ -85,6 +86,7 @@ const App = () => (
               <Route path="/reels" element={<Reels />} />
               <Route path="/alumni" element={<Alumni />} />
               <Route path="/ai-tools" element={<AITools />} />
+              <Route path="/learning" element={<Learning />} />
               <Route path="/ai-chat" element={<AIChat />} />
               <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/practice" element={<Practice />} />

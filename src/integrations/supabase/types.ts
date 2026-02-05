@@ -2411,6 +2411,75 @@ export type Database = {
           },
         ]
       }
+      learning_resources: {
+        Row: {
+          admin_notes: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          instructor_or_channel: string
+          is_free: boolean | null
+          language: string | null
+          level: string | null
+          link: string
+          platform: string
+          resource_type: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_by: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_count: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          instructor_or_channel: string
+          is_free?: boolean | null
+          language?: string | null
+          level?: string | null
+          link: string
+          platform: string
+          resource_type: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_count?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          instructor_or_channel?: string
+          is_free?: boolean | null
+          language?: string | null
+          level?: string | null
+          link?: string
+          platform?: string
+          resource_type?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_count?: string | null
+        }
+        Relationships: []
+      }
       lesson_progress: {
         Row: {
           completed: boolean | null

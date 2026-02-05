@@ -4822,7 +4822,7 @@ export type Database = {
         Args: {
           member_department?: string
           member_email: string
-          member_name: string
+          member_name?: string
           member_phone?: string
           member_role_title?: string
         }

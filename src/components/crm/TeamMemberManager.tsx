@@ -56,6 +56,61 @@ const PERMISSION_LABELS: Record<keyof TeamPermissions, string> = {
   can_send_announcements: "Send Announcements",
 };
 
+// Permission templates for quick setup
+const PERMISSION_TEMPLATES = {
+  event_manager: {
+    label: "Event Manager",
+    permissions: {
+      can_manage_events: true,
+      can_manage_jobs: false,
+      can_manage_hackathons: true,
+      can_manage_bounties: false,
+      can_manage_scholarships: false,
+      can_manage_reels: false,
+      can_manage_store: false,
+      can_manage_study_materials: false,
+      can_view_users: true,
+      can_assign_tasks: false,
+      can_view_analytics: true,
+      can_send_announcements: true,
+    },
+  },
+  content_manager: {
+    label: "Content Manager",
+    permissions: {
+      can_manage_events: true,
+      can_manage_jobs: true,
+      can_manage_hackathons: true,
+      can_manage_bounties: true,
+      can_manage_scholarships: true,
+      can_manage_reels: true,
+      can_manage_store: false,
+      can_manage_study_materials: true,
+      can_view_users: true,
+      can_assign_tasks: false,
+      can_view_analytics: true,
+      can_send_announcements: true,
+    },
+  },
+  full_access: {
+    label: "Full Access",
+    permissions: {
+      can_manage_events: true,
+      can_manage_jobs: true,
+      can_manage_hackathons: true,
+      can_manage_bounties: true,
+      can_manage_scholarships: true,
+      can_manage_reels: true,
+      can_manage_store: true,
+      can_manage_study_materials: true,
+      can_view_users: true,
+      can_assign_tasks: true,
+      can_view_analytics: true,
+      can_send_announcements: true,
+    },
+  },
+};
+
 export function TeamMemberManager() {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -63,6 +118,8 @@ export function TeamMemberManager() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [editingPermissions, setEditingPermissions] = useState<{ member: TeamMember; permissions: TeamPermissions } | null>(null);
+  const [emailInput, setEmailInput] = useState("");
+  const [addingByEmail, setAddingByEmail] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -243,6 +300,51 @@ export function TeamMemberManager() {
     }
   };
 
+  const handleAddByEmail = async () => {
+    if (!emailInput.trim()) return;
+    setAddingByEmail(true);
+
+    try {
+      const { data: rpcResult } = await supabase.rpc("add_team_member_by_email", {
+        member_email: emailInput.trim().toLowerCase(),
+        member_name: formData.full_name || null,
+        member_role_title: formData.role_title || null,
+        member_department: formData.department || null,
+        member_phone: formData.phone || null,
+      });
+
+      if (rpcResult && typeof rpcResult === 'object' && 'success' in rpcResult) {
+        if (rpcResult.success) {
+          const memberId = (rpcResult as { member_id?: string }).member_id;
+          if (memberId) {
+            await supabase
+              .from("team_permissions")
+              .update(permissions)
+              .eq("team_member_id", memberId);
+          }
+          toast({ title: "Success", description: `${emailInput} added to the team!` });
+          setEmailInput("");
+          resetForm();
+          setIsAddOpen(false);
+          fetchMembers();
+          fetchUsers();
+        } else {
+          const errorMsg = (rpcResult as { error?: string }).error || "Failed to add team member";
+          toast({ title: "Error", description: errorMsg, variant: "destructive" });
+        }
+      }
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setAddingByEmail(false);
+    }
+  };
+
+  const applyPermissionTemplate = (templateKey: keyof typeof PERMISSION_TEMPLATES) => {
+    setPermissions(PERMISSION_TEMPLATES[templateKey].permissions as TeamPermissions);
+    toast({ title: "Template Applied", description: `${PERMISSION_TEMPLATES[templateKey].label} permissions loaded` });
+  };
+
   const openPermissionsEdit = async (member: TeamMember) => {
     const { data } = await supabase
       .from("team_permissions")
@@ -332,14 +434,44 @@ export function TeamMemberManager() {
                 <DialogDescription>Add a user to the core team with specific permissions. They'll get access to the Team Panel.</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4">
+                {/* Add by Email - Primary Method */}
+                <div className="p-4 rounded-lg border-2 border-dashed bg-gradient-to-r from-primary/5 to-accent/5">
+                  <Label className="font-semibold text-sm mb-2 block">Quick Add by Email</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Enter user's email address"
+                      value={emailInput}
+                      onChange={e => setEmailInput(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && handleAddByEmail()}
+                    />
+                    <Button 
+                      onClick={handleAddByEmail} 
+                      disabled={!emailInput.trim() || addingByEmail}
+                      className="shrink-0"
+                    >
+                      {addingByEmail ? "Adding..." : "Add"}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">The user must have an account to be added as a team member.</p>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or select from users</span>
+                  </div>
+                </div>
+
                 <div className="grid gap-2">
-                  <Label className="font-medium">Select User *</Label>
+                  <Label className="font-medium">Select User</Label>
                   <Select value={formData.user_id} onValueChange={handleUserSelect}>
                     <SelectTrigger><SelectValue placeholder="Choose a user" /></SelectTrigger>
                     <SelectContent>
                       {users.filter(u => !members.find(m => m.user_id === u.user_id)).map(user => (
                         <SelectItem key={user.user_id} value={user.user_id}>
-                          {user.full_name || user.email}
+                          {user.full_name || user.email || "Unknown"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -378,7 +510,19 @@ export function TeamMemberManager() {
                 </div>
 
                 <div className="border-t pt-4">
-                  <Label className="text-base font-semibold mb-3 block">Permissions</Label>
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-base font-semibold">Permissions</Label>
+                    <Select onValueChange={(v) => applyPermissionTemplate(v as keyof typeof PERMISSION_TEMPLATES)}>
+                      <SelectTrigger className="w-40 h-8 text-xs">
+                        <SelectValue placeholder="Apply template" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="event_manager">Event Manager</SelectItem>
+                        <SelectItem value="content_manager">Content Manager</SelectItem>
+                        <SelectItem value="full_access">Full Access</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="grid grid-cols-2 gap-3">
                     {Object.entries(PERMISSION_LABELS).map(([key, label]) => (
                       <div key={key} className="flex items-center gap-2">

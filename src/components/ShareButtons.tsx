@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Linkedin, Link2, Check, Share2, Coins, Twitter, Instagram } from "lucide-react";
+import { MessageCircle, Linkedin, Link2, Check, Share2, Coins, Twitter, Instagram, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useEarnCoins } from "@/hooks/useEarnCoins";
@@ -25,16 +25,33 @@ export const ShareButtons = ({
 }: ShareButtonsProps) => {
   const [copied, setCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [personalizedUrl, setPersonalizedUrl] = useState(url);
+  const [userId, setUserId] = useState<string | null>(null);
   const { toast } = useToast();
   const { earnCoins } = useEarnCoins();
+
+  // Generate personalized URL with user referral ID
+  useEffect(() => {
+    const generatePersonalizedUrl = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        const shortRef = user.id.substring(0, 8);
+        const separator = url.includes('?') ? '&' : '?';
+        setPersonalizedUrl(`${url}${separator}ref=${shortRef}`);
+      } else {
+        setPersonalizedUrl(url);
+      }
+    };
+    generatePersonalizedUrl();
+  }, [url]);
 
   const shareText = type === "job" 
     ? `💼 Check out this ${type} opportunity: "${title}" on AITD Events!\n\n`
     : `🎉 Check out "${title}" on AITD Events!\n\n`;
 
   const handleShareReward = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
+    if (userId) {
       const actionType = `${type}_share`;
       await earnCoins(1, actionType, `Shared ${type}: ${title}`, referenceId);
     }
@@ -42,59 +59,59 @@ export const ShareButtons = ({
 
   const shareToWhatsApp = async () => {
     setSharing(true);
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}${url}`)}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}${personalizedUrl}`)}`;
     window.open(whatsappUrl, '_blank');
     await handleShareReward();
     toast({ 
       title: "Sharing to WhatsApp! 📱", 
-      description: "+1 AITD coin earned for sharing!" 
+      description: userId ? "+1 AITD coin earned for sharing!" : "Sign in to earn coins for sharing!" 
     });
     setSharing(false);
   };
 
   const shareToLinkedIn = async () => {
     setSharing(true);
-    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(personalizedUrl)}`;
     window.open(linkedinUrl, '_blank');
     await handleShareReward();
     toast({ 
       title: "Sharing to LinkedIn! 💼", 
-      description: "+1 AITD coin earned for sharing!" 
+      description: userId ? "+1 AITD coin earned for sharing!" : "Sign in to earn coins for sharing!" 
     });
     setSharing(false);
   };
 
   const shareToTwitter = async () => {
     setSharing(true);
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(personalizedUrl)}`;
     window.open(twitterUrl, '_blank');
     await handleShareReward();
     toast({ 
       title: "Sharing to Twitter! 🐦", 
-      description: "+1 AITD coin earned for sharing!" 
+      description: userId ? "+1 AITD coin earned for sharing!" : "Sign in to earn coins for sharing!" 
     });
     setSharing(false);
   };
 
   const shareToInstagram = async () => {
     setSharing(true);
-    navigator.clipboard.writeText(`${shareText}${url}`);
+    navigator.clipboard.writeText(`${shareText}${personalizedUrl}`);
     await handleShareReward();
     toast({ 
       title: "Copied for Instagram! 📸", 
-      description: "Paste it in your story or bio. +1 AITD coin earned!" 
+      description: userId ? "Paste it in your story or bio. +1 AITD coin earned!" : "Sign in to earn coins for sharing!" 
     });
     setSharing(false);
   };
 
   const copyLink = async () => {
     setSharing(true);
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(personalizedUrl);
     setCopied(true);
     await handleShareReward();
     toast({ 
-      title: "Link copied! 🔗", 
-      description: "+1 AITD coin earned! Share it with your friends." 
+      title: "Your personalized link copied! 🔗", 
+      description: userId ? "+1 AITD coin earned! Share it with your friends." : "Sign in to get your personalized referral link!" 
     });
     setTimeout(() => setCopied(false), 2000);
     setSharing(false);

@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, Medal, Award, Download, Share2, Sparkles, Crown, Star, Zap, PartyPopper } from "lucide-react";
+import { Trophy, Medal, Award, Download, Share2, Sparkles, Crown, Star, Zap, PartyPopper, Copy, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ConfettiEffect, fireConfetti } from "./ConfettiEffect";
+import { useToast } from "@/hooks/use-toast";
+import html2canvas from "html2canvas";
 
 interface Participant {
   id: string;
@@ -15,6 +17,7 @@ interface Participant {
 
 interface QuizResultsProps {
   quizTitle: string;
+  quizCode?: string;
   participants: Participant[];
   currentParticipantId?: string;
   onDownloadCertificate?: () => void;
@@ -23,11 +26,14 @@ interface QuizResultsProps {
 
 export function QuizResults({
   quizTitle,
+  quizCode,
   participants,
   currentParticipantId,
   onDownloadCertificate,
   onShare,
 }: QuizResultsProps) {
+  const { toast } = useToast();
+  const leaderboardRef = useRef<HTMLDivElement>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [animatedScores, setAnimatedScores] = useState<Record<string, number>>({});
   const [showCelebration, setShowCelebration] = useState(false);
@@ -86,6 +92,42 @@ export function QuizResults({
       return () => clearTimeout(timeout);
     });
   }, [participants]);
+
+  const shareLink = quizCode ? `${window.location.origin}/quiz-results/${quizCode}` : "";
+
+  const copyShareLink = () => {
+    if (shareLink) {
+      navigator.clipboard.writeText(shareLink);
+      toast({ title: "Link copied!", description: "Share this link to show quiz results" });
+    }
+  };
+
+  const shareOnWhatsApp = () => {
+    const text = `Check out the results of "${quizTitle}" quiz!`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + shareLink)}`, "_blank");
+  };
+
+  const shareOnTwitter = () => {
+    const text = `Check out the results of "${quizTitle}" quiz!`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareLink)}`, "_blank");
+  };
+
+  const downloadLeaderboardImage = async () => {
+    if (!leaderboardRef.current) return;
+    try {
+      const canvas = await html2canvas(leaderboardRef.current, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+      });
+      const link = document.createElement("a");
+      link.download = `${quizTitle.replace(/\s+/g, "-")}-leaderboard.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      toast({ title: "Image downloaded!" });
+    } catch (err) {
+      console.error("Failed to generate image:", err);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center py-8 px-4 relative overflow-hidden">
@@ -319,40 +361,72 @@ export function QuizResults({
         </motion.div>
       )}
 
-      {/* Actions for winners */}
-      {currentRank <= 3 && currentParticipant && (
-        <motion.div 
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 w-full max-w-md px-2"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5 }}
-        >
-          {onDownloadCertificate && (
-            <Button 
-              onClick={onDownloadCertificate} 
-              className="gap-2 text-sm w-full sm:w-auto bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90"
-              size="lg"
-            >
-              <Download className="h-4 w-4" />
-              Download Certificate
-            </Button>
-          )}
-          {onShare && (
-            <Button 
-              variant="outline" 
-              onClick={onShare} 
-              className="gap-2 text-sm w-full sm:w-auto border-2"
-              size="lg"
-            >
-              <Share2 className="h-4 w-4" />
-              Share Result
-            </Button>
-          )}
-        </motion.div>
-      )}
+      {/* Share & Actions */}
+      <motion.div 
+        className="flex flex-col gap-4 mb-8 w-full max-w-md px-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5 }}
+      >
+        {/* Actions for winners */}
+        {currentRank <= 3 && currentParticipant && (
+          <div className="flex flex-col sm:flex-row gap-3">
+            {onDownloadCertificate && (
+              <Button 
+                onClick={onDownloadCertificate} 
+                className="gap-2 text-sm w-full sm:w-auto bg-gradient-to-r from-primary to-purple-600"
+                size="lg"
+              >
+                <Download className="h-4 w-4" />
+                Download Certificate
+              </Button>
+            )}
+            {onShare && (
+              <Button 
+                variant="outline" 
+                onClick={onShare} 
+                className="gap-2 text-sm w-full sm:w-auto border-2"
+                size="lg"
+              >
+                <Share2 className="h-4 w-4" />
+                Share Result
+              </Button>
+            )}
+          </div>
+        )}
+
+        {/* Share buttons for everyone */}
+        {quizCode && (
+          <Card className="border-dashed">
+            <CardContent className="p-4">
+              <p className="text-sm font-medium mb-3 flex items-center gap-2">
+                <Share2 className="h-4 w-4" />
+                Share Leaderboard
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" onClick={copyShareLink} className="gap-1">
+                  <Copy className="h-3 w-3" />
+                  Copy Link
+                </Button>
+                <Button variant="outline" size="sm" onClick={shareOnWhatsApp} className="gap-1">
+                  WhatsApp
+                </Button>
+                <Button variant="outline" size="sm" onClick={shareOnTwitter} className="gap-1">
+                  Twitter
+                </Button>
+                <Button variant="outline" size="sm" onClick={downloadLeaderboardImage} className="gap-1">
+                  <Download className="h-3 w-3" />
+                  Image
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </motion.div>
 
       {/* Full leaderboard */}
       <motion.div 
+        ref={leaderboardRef}
         className="w-full max-w-md px-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

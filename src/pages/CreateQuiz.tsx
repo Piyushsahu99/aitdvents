@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -53,9 +53,13 @@ const STEPS = ["Basic Info", "Questions", "Settings", "Prizes"];
 
 export default function CreateQuiz() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editQuizId = searchParams.get("edit");
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Step 1: Basic Info
   const [title, setTitle] = useState("");
@@ -96,6 +100,94 @@ export default function CreateQuiz() {
     second: "",
     third: "",
   });
+
+  // Load quiz data for edit mode
+  useEffect(() => {
+    if (editQuizId) {
+      loadQuizForEdit(editQuizId);
+    }
+  }, [editQuizId]);
+
+  const loadQuizForEdit = async (quizId: string) => {
+    setIsLoading(true);
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) {
+        navigate("/auth");
+        return;
+      }
+
+      // Fetch quiz
+      const { data: quiz, error: quizError } = await supabase
+        .from("quizzes")
+        .select("*")
+        .eq("id", quizId)
+        .eq("created_by", user.user.id)
+        .maybeSingle();
+
+      if (quizError) throw quizError;
+      if (!quiz) {
+        toast({ title: "Quiz not found", variant: "destructive" });
+        navigate("/my-quizzes");
+        return;
+      }
+
+      // Populate form with existing data
+      setIsEditMode(true);
+      setTitle(quiz.title || "");
+      setDescription(quiz.description || "");
+      setCategory(quiz.category || "general");
+      setDifficulty(quiz.difficulty || "medium");
+      setIsPublic(quiz.is_public ?? true);
+      setMaxParticipants(String(quiz.max_participants || 100));
+      setBannerImage(quiz.banner_image);
+      setCustomCode(quiz.quiz_code || "");
+      setScheduledStart(quiz.scheduled_start ? new Date(quiz.scheduled_start) : null);
+      setRegistrationOpen(quiz.registration_open ?? true);
+
+      setSettings({
+        autoAdvance: quiz.auto_advance ?? true,
+        countdownSeconds: quiz.countdown_seconds || 5,
+        answerRevealSeconds: quiz.answer_reveal_seconds || 3,
+        shuffleQuestions: quiz.shuffle_questions ?? false,
+        shuffleOptions: quiz.shuffle_options ?? false,
+        showLiveLeaderboard: quiz.show_live_leaderboard ?? true,
+        allowLateJoin: quiz.allow_late_join ?? false,
+      });
+
+      if (quiz.prizes && typeof quiz.prizes === "object") {
+        const p = quiz.prizes as Record<string, string>;
+        setPrizes({
+          first: p.first || "",
+          second: p.second || "",
+          third: p.third || "",
+        });
+      }
+
+      // Fetch questions
+      const { data: questionsData } = await supabase
+        .from("quiz_questions")
+        .select("*")
+        .eq("quiz_id", quizId)
+        .order("order_index");
+
+      if (questionsData) {
+        setQuestions(questionsData.map((q: any) => ({
+          id: q.id,
+          question_text: q.question_text,
+          options: q.options,
+          correct_option_index: q.correct_option_index,
+          time_limit_seconds: q.time_limit_seconds,
+          points: q.points,
+        })));
+      }
+    } catch (err) {
+      console.error("Failed to load quiz:", err);
+      toast({ title: "Error loading quiz", variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const addQuestion = () => {
     if (!questionText.trim()) return;
@@ -164,7 +256,7 @@ export default function CreateQuiz() {
     setShowBulkImport(false);
   };
 
-  const createQuiz = async () => {
+  const saveQuiz = async () => {
     setIsCreating(true);
     try {
       const { data: user } = await supabase.auth.getUser();
@@ -177,11 +269,10 @@ export default function CreateQuiz() {
         .eq("user_id", user.user.id)
         .maybeSingle();
 
-      // Create quiz with new fields
-      const quizInsertData: Record<string, unknown> = {
+      // Quiz data
+      const quizData: Record<string, unknown> = {
         title: title.trim(),
         description: description.trim() || null,
-        created_by: user.user.id,
         is_public: isPublic,
         organizer_name: profile?.full_name || "Anonymous",
         category,
@@ -195,25 +286,43 @@ export default function CreateQuiz() {
         show_live_leaderboard: settings.showLiveLeaderboard,
         allow_late_join: settings.allowLateJoin,
         prizes: prizes.first || prizes.second || prizes.third ? prizes : null,
-        // New fields
         banner_image: bannerImage,
-        custom_code: customCode.trim().toUpperCase() || null,
         scheduled_start: scheduledStart?.toISOString() || null,
         registration_open: registrationOpen,
       };
 
-      const { data: quiz, error: quizError } = await supabase
-        .from("quizzes")
-        .insert([quizInsertData as any])
-        .select()
-        .single();
+      let quizId: string;
 
-      if (quizError) throw quizError;
+      if (isEditMode && editQuizId) {
+        // Update existing quiz
+        const { error: updateError } = await supabase
+          .from("quizzes")
+          .update(quizData as any)
+          .eq("id", editQuizId);
+
+        if (updateError) throw updateError;
+        quizId = editQuizId;
+
+        // Delete existing questions and re-insert
+        await supabase.from("quiz_questions").delete().eq("quiz_id", editQuizId);
+      } else {
+        // Create new quiz
+        quizData.created_by = user.user.id;
+        
+        const { data: quiz, error: quizError } = await supabase
+          .from("quizzes")
+          .insert([quizData as any])
+          .select()
+          .single();
+
+        if (quizError) throw quizError;
+        quizId = quiz.id;
+      }
 
       // Add questions
       if (questions.length > 0) {
         const questionsToInsert = questions.map((q, idx) => ({
-          quiz_id: quiz.id,
+          quiz_id: quizId,
           question_text: q.question_text,
           options: q.options,
           correct_option_index: q.correct_option_index,
@@ -230,18 +339,26 @@ export default function CreateQuiz() {
       }
 
       toast({
-        title: "Quiz created! 🎉",
-        description: `Your quiz code is: ${quiz.quiz_code}`,
+        title: isEditMode ? "Quiz updated! ✅" : "Quiz created! 🎉",
+        description: isEditMode ? "Your changes have been saved" : "Your quiz is ready to host",
       });
 
       navigate(`/my-quizzes`);
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to create quiz";
+      const errorMessage = err instanceof Error ? err.message : "Failed to save quiz";
       toast({ title: "Error", description: errorMessage, variant: "destructive" });
     } finally {
       setIsCreating(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-primary/5 py-6">
@@ -254,9 +371,13 @@ export default function CreateQuiz() {
         >
           <div className="inline-flex items-center gap-2 mb-2">
             <Gamepad2 className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl sm:text-3xl font-bold">Create Your Quiz</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              {isEditMode ? "Edit Quiz" : "Create Your Quiz"}
+            </h1>
           </div>
-          <p className="text-muted-foreground">Host engaging quizzes for your community</p>
+          <p className="text-muted-foreground">
+            {isEditMode ? "Update your quiz details" : "Host engaging quizzes for your community"}
+          </p>
         </motion.div>
 
         {/* Progress Steps */}
@@ -630,19 +751,19 @@ export default function CreateQuiz() {
             </Button>
           ) : (
             <Button
-              onClick={createQuiz}
+              onClick={saveQuiz}
               disabled={isCreating || !canProceed()}
-              className="gap-2 bg-gradient-to-r from-primary to-purple-500"
+              className="gap-2 bg-gradient-to-r from-primary to-purple-600"
             >
               {isCreating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating...
+                  {isEditMode ? "Saving..." : "Creating..."}
                 </>
               ) : (
                 <>
                   <Sparkles className="h-4 w-4" />
-                  Create Quiz
+                  {isEditMode ? "Save Changes" : "Create Quiz"}
                 </>
               )}
             </Button>

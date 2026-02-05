@@ -54,6 +54,8 @@ import QuizDiscover from "./pages/QuizDiscover";
 import CreateQuiz from "./pages/CreateQuiz";
 import MyQuizzes from "./pages/MyQuizzes";
 import QuizHost from "./pages/QuizHost";
+import QuizResultsPublic from "./pages/QuizResultsPublic";
+import QuizAnalytics from "./pages/QuizAnalytics";
 import TeamPanel from "./pages/TeamPanel";
 import TeamMemberDashboard from "./pages/TeamMemberDashboard";
 import SpinWheel from "./pages/SpinWheel";
@@ -120,6 +122,8 @@ const App = () => (
               <Route path="/create-quiz" element={<CreateQuiz />} />
               <Route path="/my-quizzes" element={<MyQuizzes />} />
               <Route path="/quiz-host/:quizId" element={<QuizHost />} />
+              <Route path="/quiz-results/:quizCode" element={<QuizResultsPublic />} />
+              <Route path="/quiz-analytics/:quizId" element={<QuizAnalytics />} />
               <Route path="/team-panel" element={<TeamPanel />} />
               <Route path="/team-dashboard" element={<TeamMemberDashboard />} />
               <Route path="/spin-wheel" element={<SpinWheel />} />

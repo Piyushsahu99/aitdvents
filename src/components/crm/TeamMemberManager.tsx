@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, UserPlus, Shield, User } from "lucide-react";
+import { Plus, Edit, Trash2, UserPlus, Shield, User, Users } from "lucide-react";
 
 interface TeamMember {
   id: string;
@@ -305,27 +305,35 @@ export function TeamMemberManager() {
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-2">
+      <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <CardTitle className="text-lg sm:text-xl">Team Members</CardTitle>
-            <CardDescription>Manage your core team and permissions</CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-primary/10">
+              <Users className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-lg sm:text-xl">Team Members</CardTitle>
+              <CardDescription>Manage your core team and permissions ({members.length} members)</CardDescription>
+            </div>
           </div>
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2" onClick={resetForm}>
+              <Button className="gap-2 bg-gradient-to-r from-primary to-accent text-white" onClick={resetForm}>
                 <UserPlus className="h-4 w-4" /> Add Member
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add Team Member</DialogTitle>
-                <DialogDescription>Add a user to the core team with specific permissions</DialogDescription>
+                <DialogTitle className="flex items-center gap-2">
+                  <UserPlus className="h-5 w-5 text-primary" />
+                  Add Team Member
+                </DialogTitle>
+                <DialogDescription>Add a user to the core team with specific permissions. They'll get access to the Team Panel.</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label>Select User *</Label>
+                  <Label className="font-medium">Select User *</Label>
                   <Select value={formData.user_id} onValueChange={handleUserSelect}>
                     <SelectTrigger><SelectValue placeholder="Choose a user" /></SelectTrigger>
                     <SelectContent>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Linkedin, Link2, Check, Share2, Coins } from "lucide-react";
+import { MessageCircle, Linkedin, Link2, Check, Share2, Coins, Twitter, Instagram } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useEarnCoins } from "@/hooks/useEarnCoins";
@@ -64,6 +64,29 @@ export const ShareButtons = ({
     setSharing(false);
   };
 
+  const shareToTwitter = async () => {
+    setSharing(true);
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`;
+    window.open(twitterUrl, '_blank');
+    await handleShareReward();
+    toast({ 
+      title: "Sharing to Twitter! 🐦", 
+      description: "+1 AITD coin earned for sharing!" 
+    });
+    setSharing(false);
+  };
+
+  const shareToInstagram = async () => {
+    setSharing(true);
+    navigator.clipboard.writeText(`${shareText}${url}`);
+    await handleShareReward();
+    toast({ 
+      title: "Copied for Instagram! 📸", 
+      description: "Paste it in your story or bio. +1 AITD coin earned!" 
+    });
+    setSharing(false);
+  };
+
   const copyLink = async () => {
     setSharing(true);
     navigator.clipboard.writeText(url);
@@ -79,36 +102,46 @@ export const ShareButtons = ({
 
   if (compact) {
     return (
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5">
         <Button 
           size="icon" 
           variant="ghost" 
           onClick={shareToWhatsApp} 
           disabled={sharing}
-          className="h-8 w-8 hover:bg-green-500/10"
+          className="h-7 w-7 hover:bg-green-500/10"
           title="Share on WhatsApp"
         >
-          <MessageCircle className="w-4 h-4 text-green-600" />
+          <MessageCircle className="w-3.5 h-3.5 text-green-600" />
         </Button>
         <Button 
           size="icon" 
           variant="ghost" 
           onClick={shareToLinkedIn}
           disabled={sharing}
-          className="h-8 w-8 hover:bg-blue-500/10"
+          className="h-7 w-7 hover:bg-blue-500/10"
           title="Share on LinkedIn"
         >
-          <Linkedin className="w-4 h-4 text-blue-600" />
+          <Linkedin className="w-3.5 h-3.5 text-blue-600" />
+        </Button>
+        <Button 
+          size="icon" 
+          variant="ghost" 
+          onClick={shareToTwitter}
+          disabled={sharing}
+          className="h-7 w-7 hover:bg-sky-500/10"
+          title="Share on Twitter"
+        >
+          <Twitter className="w-3.5 h-3.5 text-sky-500" />
         </Button>
         <Button 
           size="icon" 
           variant="ghost" 
           onClick={copyLink}
           disabled={sharing}
-          className="h-8 w-8"
+          className="h-7 w-7"
           title="Copy link"
         >
-          {copied ? <Check className="w-4 h-4 text-green-500" /> : <Link2 className="w-4 h-4" />}
+          {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Link2 className="w-3.5 h-3.5" />}
         </Button>
       </div>
     );
@@ -146,6 +179,26 @@ export const ShareButtons = ({
         >
           <Linkedin className="w-4 h-4 text-blue-600" />
           <span className="hidden sm:inline">LinkedIn</span>
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={shareToTwitter}
+          disabled={sharing}
+          className="gap-2 bg-sky-500/10 hover:bg-sky-500/20 border-sky-500/30"
+        >
+          <Twitter className="w-4 h-4 text-sky-500" />
+          <span className="hidden sm:inline">Twitter</span>
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={shareToInstagram}
+          disabled={sharing}
+          className="gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border-pink-500/30"
+        >
+          <Instagram className="w-4 h-4 text-pink-600" />
+          <span className="hidden sm:inline">Instagram</span>
         </Button>
         <Button 
           size="sm" 

@@ -1,249 +1,120 @@
 
-
-# Games Arena Expansion - Implementation Plan
-## Adding Spin & Win, Lucky Draw, and IPL Auction Games
-
----
+# Quiz System Enhancement Implementation Plan
 
 ## Overview
-
-This implementation adds three new interactive games to the existing Games Arena hub at `/quiz`:
-
-1. **Spin & Win** - Animated prize wheel with AITD Coins rewards
-2. **Lucky Draw** - Fair random winner selection with verifiable results
-3. **IPL Auction** - Virtual cricket auction with 200+ real players and unlimited participation
-
-All games integrate with the existing AITD Coins economy and feature celebration animations.
+Enhance the existing quiz system with Kahoot/Slido-inspired features: edit quizzes, shareable leaderboards, duplicate functionality, and analytics.
 
 ---
 
-## Phase 1: Database Schema
+## Phase 1: Edit Quiz Functionality
 
-### New Tables
+### 1.1 Modify CreateQuiz to Support Edit Mode
+**File:** `src/pages/CreateQuiz.tsx`
 
-| Table | Purpose |
-|-------|---------|
-| `spin_wheels` | Configurable wheel settings and themes |
-| `spin_wheel_segments` | Prize segments with probabilities |
-| `spin_results` | User spin history |
-| `lucky_draws` | Draw configurations and status |
-| `lucky_draw_entries` | Participant entries |
-| `lucky_draw_winners` | Selected winners with verification hash |
-| `ipl_players` | 200+ cricket players with photos and stats |
-| `ipl_auctions` | Auction room configurations |
-| `auction_teams` | User teams with virtual budgets |
-| `auction_bids` | Real-time bidding history |
-| `auction_sold_players` | Players purchased by teams |
+- Add `quizId` URL parameter support using `useParams()`
+- Fetch existing quiz data when `quizId` is present
+- Populate all form steps with existing data
+- Change button text from "Create Quiz" to "Update Quiz"
+- Handle update logic using `.update()` instead of `.insert()`
 
-### Key Schema Details
+### 1.2 Update MyQuizzes Page
+**File:** `src/pages/MyQuizzes.tsx`
 
-**Spin Wheels:**
-- Configurable cost per spin (AITD coins)
-- Daily/total spin limits
-- Weighted probability segments
-- Jackpot markers
-
-**Lucky Draw:**
-- Multiple draw types (random/weighted)
-- Scheduled draws with countdown
-- SHA-256 verification hash for fairness
-- Multiple winner support
-
-**IPL Auction:**
-- Virtual currency (separate from AITD coins)
-- Team size constraints
-- Real-time bid tracking
-- Player categories (Platinum/Gold/Silver/Bronze)
+- Add "Edit" button for draft/completed quizzes
+- Add "Duplicate" button to clone quizzes
+- Navigate to `/create-quiz?edit=quizId` for editing
 
 ---
 
-## Phase 2: Spin & Win Game
+## Phase 2: Shareable Leaderboard & Results
 
-### Features
-- Animated spinning wheel using CSS transforms and framer-motion
-- 6-12 configurable prize segments
-- Daily free spins + coin-based additional spins
-- Jackpot celebrations with fireworks confetti
-- Spin history tracking
+### 2.1 Create Public Results Page
+**New File:** `src/pages/QuizResultsPublic.tsx`
 
-### New Files
-```
-src/pages/SpinWheel.tsx
-src/components/games/SpinWheelCanvas.tsx
-src/components/games/SpinWheelResult.tsx
-src/hooks/useSpinWheel.ts
-```
+- Fetch quiz and leaderboard by quiz code (no auth required)
+- Display final standings with podium animation
+- Show quiz title, date, participant count
+- Professional layout for sharing
 
-### Animation Details
-- CSS `transform: rotate()` with framer-motion
-- 4-6 second spin duration with easing
-- Result pre-calculated server-side for fairness
-- Confetti explosion on prize reveal
+### 2.2 Add Share Functionality to QuizResults
+**File:** `src/components/quiz/QuizResults.tsx`
 
----
+- Add share buttons: WhatsApp, Twitter, LinkedIn, Copy Link
+- Generate shareable URL: `/quiz-results/{quiz_code}`
+- Use html2canvas for downloadable leaderboard image
 
-## Phase 3: Lucky Draw Game
+### 2.3 Update Routing
+**File:** `src/App.tsx`
 
-### Features
-- Fair cryptographic random selection
-- Entry modes: free, coin-based, or action-based
-- Scheduled draws with countdown timers
-- Live winner announcement with dramatic reveal
-- Verification page for transparency
-
-### New Files
-```
-src/pages/LuckyDraw.tsx
-src/components/games/LuckyDrawCard.tsx
-src/components/games/LuckyDrawLive.tsx
-src/components/games/LuckyDrawWinners.tsx
-src/hooks/useLuckyDraw.ts
-```
-
-### Winner Selection Algorithm
-1. Collect all valid entries at draw time
-2. Generate cryptographic seed (timestamp + entries hash)
-3. Use Fisher-Yates shuffle with seed
-4. Select top N winners
-5. Store verification hash for audit
+- Add route: `/quiz-results/:quizCode`
 
 ---
 
-## Phase 4: IPL Auction Game
+## Phase 3: Duplicate Quiz Feature
 
-### Features
-- 200+ IPL cricket players with real photos and stats
-- Virtual budget (85Cr per team by default)
-- Real-time bidding with Supabase Realtime
-- Player categories: Platinum, Gold, Silver, Bronze
-- Team composition rules
-- Animated "SOLD!" celebrations
-
-### New Files
-```
-src/pages/IPLAuction.tsx
-src/pages/CreateAuction.tsx
-src/components/games/AuctionLobby.tsx
-src/components/games/AuctionRoom.tsx
-src/components/games/PlayerCard.tsx
-src/components/games/BidPanel.tsx
-src/components/games/TeamRoster.tsx
-src/components/games/AuctionResults.tsx
-src/hooks/useAuctionRealtime.ts
-src/data/iplPlayers.ts
-```
-
-### Sample Player Data
-```
-{
-  name: "Virat Kohli",
-  role: "Batsman",
-  team: "Royal Challengers Bangalore",
-  nationality: "India",
-  photo_url: "/images/ipl/virat-kohli.jpg",
-  base_price: 200000000, // 2 Cr (virtual)
-  category: "Platinum",
-  stats: {
-    matches: 237,
-    runs: 7263,
-    average: 37.25,
-    strike_rate: 129.95
-  }
-}
-```
-
-### Real-time Features
-- Supabase Realtime for instant bid updates
-- Presence API for active participants
-- Auto-pass after timeout
-- Host controls: pause, skip, extend time
+### Implementation in MyQuizzes.tsx
+- Create `duplicateQuiz()` function
+- Copy quiz record with new ID and quiz_code
+- Copy all questions to new quiz
+- Navigate to edit mode for the duplicate
 
 ---
 
-## Phase 5: Celebration Animations
+## Phase 4: Quiz Analytics Dashboard
 
-### New Confetti Types
-| Type | Effect | Trigger |
-|------|--------|---------|
-| `spinWin` | Spiral confetti | Wheel prize reveal |
-| `jackpot` | Golden coins shower | Jackpot win |
-| `luckyDraw` | Spotlight + burst | Winner announcement |
-| `auctionSold` | Hammer + money rain | Player sold |
-| `teamComplete` | Stadium celebration | Squad completed |
+### 4.1 Create Analytics Page
+**New File:** `src/pages/QuizAnalytics.tsx`
 
----
+- Question-by-question accuracy chart
+- Average response time per question
+- Participation rate visualization
+- Export options (CSV download)
 
-## Phase 6: Games Hub Updates
+### 4.2 Add Analytics Button
+**File:** `src/pages/MyQuizzes.tsx`
 
-### Changes to `/quiz` Page
-- Update game cards from "Coming Soon" to active
-- Add navigation to new game pages
-- Show live player counts for each game
-- Add quick join codes support
+- Add "Analytics" button for completed quizzes
+- Navigate to `/quiz-analytics/:quizId`
 
 ---
 
-## File Changes Summary
+## Database Changes
 
-### New Pages
-- `src/pages/SpinWheel.tsx`
-- `src/pages/LuckyDraw.tsx`
-- `src/pages/IPLAuction.tsx`
-- `src/pages/CreateAuction.tsx`
+### RLS Policy for Public Results
+```sql
+-- Allow public read access to completed quiz results
+CREATE POLICY "Public can view completed quiz leaderboard"
+ON quiz_participants FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1 FROM quizzes 
+    WHERE quizzes.id = quiz_participants.quiz_id 
+    AND quizzes.status = 'completed' 
+    AND quizzes.is_public = true
+  )
+);
+```
 
-### New Components (12 files)
-- `src/components/games/SpinWheelCanvas.tsx`
-- `src/components/games/SpinWheelResult.tsx`
-- `src/components/games/LuckyDrawCard.tsx`
-- `src/components/games/LuckyDrawLive.tsx`
-- `src/components/games/LuckyDrawWinners.tsx`
-- `src/components/games/AuctionLobby.tsx`
-- `src/components/games/AuctionRoom.tsx`
-- `src/components/games/PlayerCard.tsx`
-- `src/components/games/BidPanel.tsx`
-- `src/components/games/TeamRoster.tsx`
-- `src/components/games/AuctionResults.tsx`
-- `src/components/games/AuctionCountdown.tsx`
+---
 
-### New Hooks
-- `src/hooks/useSpinWheel.ts`
-- `src/hooks/useLuckyDraw.ts`
-- `src/hooks/useAuctionRealtime.ts`
+## Files Summary
 
-### New Data
-- `src/data/iplPlayers.ts` (200+ players with stats)
-
-### Modified Files
-- `src/App.tsx` - Add routes for new pages
-- `src/pages/Quiz.tsx` - Update game cards to active with links
-- `src/components/quiz/ConfettiEffect.tsx` - Add new celebration types
-
-### Database Migration
-- Create 11 new tables for games
-- Enable RLS policies
-- Enable Realtime for auction_bids table
-- Add storage bucket for player photos
+| Action | File | Purpose |
+|--------|------|---------|
+| Modify | `src/pages/CreateQuiz.tsx` | Add edit mode support |
+| Modify | `src/pages/MyQuizzes.tsx` | Add Edit, Duplicate, Analytics buttons |
+| Modify | `src/components/quiz/QuizResults.tsx` | Add share functionality |
+| Modify | `src/App.tsx` | Add new routes |
+| Create | `src/pages/QuizResultsPublic.tsx` | Public shareable results |
+| Create | `src/pages/QuizAnalytics.tsx` | Quiz analytics dashboard |
 
 ---
 
 ## Implementation Order
 
-1. **Database Migration** - Create all tables with RLS
-2. **Confetti Enhancements** - Add new celebration types
-3. **Spin & Win** - Complete wheel game
-4. **Lucky Draw** - Random selection system
-5. **IPL Players Data** - Seed player database
-6. **IPL Auction** - Real-time bidding system
-7. **Games Hub Updates** - Connect all games
-8. **Testing & Polish** - Animations and mobile responsiveness
+1. **Edit Quiz** - Modify CreateQuiz.tsx + MyQuizzes.tsx
+2. **Duplicate Quiz** - Add function in MyQuizzes.tsx
+3. **Shareable Results** - Create QuizResultsPublic.tsx + share buttons
+4. **Analytics** - Create QuizAnalytics.tsx
 
----
-
-## Technical Notes
-
-- All games use virtual currency (except Spin & Win which uses AITD coins)
-- IPL Auction budgets are isolated per auction room
-- Lucky Draw uses SHA-256 for verifiable fairness
-- Real-time updates via Supabase Realtime channels
-- Mobile-first responsive design throughout
-
+All existing quiz functionality remains intact.

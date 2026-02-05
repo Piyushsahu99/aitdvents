@@ -1086,6 +1086,11 @@ export default function AdminDashboard() {
             <QuizManager />
           </TabsContent>
 
+          {/* CRM/HRM Tab */}
+          <TabsContent value="crm">
+            <CRMDashboard />
+          </TabsContent>
+
           {/* Platform Metrics Tab */}
           <TabsContent value="metrics">
             <PlatformMetrics />

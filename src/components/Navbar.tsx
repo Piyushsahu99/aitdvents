@@ -22,6 +22,7 @@ const primaryNavLinks = [
   { name: "Events", path: "/events", icon: Calendar },
   { name: "Bounties", path: "/bounties", icon: DollarSign },
   { name: "Jobs", path: "/jobs", icon: Briefcase },
+  { name: "Learning", path: "/learning", icon: GraduationCap },
   { name: "Quiz", path: "/quiz", icon: Gamepad2 },
 ];
 
@@ -66,7 +67,6 @@ const moreNavLinks = [
     items: [
       { name: "AI Chat", path: "/ai-chat", icon: Sparkles },
       { name: "AI Tools", path: "/ai-tools", icon: Wrench },
-      { name: "Learning Hub", path: "/learning", icon: BookOpen },
       { name: "Resume Builder", path: "/resume", icon: FileText },
       { name: "Blogs", path: "/blogs", icon: Rss },
       { name: "Reels", path: "/reels", icon: Video },

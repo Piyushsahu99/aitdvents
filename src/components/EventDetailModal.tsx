@@ -245,7 +245,7 @@ export const EventDetailModal = ({ event, open, onClose }: EventDetailModalProps
           </div>
 
           {/* Hashtags */}
-          {event.hashtags && event.hashtags.length > 0 && (
+          {Array.isArray(event.hashtags) && event.hashtags.length > 0 && (
             <div>
               <h3 className="font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">

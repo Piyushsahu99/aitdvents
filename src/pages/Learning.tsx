@@ -3,9 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
+import { ResourceShareButtons } from "@/components/ResourceShareButtons";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -16,7 +17,7 @@ import { externalCourses, youtubePlaylistsForBeginners } from "@/data/mockData";
 import { 
   ExternalLink, BookOpen, Play, Youtube, GraduationCap, 
   Sparkles, Plus, Clock, CheckCircle, XCircle, Loader2,
-  Send, TrendingUp, Users, Video, Globe
+  Send, Users, Video, Globe, Star, Share2, TrendingUp, Award
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -163,17 +164,6 @@ export default function Learning() {
     submitMutation.mutate(formData);
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'rejected':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      default:
-        return <Clock className="w-4 h-4 text-yellow-500" />;
-    }
-  };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
@@ -185,39 +175,66 @@ export default function Learning() {
     }
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'rejected':
+        return <XCircle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Clock className="w-4 h-4 text-yellow-500" />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5">
       {/* Hero Section */}
-      <div className="relative py-16 px-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 overflow-hidden">
+      <div className="relative py-12 md:py-20 px-4 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-5"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-400/20 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
         
         <div className="container mx-auto text-center relative z-10">
-          <Badge className="mb-4 bg-white/20 text-white border-white/30 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Free Learning Resources
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <div className="inline-flex items-center gap-2 mb-4 bg-white/20 text-white border border-white/30 backdrop-blur-sm rounded-full px-4 py-2">
+            <Sparkles className="w-4 h-4" />
+            <span className="text-sm font-medium">100% Free Learning Resources</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
             Learning Hub
           </h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
-            Curated courses, YouTube playlists, and community-contributed resources for students
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8">
+            Master new skills with curated courses, YouTube playlists, and community-contributed resources
           </p>
           
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-6 mt-8">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <GraduationCap className="w-5 h-5 text-white" />
-              <span className="text-white font-medium">{externalCourses.length}+ Courses</span>
+          {/* Stats Cards */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-8">
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20">
+              <div className="p-2 bg-white/20 rounded-xl">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-2xl font-bold text-white">{externalCourses.length}+</p>
+                <p className="text-xs text-white/80">Free Courses</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Youtube className="w-5 h-5 text-white" />
-              <span className="text-white font-medium">{youtubePlaylistsForBeginners.length}+ Playlists</span>
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20">
+              <div className="p-2 bg-white/20 rounded-xl">
+                <Youtube className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-2xl font-bold text-white">{youtubePlaylistsForBeginners.length}+</p>
+                <p className="text-xs text-white/80">Playlists</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Users className="w-5 h-5 text-white" />
-              <span className="text-white font-medium">Community Contributed</span>
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20">
+              <div className="p-2 bg-white/20 rounded-xl">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-2xl font-bold text-white">Open</p>
+                <p className="text-xs text-white/80">Community</p>
+              </div>
             </div>
           </div>
         </div>
@@ -225,10 +242,14 @@ export default function Learning() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Submit Button */}
-        <div className="flex justify-end mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Share2 className="w-4 h-4" />
+            <span className="text-sm">Share resources with friends & earn recognition!</span>
+          </div>
           <Dialog open={isSubmitOpen} onOpenChange={setIsSubmitOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600">
+              <Button className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg">
                 <Plus className="w-4 h-4" />
                 Submit a Resource
               </Button>
@@ -395,37 +416,35 @@ export default function Learning() {
         </div>
 
         <Tabs defaultValue="courses" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 h-auto p-1">
-            <TabsTrigger value="courses" className="flex items-center gap-2 py-3">
+          <TabsList className="grid w-full grid-cols-4 mb-8 h-auto p-1.5 bg-muted/50 rounded-2xl">
+            <TabsTrigger value="courses" className="flex items-center gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
               <GraduationCap className="w-4 h-4" />
-              <span className="hidden sm:inline">Free Courses</span>
-              <span className="sm:hidden">Courses</span>
+              <span className="hidden sm:inline">Courses</span>
             </TabsTrigger>
-            <TabsTrigger value="playlists" className="flex items-center gap-2 py-3">
+            <TabsTrigger value="playlists" className="flex items-center gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
               <Youtube className="w-4 h-4" />
-              <span className="hidden sm:inline">YouTube Playlists</span>
-              <span className="sm:hidden">Playlists</span>
+              <span className="hidden sm:inline">Playlists</span>
             </TabsTrigger>
-            <TabsTrigger value="community" className="flex items-center gap-2 py-3">
+            <TabsTrigger value="community" className="flex items-center gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">Community</span>
-              <span className="sm:hidden">Community</span>
             </TabsTrigger>
-            <TabsTrigger value="my-submissions" className="flex items-center gap-2 py-3">
+            <TabsTrigger value="my-submissions" className="flex items-center gap-2 py-3 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
               <Send className="w-4 h-4" />
               <span className="hidden sm:inline">My Submissions</span>
-              <span className="sm:hidden">Mine</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Free Courses Tab */}
           <TabsContent value="courses">
             <div className="space-y-6 mb-8">
-              <SearchBar
-                placeholder="Search courses..."
-                value={search}
-                onChange={setSearch}
-              />
+              <div className="max-w-xl mx-auto">
+                <SearchBar
+                  placeholder="Search courses by title or platform..."
+                  value={search}
+                  onChange={setSearch}
+                />
+              </div>
               <CategoryFilter
                 categories={courseCategories}
                 selected={courseCategory}
@@ -433,65 +452,81 @@ export default function Learning() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {filteredCourses.map((course) => (
                 <Card
                   key={course.id}
-                  className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border/50"
+                  className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border/50 flex flex-col bg-card/80 backdrop-blur-sm"
                 >
-                  <div className="relative h-40 overflow-hidden bg-muted">
+                  <div className="relative h-36 overflow-hidden bg-muted">
                     <img
                       src={course.thumbnail}
                       alt={course.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/placeholder.svg";
                       }}
                     />
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute top-2 right-2">
                       {course.isFree ? (
-                        <Badge className="bg-emerald-500 text-white shadow-lg">Free</Badge>
+                        <Badge className="bg-emerald-500 text-white shadow-lg text-xs">Free</Badge>
                       ) : (
-                        <Badge className="bg-orange-500 text-white shadow-lg">Paid</Badge>
+                        <Badge className="bg-orange-500 text-white shadow-lg text-xs">Paid</Badge>
                       )}
                     </div>
-                    <div className="absolute top-3 left-3">
-                      <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
+                    <div className="absolute top-2 left-2">
+                      <Badge variant="secondary" className="bg-black/60 text-white backdrop-blur-sm text-xs">
                         {course.platform}
                       </Badge>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <div className="flex items-center gap-1.5">
+                        <Badge variant="secondary" className="bg-white/20 text-white backdrop-blur-sm text-xs">
+                          {course.level}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
+                  <CardHeader className="pb-2 flex-1">
+                    <CardTitle className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                       {course.title}
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground">by {course.instructor}</p>
+                    <p className="text-xs text-muted-foreground mt-1">by {course.instructor}</p>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="text-xs">
-                        {course.category}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
-                        {course.level}
-                      </Badge>
-                    </div>
-                    <Button className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600" asChild>
-                      <a href={course.link} target="_blank" rel="noopener noreferrer">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        View Course
-                      </a>
-                    </Button>
+                  <CardContent className="pt-0 pb-2">
+                    <Badge variant="outline" className="text-xs">
+                      {course.category}
+                    </Badge>
                   </CardContent>
+                  <CardFooter className="pt-2 pb-3 flex flex-col gap-2 border-t border-border/50">
+                    <div className="flex items-center justify-between w-full">
+                      <Button size="sm" className="flex-1 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-xs" asChild>
+                        <a href={course.link} target="_blank" rel="noopener noreferrer">
+                          <BookOpen className="mr-1.5 h-3 w-3" />
+                          View Course
+                        </a>
+                      </Button>
+                    </div>
+                    <div className="w-full flex justify-center border-t border-border/30 pt-2">
+                      <ResourceShareButtons 
+                        title={course.title} 
+                        resourceType="course" 
+                        resourceId={String(course.id)}
+                        platform={course.platform}
+                        compact={true}
+                      />
+                    </div>
+                  </CardFooter>
                 </Card>
               ))}
             </div>
 
             {filteredCourses.length === 0 && (
-              <div className="text-center py-12">
+              <div className="text-center py-16">
                 <GraduationCap className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No courses found matching your criteria</p>
+                <h3 className="text-lg font-semibold mb-2">No courses found</h3>
+                <p className="text-muted-foreground">Try adjusting your search or filter</p>
               </div>
             )}
           </TabsContent>
@@ -499,11 +534,13 @@ export default function Learning() {
           {/* YouTube Playlists Tab */}
           <TabsContent value="playlists">
             <div className="space-y-6 mb-8">
-              <SearchBar
-                placeholder="Search playlists..."
-                value={search}
-                onChange={setSearch}
-              />
+              <div className="max-w-xl mx-auto">
+                <SearchBar
+                  placeholder="Search playlists by title or channel..."
+                  value={search}
+                  onChange={setSearch}
+                />
+              </div>
               <CategoryFilter
                 categories={playlistCategories}
                 selected={playlistCategory}
@@ -511,114 +548,136 @@ export default function Learning() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {filteredPlaylists.map((playlist) => (
                 <Card
                   key={playlist.id}
-                  className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border/50"
+                  className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border/50 flex flex-col bg-card/80 backdrop-blur-sm"
                 >
-                  <div className="relative h-40 overflow-hidden bg-muted">
+                  <div className="relative h-36 overflow-hidden bg-muted">
                     <img
                       src={playlist.thumbnail}
                       alt={playlist.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/placeholder.svg";
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-xl">
-                        <Play className="w-8 h-8 text-white ml-1" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform">
+                        <Play className="w-7 h-7 text-white ml-1" />
                       </div>
                     </div>
-                    <div className="absolute top-3 left-3">
-                      <Badge className="bg-red-600 text-white shadow-lg">
+                    <div className="absolute top-2 left-2">
+                      <Badge className="bg-red-600 text-white shadow-lg text-xs">
                         <Video className="w-3 h-3 mr-1" />
                         {playlist.videos}
                       </Badge>
                     </div>
-                    <div className="absolute top-3 right-3">
-                      <Badge variant="secondary" className="bg-black/70 text-white text-xs backdrop-blur-sm">
+                    <div className="absolute top-2 right-2">
+                      <Badge variant="secondary" className="bg-black/60 text-white text-xs backdrop-blur-sm">
                         <Globe className="w-3 h-3 mr-1" />
                         {playlist.language}
                       </Badge>
                     </div>
                   </div>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
+                  <CardHeader className="pb-2 flex-1">
+                    <CardTitle className="text-sm font-semibold line-clamp-2 group-hover:text-red-500 transition-colors leading-tight">
                       {playlist.title}
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      <Youtube className="w-3 h-3" />
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                      <Youtube className="w-3 h-3 text-red-500" />
                       {playlist.channel}
                     </p>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="pt-0 pb-2">
                     <Badge variant="outline" className="text-xs">
                       {playlist.category}
                     </Badge>
-                    <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
+                  </CardContent>
+                  <CardFooter className="pt-2 pb-3 flex flex-col gap-2 border-t border-border/50">
+                    <Button size="sm" className="w-full h-8 bg-red-600 hover:bg-red-700 text-xs" asChild>
                       <a href={playlist.link} target="_blank" rel="noopener noreferrer">
-                        <Play className="mr-2 h-4 w-4" />
+                        <Play className="mr-1.5 h-3 w-3" />
                         Watch Playlist
                       </a>
                     </Button>
-                  </CardContent>
+                    <div className="w-full flex justify-center border-t border-border/30 pt-2">
+                      <ResourceShareButtons 
+                        title={playlist.title} 
+                        resourceType="playlist" 
+                        resourceId={String(playlist.id)}
+                        platform="YouTube"
+                        compact={true}
+                      />
+                    </div>
+                  </CardFooter>
                 </Card>
               ))}
             </div>
 
             {filteredPlaylists.length === 0 && (
-              <div className="text-center py-12">
+              <div className="text-center py-16">
                 <Youtube className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No playlists found matching your criteria</p>
+                <h3 className="text-lg font-semibold mb-2">No playlists found</h3>
+                <p className="text-muted-foreground">Try adjusting your search or filter</p>
               </div>
             )}
           </TabsContent>
 
           {/* Community Resources Tab */}
           <TabsContent value="community">
+            <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+              <div className="flex items-center gap-3 mb-2">
+                <Award className="w-5 h-5 text-purple-500" />
+                <h3 className="font-semibold">Community Contributed Resources</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">Resources shared by students and approved by our team. Submit yours to help others!</p>
+            </div>
+
             {isLoading ? (
               <div className="flex justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : communityResources.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {communityResources.map((resource) => (
                   <Card
                     key={resource.id}
-                    className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border/50"
+                    className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border/50 flex flex-col bg-card/80 backdrop-blur-sm"
                   >
-                    <div className="relative h-40 overflow-hidden bg-muted">
+                    <div className="relative h-36 overflow-hidden bg-muted">
                       <img
                         src={resource.thumbnail_url || "/placeholder.svg"}
                         alt={resource.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = "/placeholder.svg";
                         }}
                       />
-                      <div className="absolute top-3 left-3">
-                        <Badge className="bg-purple-600 text-white shadow-lg">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-purple-600 text-white shadow-lg text-xs capitalize">
                           {resource.resource_type}
                         </Badge>
                       </div>
                       {resource.is_free && (
-                        <div className="absolute top-3 right-3">
-                          <Badge className="bg-emerald-500 text-white shadow-lg">Free</Badge>
+                        <div className="absolute top-2 right-2">
+                          <Badge className="bg-emerald-500 text-white shadow-lg text-xs">Free</Badge>
                         </div>
                       )}
                     </div>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
+                    <CardHeader className="pb-2 flex-1">
+                      <CardTitle className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                         {resource.title}
                       </CardTitle>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground mt-1">
                         {resource.platform} • {resource.instructor_or_channel}
                       </p>
                     </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center gap-2 flex-wrap">
+                    <CardContent className="pt-0 pb-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         <Badge variant="outline" className="text-xs">
                           {resource.category}
                         </Badge>
@@ -627,19 +686,25 @@ export default function Learning() {
                             {resource.level}
                           </Badge>
                         )}
-                        {resource.language && (
-                          <Badge variant="outline" className="text-xs">
-                            {resource.language}
-                          </Badge>
-                        )}
                       </div>
-                      <Button className="w-full" asChild>
+                    </CardContent>
+                    <CardFooter className="pt-2 pb-3 flex flex-col gap-2 border-t border-border/50">
+                      <Button size="sm" className="w-full h-8 text-xs" asChild>
                         <a href={resource.link} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="mr-2 h-4 w-4" />
+                          <ExternalLink className="mr-1.5 h-3 w-3" />
                           View Resource
                         </a>
                       </Button>
-                    </CardContent>
+                      <div className="w-full flex justify-center border-t border-border/30 pt-2">
+                        <ResourceShareButtons 
+                          title={resource.title} 
+                          resourceType="resource" 
+                          resourceId={resource.id}
+                          platform={resource.platform}
+                          compact={true}
+                        />
+                      </div>
+                    </CardFooter>
                   </Card>
                 ))}
               </div>
@@ -665,24 +730,24 @@ export default function Learning() {
                 <p className="text-muted-foreground">Please sign in to view your submissions</p>
               </div>
             ) : mySubmissions.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {mySubmissions.map((submission) => (
-                  <Card key={submission.id} className="border-border/50">
+                  <Card key={submission.id} className="border-border/50 bg-card/80">
                     <CardHeader className="pb-2">
                       <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="text-base line-clamp-2">
+                        <CardTitle className="text-sm line-clamp-2">
                           {submission.title}
                         </CardTitle>
                         {getStatusBadge(submission.status)}
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {submission.platform} • {submission.category}
                       </p>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         {getStatusIcon(submission.status)}
-                        <span>
+                        <span className="text-xs">
                           {submission.status === 'pending' && "Awaiting admin review"}
                           {submission.status === 'approved' && "Published to community"}
                           {submission.status === 'rejected' && "Not approved"}

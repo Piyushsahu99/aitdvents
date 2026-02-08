@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Briefcase, Building, MapPin, Clock, Banknote, Send, CheckCircle2, Coins } from "lucide-react";
+import { Loader2, Briefcase, Building, MapPin, Clock, Banknote, Send, CheckCircle2, Coins, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface JobSubmissionModalProps {
@@ -32,6 +32,7 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
     description: "",
     requirements: "",
     apply_by: "",
+    apply_link: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -74,6 +75,7 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
         description: formData.description,
         requirements: formData.requirements,
         apply_by: formData.apply_by || null,
+        apply_link: formData.apply_link || null,
         status: "draft", // Needs admin approval
         created_by: user.id,
       });
@@ -96,6 +98,7 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
           description: "",
           requirements: "",
           apply_by: "",
+          apply_link: "",
         });
         onOpenChange(false);
         onSuccess?.();
@@ -260,15 +263,30 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
             </div>
           </div>
 
-          {/* Apply By */}
-          <div className="space-y-2">
-            <Label htmlFor="apply_by">Application Deadline</Label>
-            <Input
-              id="apply_by"
-              placeholder="e.g., 15th Jan 2026"
-              value={formData.apply_by}
-              onChange={(e) => handleInputChange("apply_by", e.target.value)}
-            />
+          {/* Apply By & Apply Link */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="apply_by">Application Deadline</Label>
+              <Input
+                id="apply_by"
+                placeholder="e.g., 15th Jan 2026"
+                value={formData.apply_by}
+                onChange={(e) => handleInputChange("apply_by", e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="apply_link" className="flex items-center gap-2">
+                <Link2 className="h-4 w-4 text-muted-foreground" />
+                Application Link
+              </Label>
+              <Input
+                id="apply_link"
+                type="url"
+                placeholder="https://company.com/careers/apply"
+                value={formData.apply_link}
+                onChange={(e) => handleInputChange("apply_link", e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Description */}

@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useToast } from "@/hooks/use-toast";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { ImageUploader } from "./ImageUploader";
-import { Edit, Loader2 } from "lucide-react";
+import { Edit, Loader2, Link2 } from "lucide-react";
 
 interface Job {
   id: string;
@@ -23,6 +23,7 @@ interface Job {
   description: string | null;
   requirements: string | null;
   apply_by: string | null;
+  apply_link: string | null;
 }
 
 interface JobEditorProps {
@@ -55,6 +56,7 @@ export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
           description: editingJob.description,
           requirements: editingJob.requirements,
           apply_by: editingJob.apply_by,
+          apply_link: editingJob.apply_link,
         })
         .eq("id", editingJob.id);
 
@@ -185,6 +187,19 @@ export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
                   onChange={(e) => setEditingJob({ ...editingJob, apply_by: e.target.value })}
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Link2 className="h-4 w-4" />
+                Application Link
+              </Label>
+              <Input
+                type="url"
+                value={editingJob.apply_link || ""}
+                onChange={(e) => setEditingJob({ ...editingJob, apply_link: e.target.value })}
+                placeholder="https://company.com/careers/apply"
+              />
             </div>
 
             <div className="space-y-2">

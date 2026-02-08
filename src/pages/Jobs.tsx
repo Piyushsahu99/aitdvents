@@ -3,13 +3,15 @@ import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus, Rocket, CheckCircle2, FileText, GraduationCap, ArrowRight, Share2 } from "lucide-react";
+import { Building, MapPin, Clock, Banknote, Loader2, Briefcase, Sparkles, Users, TrendingUp, ExternalLink, Send, Coins, Gift, Plus, Rocket, CheckCircle2, FileText, GraduationCap, ArrowRight, Eye } from "lucide-react";
 import { ShareButtons } from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthModal } from "@/components/AuthModal";
 import { JobSubmissionModal } from "@/components/JobSubmissionModal";
+import { JobDetailModal } from "@/components/JobDetailModal";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { differenceInDays, parseISO } from "date-fns";
 
 export default function Jobs() {
   const [search, setSearch] = useState("");
@@ -19,6 +21,8 @@ export default function Jobs() {
   const [user, setUser] = useState<any>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -66,14 +70,31 @@ export default function Jobs() {
         job.company.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const handleApply = () => {
+  const handleApply = (job?: any) => {
     if (!user) {
       setShowAuthModal(true);
+    } else if (job?.apply_link) {
+      window.open(job.apply_link, '_blank', 'noopener,noreferrer');
     } else {
       toast({
         title: "Application Submitted",
         description: "Your application has been submitted successfully!",
       });
+    }
+  };
+
+  const openJobDetail = (job: any) => {
+    setSelectedJob(job);
+    setShowDetailModal(true);
+  };
+
+  const getDaysRemaining = (applyBy: string | null) => {
+    if (!applyBy) return null;
+    try {
+      const deadline = parseISO(applyBy);
+      return differenceInDays(deadline, new Date());
+    } catch {
+      return null;
     }
   };
 
@@ -308,11 +329,16 @@ export default function Jobs() {
               </Card>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
-                {filteredJobs.map((job, index) => (
+                {filteredJobs.map((job, index) => {
+                  const daysRemaining = getDaysRemaining(job.apply_by);
+                  const isUrgent = daysRemaining !== null && daysRemaining <= 3 && daysRemaining >= 0;
+                  
+                  return (
                   <Card
                     key={job.id}
-                    className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in-up"
+                    className={`group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in-up cursor-pointer ${isUrgent ? 'ring-2 ring-red-500/30' : ''}`}
                     style={{ animationDelay: `${index * 0.05}s` }}
+                    onClick={() => openJobDetail(job)}
                   >
                     <CardContent className="p-0">
                       <div className="flex flex-col lg:flex-row">
@@ -385,7 +411,18 @@ export default function Jobs() {
                                 <Badge variant="outline" className="rounded-full">
                                   {job.category}
                                 </Badge>
-                                {job.apply_by && (
+                                {job.apply_link && (
+                                  <Badge variant="secondary" className="rounded-full bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                                    <ExternalLink className="h-3 w-3 mr-1" />
+                                    External Link
+                                  </Badge>
+                                )}
+                                {isUrgent && (
+                                  <Badge className="rounded-full bg-red-500 text-white border-0 animate-pulse">
+                                    {daysRemaining === 0 ? "Last day!" : `${daysRemaining} days left`}
+                                  </Badge>
+                                )}
+                                {job.apply_by && !isUrgent && (
                                   <Badge variant="secondary" className="rounded-full bg-amber-500/10 text-amber-600 border-amber-500/20">
                                     <Clock className="h-3 w-3 mr-1" />
                                     Apply by: {job.apply_by}
@@ -394,7 +431,7 @@ export default function Jobs() {
                               </div>
                             </div>
                             
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
                               {/* Share Buttons */}
                               <div className="flex items-center gap-1 justify-end">
                                 <span className="text-xs text-muted-foreground mr-1 hidden sm:inline">Share:</span>
@@ -406,20 +443,37 @@ export default function Jobs() {
                                   compact
                                 />
                               </div>
-                              <Button 
-                                onClick={() => job.apply_link ? window.open(job.apply_link, '_blank') : handleApply()}
-                                className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
-                              >
-                                Apply Now
-                                <ExternalLink className="h-4 w-4 ml-2" />
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openJobDetail(job);
+                                  }}
+                                  className="border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
+                                >
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  Details
+                                </Button>
+                                <Button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleApply(job);
+                                  }}
+                                  className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
+                                >
+                                  Apply
+                                  <ExternalLink className="h-4 w-4 ml-2" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                )})}
               </div>
 
               {filteredJobs.length === 0 && !loading && (
@@ -449,6 +503,12 @@ export default function Jobs() {
         open={showJobModal} 
         onOpenChange={setShowJobModal}
         onSuccess={fetchJobs}
+      />
+      <JobDetailModal
+        job={selectedJob}
+        open={showDetailModal}
+        onOpenChange={setShowDetailModal}
+        onApply={() => handleApply(selectedJob)}
       />
     </div>
   );

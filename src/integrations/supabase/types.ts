@@ -2256,6 +2256,7 @@ export type Database = {
       jobs: {
         Row: {
           apply_by: string | null
+          apply_link: string | null
           category: string
           company: string
           created_at: string | null
@@ -2273,6 +2274,7 @@ export type Database = {
         }
         Insert: {
           apply_by?: string | null
+          apply_link?: string | null
           category: string
           company: string
           created_at?: string | null
@@ -2290,6 +2292,7 @@ export type Database = {
         }
         Update: {
           apply_by?: string | null
+          apply_link?: string | null
           category?: string
           company?: string
           created_at?: string | null

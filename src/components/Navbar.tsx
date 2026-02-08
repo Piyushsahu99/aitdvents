@@ -26,22 +26,12 @@ const primaryNavLinks = [
   { name: "Quiz", path: "/quiz", icon: Gamepad2 },
 ];
 
-// Secondary navigation items - shown in "More" dropdown
+// Secondary navigation items - shown in "More" dropdown (desktop)
 const moreNavLinks = [
   { 
     category: "Main",
     items: [
       { name: "Store", path: "/store", icon: ShoppingBag },
-    ]
-  },
-  { 
-    category: "Learning",
-    items: [
-      { name: "Courses", path: "/courses", icon: BookOpen },
-      { name: "Study Materials", path: "/study-materials", icon: FileText },
-      { name: "My Courses", path: "/my-courses", icon: GraduationCap },
-      { name: "Practice", path: "/practice", icon: Target },
-      { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
     ]
   },
   { 
@@ -73,6 +63,16 @@ const moreNavLinks = [
       { name: "Alumni", path: "/alumni", icon: UserCircle },
     ]
   },
+];
+
+// Learning sub-items for mobile menu
+const learningSubItems = [
+  { name: "Learning Hub", path: "/learning", icon: GraduationCap },
+  { name: "Courses", path: "/courses", icon: BookOpen },
+  { name: "Study Materials", path: "/study-materials", icon: FileText },
+  { name: "My Courses", path: "/my-courses", icon: GraduationCap },
+  { name: "Practice", path: "/practice", icon: Target },
+  { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
 ];
 
 export const Navbar = () => {
@@ -331,6 +331,39 @@ export const Navbar = () => {
                                   <Icon className={`h-5 w-5 ${isActive(link.path) ? "text-white" : "text-primary"}`} />
                                 </div>
                                 <span className="font-semibold text-xs">{link.name}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Learning Section */}
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest px-2 flex items-center gap-1.5">
+                          <GraduationCap className="h-3 w-3" />
+                          Learning
+                        </p>
+                        <div className="bg-card/50 rounded-2xl border border-border/30 overflow-hidden">
+                          {learningSubItems.map((item, idx) => {
+                            const Icon = item.icon;
+                            return (
+                              <Link
+                                key={item.path}
+                                to={item.path}
+                                onClick={() => setIsOpen(false)}
+                                className={`flex items-center justify-between px-3 py-3 text-sm transition-all active:bg-muted/80 ${
+                                  isActive(item.path)
+                                    ? "bg-primary/10 text-primary font-semibold"
+                                    : "text-foreground"
+                                } ${idx !== learningSubItems.length - 1 ? "border-b border-border/30" : ""}`}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`p-1.5 rounded-lg ${isActive(item.path) ? "bg-primary/20" : "bg-muted/50"}`}>
+                                    <Icon className={`h-4 w-4 ${isActive(item.path) ? "text-primary" : "text-muted-foreground"}`} />
+                                  </div>
+                                  <span>{item.name}</span>
+                                </div>
+                                <ChevronRight className={`h-4 w-4 ${isActive(item.path) ? "text-primary" : "text-muted-foreground/50"}`} />
                               </Link>
                             );
                           })}

@@ -410,6 +410,63 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Our Mission - Tier 2/3 College Support */}
+      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gradient-to-br from-orange-50 via-amber-50/50 to-background dark:from-orange-950/20 dark:via-amber-950/10 dark:to-background">
+        <div className="container mx-auto">
+          <div className="text-center mb-6 sm:mb-8">
+            <Badge className="mb-3 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">
+              <Target className="w-3 h-3 mr-1" />
+              Our Mission
+            </Badge>
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 leading-tight">
+              Empowering <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Tier 2 & Tier 3</span> College Students
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              We believe every student deserves equal access to opportunities — no matter which college or city they're from. AITD Events is built to bridge the gap.
+            </p>
+          </div>
+
+          {/* Mission Features Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            {[
+              { icon: Calendar, title: "Share & Discover Events", desc: "Post events, hackathons & workshops for fellow students", color: "from-orange-500 to-amber-500" },
+              { icon: Briefcase, title: "Jobs & Internships", desc: "Share opportunities and help peers land their dream roles", color: "from-blue-500 to-cyan-500" },
+              { icon: FileText, title: "Upload Study Materials", desc: "Share handwritten notes, quantums, books & PYQ PDFs", color: "from-emerald-500 to-teal-500" },
+              { icon: Play, title: "Informational Reels", desc: "Create & watch educational short videos to learn faster", color: "from-purple-500 to-pink-500" },
+              { icon: Users, title: "Alumni & Mentor Connect", desc: "Get free roadmaps, guidance & career advice from seniors", color: "from-teal-500 to-cyan-500" },
+              { icon: BookOpen, title: "Free Courses", desc: "Access free courses, workshops & skill-building content", color: "from-indigo-500 to-blue-500" },
+              { icon: GraduationCap, title: "Scholarship Updates", desc: "Never miss a scholarship — all updates in one place", color: "from-amber-500 to-yellow-500" },
+              { icon: Lightbulb, title: "All-in-One Platform", desc: "Everything a student needs — learn, earn, grow & connect", color: "from-rose-500 to-orange-500" },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="group relative p-3 sm:p-4 rounded-2xl bg-card border border-border/50 hover:border-orange-500/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up"
+                  style={{ animationDelay: `${idx * 0.05}s` }}
+                >
+                  <div className={`inline-flex p-2 sm:p-2.5 rounded-xl bg-gradient-to-br ${item.color} text-white mb-2 sm:mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <h3 className="font-bold text-xs sm:text-sm mb-1 text-foreground leading-tight">{item.title}</h3>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Bottom CTA */}
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-full px-4 sm:px-6 py-2.5 sm:py-3">
+              <Sparkles className="h-4 w-4 text-orange-500" />
+              <span className="text-xs sm:text-sm font-medium text-orange-700 dark:text-orange-400">
+                Built by students, for students — from every corner of India 🇮🇳
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Earning Opportunities Banner */}
       <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 py-2.5 sm:py-3 px-4">
         <div className="container mx-auto">

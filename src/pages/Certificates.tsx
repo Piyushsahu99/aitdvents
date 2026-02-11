@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,9 +20,13 @@ import {
   Mail,
   Shield,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Share2,
+  Trophy
 } from "lucide-react";
 import html2canvas from "html2canvas";
+import { ShareCertificatePanel } from "@/components/certificates/ShareCertificatePanel";
+import { DigitalBadge } from "@/components/certificates/DigitalBadge";
 
 interface Certificate {
   id: string;
@@ -162,8 +166,7 @@ const Certificates = () => {
         recipient_email: generateEmail.trim(),
         user_id: user?.id || null,
         template_id: selectedTemplate || null,
-        linkedin_credential_id: certNumber,
-        verification_url: `${window.location.origin}/certificates?verify=true&code=${certNumber}`
+        verification_url: `${window.location.origin}/certificate/${certNumber}`
       })
       .select()
       .single();
@@ -195,8 +198,16 @@ const Certificates = () => {
   };
 
   const handleAddToLinkedIn = (cert: Certificate) => {
-    const linkedInUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent("AITD Events Certification")}&organizationId=0&issueYear=${new Date(cert.issue_date).getFullYear()}&issueMonth=${new Date(cert.issue_date).getMonth() + 1}&certUrl=${encodeURIComponent(cert.verification_url || `${window.location.origin}/certificates?verify=true&code=${cert.certificate_number}`)}&certId=${encodeURIComponent(cert.certificate_number)}`;
-    window.open(linkedInUrl, "_blank");
+    const publicUrl = `${window.location.origin}/certificate/${cert.certificate_number}`;
+    const linkedInUrl = new URL("https://www.linkedin.com/profile/add");
+    linkedInUrl.searchParams.set("startTask", "CERTIFICATION_NAME");
+    linkedInUrl.searchParams.set("name", "AITD Events - Certificate of Achievement");
+    linkedInUrl.searchParams.set("organizationName", "AITD Events");
+    linkedInUrl.searchParams.set("issueYear", String(new Date(cert.issue_date).getFullYear()));
+    linkedInUrl.searchParams.set("issueMonth", String(new Date(cert.issue_date).getMonth() + 1));
+    linkedInUrl.searchParams.set("certUrl", publicUrl);
+    linkedInUrl.searchParams.set("certId", cert.certificate_number);
+    window.open(linkedInUrl.toString(), "_blank");
   };
 
   const renderCertificatePreview = (cert: Certificate) => (
@@ -245,7 +256,7 @@ const Certificates = () => {
         
         <div className="pt-4">
           <p className="text-xs text-muted-foreground">
-            Verify at: {window.location.origin}/certificates?verify=true&code={cert.certificate_number}
+            Verify at: {window.location.origin}/certificate/{cert.certificate_number}
           </p>
         </div>
       </div>
@@ -376,16 +387,23 @@ const Certificates = () => {
 
                   {renderCertificatePreview(generatedCertificate)}
 
+                  <ShareCertificatePanel
+                    certificateNumber={generatedCertificate.certificate_number}
+                    recipientName={generatedCertificate.recipient_name}
+                    issueDate={generatedCertificate.issue_date}
+                    publicUrl={`${window.location.origin}/certificate/${generatedCertificate.certificate_number}`}
+                    certificateTitle="AITD Events - Certificate of Achievement"
+                  />
+
                   <div className="flex flex-wrap gap-3 justify-center">
                     <Button onClick={handleDownload} className="gap-2">
                       <Download className="w-4 h-4" /> Download PNG
                     </Button>
-                    <Button 
-                      onClick={() => handleAddToLinkedIn(generatedCertificate)} 
-                      className="gap-2 bg-[#0077B5] hover:bg-[#006699]"
-                    >
-                      <Linkedin className="w-4 h-4" /> Add to LinkedIn
-                    </Button>
+                    <Link to={`/certificate/${generatedCertificate.certificate_number}`} target="_blank">
+                      <Button variant="outline" className="gap-2">
+                        <ExternalLink className="w-4 h-4" /> View Public Page
+                      </Button>
+                    </Link>
                     <Button 
                       variant="outline" 
                       onClick={() => setGeneratedCertificate(null)}
@@ -505,24 +523,28 @@ const Certificates = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
+                            <Link to={`/certificate/${cert.certificate_number}`} target="_blank">
+                              <Button size="sm" variant="outline" className="gap-1">
+                                <ExternalLink className="w-3 h-3" /> View
+                              </Button>
+                            </Link>
+                            <Button
+                              size="sm"
+                              onClick={() => handleAddToLinkedIn(cert)}
+                              className="gap-1 bg-[hsl(201,100%,35%)] hover:bg-[hsl(201,100%,28%)] text-white"
+                            >
+                              <Linkedin className="w-3 h-3" />
+                            </Button>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => {
-                                setVerifyCode(cert.certificate_number);
-                                setActiveTab("verify");
-                                handleVerify();
+                                navigator.clipboard.writeText(`${window.location.origin}/certificate/${cert.certificate_number}`);
+                                toast({ title: "Link copied!" });
                               }}
                               className="gap-1"
                             >
-                              <ExternalLink className="w-3 h-3" /> View
-                            </Button>
-                            <Button
-                              size="sm"
-                              onClick={() => handleAddToLinkedIn(cert)}
-                              className="gap-1 bg-[#0077B5] hover:bg-[#006699]"
-                            >
-                              <Linkedin className="w-3 h-3" />
+                              <Share2 className="w-3 h-3" />
                             </Button>
                           </div>
                         </div>

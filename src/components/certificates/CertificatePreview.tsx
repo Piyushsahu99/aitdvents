@@ -25,7 +25,7 @@ export const CertificatePreview = ({
   achievementDetails,
   validUntil
 }: CertificatePreviewProps) => {
-  const verificationUrl = `${window.location.origin}/certificates?verify=${certificateNumber}`;
+  const verificationUrl = `${window.location.origin}/certificate/${certificateNumber}`;
 
   const getCertificateTitle = () => {
     switch (certificateType) {

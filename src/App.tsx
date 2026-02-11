@@ -63,6 +63,7 @@ import SpinWheel from "./pages/SpinWheel";
 import LuckyDraw from "./pages/LuckyDraw";
 import IPLAuction from "./pages/IPLAuction";
 import CreateAuction from "./pages/CreateAuction";
+import CertificatePublic from "./pages/CertificatePublic";
 
 const queryClient = new QueryClient();
 
@@ -132,6 +133,7 @@ const App = () => (
               <Route path="/lucky-draw" element={<LuckyDraw />} />
               <Route path="/ipl-auction" element={<IPLAuction />} />
               <Route path="/create-auction" element={<CreateAuction />} />
+              <Route path="/certificate/:certificateNumber" element={<CertificatePublic />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

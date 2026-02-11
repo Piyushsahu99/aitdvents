@@ -1,78 +1,95 @@
 
-# Improve Jobs Section with External Links
+
+# Enhanced Certificate & Badge System (Inspired by GiveMyCertificate)
 
 ## Overview
-Add the ability to include external job application links so users can apply directly on the company's website. Also improve the overall UI and add a job detail view.
+Upgrade the certificate system to be a professional credential platform with public shareable pages, one-click LinkedIn credential sharing with proper metadata, digital badges, and a polished verification experience.
 
-## Current Issues Found
-- The code references `job.apply_link` but this column doesn't exist in the database
-- Jobs don't have a way to link to external application pages
-- No detailed view modal for job listings
+## Key Features
 
-## Implementation Plan
+### 1. Public Certificate Page (Shareable URL)
+Create a dedicated public route `/certificate/:certificateNumber` that displays a beautifully rendered certificate anyone can view -- no login required. This is the link recipients share on social media and LinkedIn.
 
-### 1. Database Migration
-Add an `apply_link` column to the `jobs` table to store external job URLs:
+- Full certificate rendering with QR code, badge, and branding
+- Verification status prominently displayed (green checkmark)
+- One-click "Add to LinkedIn" and "Share" buttons on the page itself
+- Open Graph meta tags so the link previews nicely when shared
+- Clean URL format: `aitdevents.lovable.app/certificate/AITD-CERT-XXXXXXXX`
+
+### 2. Improved LinkedIn Credential Integration
+Fix and enhance the LinkedIn "Add to Profile" flow using LinkedIn's official Add-to-Profile URL format:
 
 ```text
-ALTER TABLE public.jobs 
-ADD COLUMN apply_link text;
-
-COMMENT ON COLUMN public.jobs.apply_link IS 'External URL where users can apply for the job';
+https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME
+  &name=AITD Events - [Certificate Type]
+  &organizationName=AITD Events
+  &issueYear=2026
+  &issueMonth=2
+  &certUrl=[public certificate page URL]
+  &certId=AITD-CERT-XXXXXXXX
 ```
 
-### 2. Update Job Submission Modal
-Modify `src/components/JobSubmissionModal.tsx`:
-- Add a new "Application Link" input field with link icon
-- Add validation to ensure it's a valid URL (optional field)
-- Include the `apply_link` in the insert statement
-- Add helpful placeholder text (e.g., "https://company.com/careers/job-123")
+This lets users add the credential to their LinkedIn profile with proper organization name, certificate ID, and a clickable verification URL.
 
-### 3. Update Admin Job Editor
-Modify `src/components/admin/JobEditor.tsx`:
-- Add the Job interface to include `apply_link`
-- Add an "Application Link" input field
-- Include `apply_link` in the update statement
+### 3. Digital Badges
+Add badge support so certificates can also be represented as compact, shareable badge images:
 
-### 4. Create Job Detail Modal
-Create new `src/components/JobDetailModal.tsx`:
-- Show full job description and requirements
-- Display company info, location, stipend prominently
-- Show deadline with visual indicator if urgent
-- Primary "Apply Now" button that opens external link in new tab
-- Share buttons for the job
-- Clean, modern modal design matching the platform aesthetic
+- Badge variants: circular achievement badges for leaderboard ranks, event participation, course completion
+- Badges rendered as downloadable images (PNG)
+- Badge gallery on user profile
 
-### 5. Improve Jobs Page UI
-Update `src/pages/Jobs.tsx`:
-- Add click-to-view functionality on job cards (opens detail modal)
-- Visual indicator when job has external link (external link icon)
-- Better mobile responsiveness
-- Show "View Details" button alongside "Apply Now"
-- Highlight jobs that are closing soon
+### 4. Enhanced Certificate Preview
+Upgrade the certificate rendering with:
+- Template-aware design (use template colors from the database)
+- QR code linking to the new public certificate page
+- Certificate type badge (Achievement, Participation, Completion, Membership)
+- Signature area with "AITD Events" branding
 
-## File Changes Summary
+### 5. Share Flow Improvements
+- Direct share to LinkedIn with credential metadata (not just a generic post)
+- Share to Twitter/X with certificate image preview
+- Copy shareable link button
+- Track shares in the database (`shared_to_linkedin`, `shared_to_twitter` columns already exist)
 
-| File | Action |
-|------|--------|
-| Database migration | Add `apply_link` column |
-| `src/components/JobSubmissionModal.tsx` | Add apply link field |
-| `src/components/admin/JobEditor.tsx` | Add apply link field |
-| `src/components/JobDetailModal.tsx` | **Create** - Job detail view |
-| `src/pages/Jobs.tsx` | Integrate detail modal, improve UI |
+## File Changes
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/pages/CertificatePublic.tsx` | **Create** | Public certificate view page at `/certificate/:id` |
+| `src/pages/Certificates.tsx` | Edit | Improve UI, better LinkedIn flow, add badge tab |
+| `src/components/certificates/CertificatePreview.tsx` | Edit | Template-aware rendering, improved design |
+| `src/components/certificates/DigitalBadge.tsx` | **Create** | Compact badge component for achievements |
+| `src/components/certificates/ShareCertificatePanel.tsx` | **Create** | Reusable share panel with LinkedIn credential, Twitter, copy link |
+| `src/App.tsx` | Edit | Add route for `/certificate/:certificateNumber` |
 
 ## Technical Details
 
-### Job Detail Modal Features
-- Full-screen on mobile, centered modal on desktop
-- Sections: Overview, Requirements, How to Apply
-- If `apply_link` exists: Opens external site in new tab
-- If no `apply_link`: Shows in-app application form (existing flow)
-- Share functionality with personalized referral links
+### Public Certificate Route
+- Route: `/certificate/:certificateNumber`
+- Uses the existing `verify_certificate` RPC function (SECURITY DEFINER, returns only safe fields)
+- No authentication required -- fully public
+- Renders the certificate with share buttons
 
-### UI Improvements
-- Card hover effects with subtle elevation
-- "Apply on Company Site" label when external link exists
-- Deadline countdown (e.g., "3 days left to apply")
-- Category color coding
-- Improved mobile card layout
+### LinkedIn Add-to-Profile URL Parameters
+The LinkedIn integration will use these specific parameters:
+- `name`: Certificate title (e.g., "AITD Events - Certificate of Excellence")
+- `organizationName`: "AITD Events"
+- `issueYear` / `issueMonth`: Extracted from `issue_date`
+- `certUrl`: Public certificate page URL
+- `certId`: The `certificate_number`
+
+### Share Tracking
+When a user shares to LinkedIn or Twitter, update the `issued_certificates` row:
+- Set `shared_to_linkedin = true` or `shared_to_twitter = true`
+- This uses the existing columns in the database
+
+### Digital Badge Component
+A compact circular/shield-shaped badge showing:
+- Certificate type icon (trophy, award, star)
+- Recipient name
+- Issue date
+- Downloadable as PNG via html2canvas
+
+### Certificate Page Open Graph Tags
+Update `index.html` or use `react-helmet` equivalent to set dynamic OG tags for certificate pages so shared links show a rich preview on social media.
+

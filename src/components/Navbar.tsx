@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket, Gamepad2 } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket, Gamepad2, Award, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -73,6 +74,7 @@ const learningSubItems = [
   { name: "My Courses", path: "/my-courses", icon: GraduationCap },
   { name: "Practice", path: "/practice", icon: Target },
   { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
+  { name: "Certificates", path: "/certificates", icon: Award },
 ];
 
 export const Navbar = () => {
@@ -234,33 +236,43 @@ export const Navbar = () => {
               </Button>
             </Link>
 
-            {/* Auth Buttons */}
+            {/* Auth */}
             {user ? (
-              <>
-                <Link to="/profile">
-                  <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300">
-                    <UserCircle className="mr-2 h-4 w-4" />
-                    Profile
-                  </Button>
-                </Link>
-                <Link to="/dashboard">
-                  <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
-                {isAdmin && (
-                  <Link to="/admin">
-                    <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Admin
-                    </Button>
-                  </Link>
-                )}
-                <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 transition-transform duration-300" onClick={handleSignOut}>
-                  Logout
-                </Button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-muted/50 transition-colors">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
+                        {user.email?.charAt(0)?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 p-1">
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <Link to="/profile" className="flex items-center gap-2 px-3 py-2">
+                      <UserCircle className="h-4 w-4" /> My Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <Link to="/dashboard" className="flex items-center gap-2 px-3 py-2">
+                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                      <Link to="/admin" className="flex items-center gap-2 px-3 py-2">
+                        <Settings className="h-4 w-4" /> Admin
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer rounded-lg text-destructive" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Link to="/auth">
                 <Button size="sm" className="rounded-xl bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
@@ -287,7 +299,7 @@ export const Navbar = () => {
               <SheetContent side="right" className="w-[85vw] max-w-[340px] sm:max-w-[380px] p-0 border-l border-primary/20">
                 <div className="flex flex-col h-full bg-gradient-to-b from-background to-muted/20">
                   {/* Header with gradient */}
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/10">
+                  <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/10">
                     <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-3">
                       <div className="relative">
                         <div className="absolute inset-0 bg-primary/30 rounded-xl blur-md" />
@@ -298,6 +310,19 @@ export const Navbar = () => {
                         <span className="text-[10px] text-muted-foreground">Learn • Compete • Grow</span>
                       </div>
                     </Link>
+                    {user && (
+                      <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-primary/10">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
+                            {user.email?.charAt(0)?.toUpperCase() || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-semibold text-foreground truncate">{user.email?.split("@")[0]}</span>
+                          <span className="text-[10px] text-muted-foreground truncate">{user.email}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Scrollable Content */}

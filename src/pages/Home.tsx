@@ -166,7 +166,7 @@ export default function Home() {
       <ProfileCompletionPopup />
 
       {/* ─── HERO SECTION ─── */}
-      <section className="relative min-h-[65vh] sm:min-h-[70vh] lg:min-h-[80vh] flex items-center py-8 sm:py-12 lg:py-16 px-4 overflow-hidden">
+      <section className="relative min-h-[55vh] sm:min-h-[60vh] lg:min-h-[75vh] flex items-center py-6 sm:py-10 lg:py-14 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -233,12 +233,16 @@ export default function Home() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-warning/20 rounded-full blur-3xl scale-90 animate-pulse-soft" />
                 <div className="absolute inset-4 bg-gradient-to-tr from-warning/15 to-primary/15 rounded-full blur-2xl scale-75 animate-float" />
-                <img
-                  src={aitdMascot}
-                  alt="AITD Events Mascot"
-                  className="relative z-10 w-52 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow mascot-hover"
-                  loading="eager"
-                />
+                <div className="relative z-10 rounded-full p-1 bg-gradient-to-br from-primary/30 via-warning/20 to-accent/30 animate-float-slow">
+                  <div className="rounded-full p-1 bg-background/50 backdrop-blur-sm">
+                    <img
+                      src={aitdMascot}
+                      alt="AITD Events Mascot"
+                      className="w-44 sm:w-64 md:w-72 lg:w-88 h-auto drop-shadow-2xl mascot-hover rounded-full"
+                      loading="eager"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -282,7 +286,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {missionItems.map((item, idx) => {
               const Icon = item.icon;
               return (
@@ -291,7 +295,8 @@ export default function Home() {
                   className="group p-3.5 sm:p-5 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up"
                   style={{ animationDelay: `${idx * 0.05}s` }}
                 >
-                  <div className={`inline-flex p-2 sm:p-2.5 rounded-xl bg-gradient-to-br ${item.color} text-white mb-2.5 sm:mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                  <div className={`relative inline-flex p-2 sm:p-2.5 rounded-xl bg-gradient-to-br ${item.color} text-white mb-2.5 sm:mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                    <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${item.color} opacity-20 blur-md`} />
                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <h3 className="font-bold text-xs sm:text-sm mb-1 text-foreground leading-tight">{item.title}</h3>
@@ -384,9 +389,17 @@ export default function Home() {
               {featuredCourses.map((course, index) => (
                 <Link key={course.id} to={`/courses/${course.id}`} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                   <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full border-border/50">
-                    <div className="relative h-36 sm:h-40 lg:h-48 overflow-hidden">
-                      <img src={course.thumbnail_url || "/placeholder.svg"} alt={course.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      {course.thumbnail_url ? (
+                        <img src={course.thumbnail_url} alt={course.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      ) : (
+                        <div className={`w-full h-full bg-gradient-to-br ${
+                          index % 3 === 0 ? 'from-blue-500 to-cyan-500' : index % 3 === 1 ? 'from-emerald-500 to-teal-500' : 'from-purple-500 to-pink-500'
+                        } flex items-center justify-center`}>
+                          <BookOpen className="w-10 h-10 text-white/40" />
+                        </div>
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <div className="absolute top-3 right-3">
                         {course.is_free ? (
@@ -445,7 +458,7 @@ export default function Home() {
               {highlightedEvents.map((event, index) => (
                 <Link key={event.id} to="/events" className="animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s` }}>
                   <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50 hover:border-primary/30">
-                    <div className="relative h-28 sm:h-32 lg:h-40 overflow-hidden">
+                    <div className="relative aspect-[4/3] overflow-hidden">
                       {event.poster_url ? (
                         <img src={event.poster_url} alt={event.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
@@ -561,7 +574,12 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-              {latestJobs.map((job, index) => (
+              {latestJobs.map((job, index) => {
+                const companyInitial = job.company?.charAt(0)?.toUpperCase() || "?";
+                const hashCode = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
+                const colors = ["bg-primary", "bg-accent", "bg-info", "bg-success", "bg-warning"];
+                const bgColor = colors[Math.abs(hashCode) % colors.length];
+                return (
                 <Link key={job.id} to="/jobs" className="animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s` }}>
                   <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer h-full border-border/50 hover:border-primary/30">
                     <CardHeader className="p-3 sm:p-4 pb-2">
@@ -570,7 +588,12 @@ export default function Home() {
                         <Badge variant="outline" className="text-[10px] sm:text-xs">{job.type}</Badge>
                       </div>
                       <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">{job.title}</CardTitle>
-                      <p className="text-xs sm:text-sm text-muted-foreground font-medium">{job.company}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${bgColor} flex items-center justify-center text-white text-[10px] sm:text-xs font-bold flex-shrink-0`}>
+                          {companyInitial}
+                        </div>
+                        <p className="text-xs sm:text-sm text-muted-foreground font-medium">{job.company}</p>
+                      </div>
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0">
                       <div className="flex flex-col gap-1 text-[10px] sm:text-xs text-muted-foreground">
@@ -580,7 +603,8 @@ export default function Home() {
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
+                );
+              })}
             </div>
 
             <div className="text-center">
@@ -688,23 +712,6 @@ export default function Home() {
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
               Join Our <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Community</span>
             </h2>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-8 sm:mb-12">
-            {[
-              { value: stats.students, label: "Students", sublabel: "Learning & Growing", color: "text-primary" },
-              { value: stats.jobs, label: "Jobs", sublabel: "Active Listings", color: "text-accent" },
-              { value: stats.events, label: "Events", sublabel: "Hackathons & More", color: "text-info" },
-              { value: stats.courses, label: "Courses", sublabel: "Expert-Led Content", color: "text-success" },
-            ].map((stat, index) => (
-              <div key={stat.label}
-                className="text-center p-4 sm:p-5 lg:p-6 rounded-xl lg:rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fade-in-up cursor-default"
-                style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 ${stat.color}`}>{stat.value.toLocaleString()}</div>
-                <div className="font-medium text-foreground text-sm sm:text-base">{stat.label}</div>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{stat.sublabel}</p>
-              </div>
-            ))}
           </div>
 
           <div className="max-w-xl mx-auto">

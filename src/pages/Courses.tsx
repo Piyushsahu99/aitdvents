@@ -205,12 +205,19 @@ export default function Courses() {
                 className="group hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden active:scale-[0.98]"
                 onClick={() => navigate(`/courses/${course.id}`)}
               >
-                <div className="relative h-36 sm:h-44 lg:h-48 overflow-hidden">
-                  <img
-                    src={course.thumbnail_url || "/placeholder.svg"}
-                    alt={course.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  {course.thumbnail_url ? (
+                    <img
+                      src={course.thumbnail_url}
+                      alt={course.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                      <BookOpen className="w-10 h-10 text-white/40" />
+                    </div>
+                  )}
                   <div className="absolute top-3 right-3">
                     {course.is_free ? (
                       <Badge className="bg-green-500 text-xs">Free</Badge>

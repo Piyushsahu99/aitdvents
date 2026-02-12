@@ -96,6 +96,8 @@ export const Footer = () => {
               <li><Link to="/events" className="text-muted-foreground hover:text-primary transition-colors">Events</Link></li>
               <li><Link to="/bounties" className="text-muted-foreground hover:text-primary transition-colors">Bounties</Link></li>
               <li><Link to="/jobs" className="text-muted-foreground hover:text-primary transition-colors">Jobs</Link></li>
+              <li><Link to="/courses" className="text-muted-foreground hover:text-primary transition-colors">Courses</Link></li>
+              <li><Link to="/scholarships" className="text-muted-foreground hover:text-primary transition-colors">Scholarships</Link></li>
               <li><Link to="/blogs" className="text-muted-foreground hover:text-primary transition-colors">Blogs</Link></li>
             </ul>
           </div>
@@ -138,7 +140,7 @@ export const Footer = () => {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 AITD Events. All rights reserved.</p>
+          <p>&copy; 2026 AITD Events. All rights reserved.</p>
         </div>
       </div>
     </footer>

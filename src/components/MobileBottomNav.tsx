@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Trophy, Briefcase, Menu, Calendar, ShoppingBag, BookOpen, Users, MessageCircle, Sparkles, Video, FileText, GraduationCap, Target, ChevronRight, Gamepad2 } from "lucide-react";
+import { Home, Trophy, Briefcase, Menu, Calendar, ShoppingBag, BookOpen, Users, MessageCircle, Sparkles, Video, FileText, GraduationCap, Target, ChevronRight, Gamepad2, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
@@ -62,6 +63,7 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
 export function MobileBottomNav() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [moreSearch, setMoreSearch] = useState("");
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -96,6 +98,9 @@ export function MobileBottomNav() {
               <span className={cn("text-[10px] font-medium mt-0.5", active && "font-semibold")}>
                 {item.label}
               </span>
+              {active && (
+                <div className="absolute bottom-1 w-4 h-1 rounded-full bg-primary" />
+              )}
             </Link>
           );
         })}
@@ -115,17 +120,35 @@ export function MobileBottomNav() {
               <span className="text-[10px] font-medium mt-0.5">More</span>
             </button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[65vh] rounded-t-3xl p-0 bg-background">
+          <SheetContent side="bottom" className="h-[70vh] rounded-t-3xl p-0 bg-background">
             <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mx-auto mt-2.5 mb-3" />
-            <ScrollArea className="h-full px-3 pb-6">
+            <div className="px-3 mb-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search pages..."
+                  value={moreSearch}
+                  onChange={(e) => setMoreSearch(e.target.value)}
+                  className="pl-9 h-9 rounded-xl bg-muted/50 border-border/30 text-sm"
+                />
+              </div>
+            </div>
+            <ScrollArea className="h-[calc(100%-5rem)] px-3 pb-6">
               <div className="space-y-4">
-                {allNavItems.map((category) => (
-                  <div key={category.category}>
+                {allNavItems.filter(cat => 
+                  !moreSearch || cat.items.some(i => i.name.toLowerCase().includes(moreSearch.toLowerCase()))
+                ).map((category) => {
+                  const filteredItems = moreSearch 
+                    ? category.items.filter(i => i.name.toLowerCase().includes(moreSearch.toLowerCase()))
+                    : category.items;
+                  if (filteredItems.length === 0) return null;
+                  return (
+                    <div key={category.category}>
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 px-1">
                       {category.category}
                     </p>
                     <div className="bg-card/50 rounded-xl border border-border/30 overflow-hidden">
-                      {category.items.map((item, idx) => {
+                      {filteredItems.map((item, idx) => {
                         const Icon = item.icon;
                         const active = isActive(item.path);
                         return (
@@ -138,7 +161,7 @@ export function MobileBottomNav() {
                               active
                                 ? "bg-primary/10 text-primary font-medium"
                                 : "text-foreground",
-                              idx !== category.items.length - 1 && "border-b border-border/30"
+                              idx !== filteredItems.length - 1 && "border-b border-border/30"
                             )}
                           >
                             <div className="flex items-center gap-2.5">
@@ -155,8 +178,9 @@ export function MobileBottomNav() {
                         );
                       })}
                     </div>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </ScrollArea>
           </SheetContent>

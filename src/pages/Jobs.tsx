@@ -347,15 +347,28 @@ export default function Jobs() {
                         
                         <div className="flex-1 p-6">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                            <div className="flex-1">
-                              {/* Header */}
-                              <div className="flex flex-wrap items-center gap-2 mb-3">
-                                <h3 className="text-xl font-bold text-foreground group-hover:text-orange-500 transition-colors">
-                                  {job.title}
-                                </h3>
-                                <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0`}>
-                                  {job.type}
-                                </Badge>
+                           <div className="flex-1">
+                              {/* Header with company initial */}
+                              <div className="flex items-center gap-3 mb-3">
+                                {(() => {
+                                  const initial = job.company?.charAt(0)?.toUpperCase() || "?";
+                                  const hash = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
+                                  const bgColors = ["bg-primary", "bg-accent", "bg-info", "bg-success", "bg-warning"];
+                                  const bg = bgColors[Math.abs(hash) % bgColors.length];
+                                  return (
+                                    <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
+                                      {initial}
+                                    </div>
+                                  );
+                                })()}
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h3 className="text-xl font-bold text-foreground group-hover:text-orange-500 transition-colors">
+                                    {job.title}
+                                  </h3>
+                                  <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0`}>
+                                    {job.type}
+                                  </Badge>
+                                </div>
                               </div>
                               
                               {/* Details Grid */}

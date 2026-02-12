@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck, Gamepad2, BarChart3, UserCog } from "lucide-react";
+import { LogOut, Plus, Loader2, Sparkles, Calendar, Users, Eye, Edit, Trash2, CheckCircle, XCircle, FileText, Shield, DollarSign, GraduationCap, Briefcase, Trophy, Database, Play, ShoppingBag, Gift, Tag, Package, Image, BookOpen, LayoutDashboard, Home, Award, UserCheck, Gamepad2, BarChart3, UserCog, Camera } from "lucide-react";
 import { EventEditor } from "@/components/admin/EventEditor";
 import { JobEditor } from "@/components/admin/JobEditor";
 import { ContentManager } from "@/components/admin/ContentManager";
@@ -35,6 +35,7 @@ import { QuizManager } from "@/components/admin/QuizManager";
 import { CRMDashboard } from "@/components/crm/CRMDashboard";
 import { PlatformMetrics } from "@/components/admin/PlatformMetrics";
 import { LearningResourcesManager } from "@/components/admin/LearningResourcesManager";
+import { EventGalleryManager } from "@/components/admin/EventGalleryManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -584,6 +585,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="quiz" className="text-xs sm:text-sm px-2 sm:px-3"><Gamepad2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Live Quiz</span><span className="sm:hidden">Quiz</span></TabsTrigger>
               <TabsTrigger value="crm" className="text-xs sm:text-sm px-2 sm:px-3"><UserCog className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CRM</TabsTrigger>
               <TabsTrigger value="metrics" className="text-xs sm:text-sm px-2 sm:px-3"><BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Metrics</span></TabsTrigger>
+              <TabsTrigger value="gallery" className="text-xs sm:text-sm px-2 sm:px-3"><Camera className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Gallery</span></TabsTrigger>
             </TabsList>
           </div>
 
@@ -1101,6 +1103,11 @@ export default function AdminDashboard() {
           {/* Platform Metrics Tab */}
           <TabsContent value="metrics">
             <PlatformMetrics />
+          </TabsContent>
+
+          {/* Event Gallery Tab */}
+          <TabsContent value="gallery">
+            <EventGalleryManager />
           </TabsContent>
         </Tabs>
       </div>

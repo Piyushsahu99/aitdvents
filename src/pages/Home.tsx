@@ -13,7 +13,7 @@ import {
   Calendar, Briefcase, GraduationCap, Sparkles, Users, Trophy,
   Target, Building, Zap, ArrowRight, BookOpen, Star, Clock, Play,
   CheckCircle2, Send, FileText, Rocket, TrendingUp, Coins, Globe,
-  Lightbulb, Gamepad2, Heart, Megaphone,
+  Lightbulb, Gamepad2, Heart, Megaphone, Camera,
 } from "lucide-react";
 
 interface Course {
@@ -81,6 +81,12 @@ export default function Home() {
     fetchHighlightedEvents();
     fetchLatestJobs();
     fetchPlatformStats();
+
+    // Auto-refresh stats every 30 seconds for real-time feel
+    const interval = setInterval(() => {
+      fetchPlatformStats();
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchHighlightedEvents = async () => {
@@ -674,6 +680,29 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─── EVENT PHOTO GALLERY CTA ─── */}
+      <section className="py-10 sm:py-14 lg:py-16 px-4 bg-gradient-to-r from-primary/5 via-accent/5 to-warning/5">
+        <div className="container mx-auto text-center">
+          <Badge className="mb-3 bg-primary/10 text-primary border-primary/20 text-xs sm:text-sm">
+            <Camera className="w-3 h-3 mr-1" />
+            Event Memories
+          </Badge>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">
+            Relive Our <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">Past Events</span>
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto mb-5">
+            Access event photos from Google Drive. Enter the password shared during the event to unlock your gallery!
+          </p>
+          <Link to="/gallery">
+            <Button className="rounded-xl px-6 active:scale-95 transition-transform">
+              <Camera className="mr-2 h-4 w-4" />
+              View Photo Gallery
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </section>
 

@@ -1778,6 +1778,51 @@ export type Database = {
         }
         Relationships: []
       }
+      event_galleries: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          drive_link: string
+          event_date: string | null
+          event_title: string
+          id: string
+          is_active: boolean | null
+          password: string
+          photo_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          drive_link: string
+          event_date?: string | null
+          event_title: string
+          id?: string
+          is_active?: boolean | null
+          password: string
+          photo_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          drive_link?: string
+          event_date?: string | null
+          event_title?: string
+          id?: string
+          is_active?: boolean | null
+          password?: string
+          photo_count?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_rsvps: {
         Row: {
           additional_notes: string | null

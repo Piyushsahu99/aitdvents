@@ -1,95 +1,134 @@
 
 
-# Enhanced Certificate & Badge System (Inspired by GiveMyCertificate)
+# Improve UI, Theme, Navigation & Image Handling
 
 ## Overview
-Upgrade the certificate system to be a professional credential platform with public shareable pages, one-click LinkedIn credential sharing with proper metadata, digital badges, and a polished verification experience.
+A comprehensive UI refresh across the homepage and key pages, with navigation improvements and standardized image sizing for a more polished, consistent experience.
 
-## Key Features
+---
 
-### 1. Public Certificate Page (Shareable URL)
-Create a dedicated public route `/certificate/:certificateNumber` that displays a beautifully rendered certificate anyone can view -- no login required. This is the link recipients share on social media and LinkedIn.
+## 1. Homepage UI Refresh
 
-- Full certificate rendering with QR code, badge, and branding
-- Verification status prominently displayed (green checkmark)
-- One-click "Add to LinkedIn" and "Share" buttons on the page itself
-- Open Graph meta tags so the link previews nicely when shared
-- Clean URL format: `aitdevents.lovable.app/certificate/AITD-CERT-XXXXXXXX`
+### Hero Section
+- Tighten vertical spacing; reduce min-height on mobile to avoid excessive whitespace
+- Make the mascot image slightly smaller on mobile (w-44 instead of w-52) to prevent it from dominating the viewport
+- Add a subtle animated border/glow ring around the mascot for visual interest
+- Improve the trust pills row with better wrapping on small screens
 
-### 2. Improved LinkedIn Credential Integration
-Fix and enhance the LinkedIn "Add to Profile" flow using LinkedIn's official Add-to-Profile URL format:
+### Mission Section
+- Reduce gap between mission cards on mobile for a denser, more app-like feel
+- Add subtle icon background blurs for depth
+- Tighten heading sizes for better mobile readability
 
-```text
-https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME
-  &name=AITD Events - [Certificate Type]
-  &organizationName=AITD Events
-  &issueYear=2026
-  &issueMonth=2
-  &certUrl=[public certificate page URL]
-  &certId=AITD-CERT-XXXXXXXX
-```
+### Quick Access Features
+- Increase icon size slightly and add labels below for clearer tap targets
+- Add a light background tint to the active/hovered feature card
 
-This lets users add the credential to their LinkedIn profile with proper organization name, certificate ID, and a clickable verification URL.
+### Featured Courses Section
+- Standardize course thumbnail to `aspect-[16/10]` with `object-cover` for uniform card heights
+- Add a fallback gradient when no thumbnail exists (currently uses placeholder.svg which looks broken)
 
-### 3. Digital Badges
-Add badge support so certificates can also be represented as compact, shareable badge images:
+### Events Section
+- Standardize event card images to `aspect-[4/3]` consistently (already in EventCard but homepage has custom cards)
+- Replace the inline homepage event cards with the reusable `EventCard` component for consistency
 
-- Badge variants: circular achievement badges for leaderboard ranks, event participation, course completion
-- Badges rendered as downloadable images (PNG)
-- Badge gallery on user profile
+### Jobs Section
+- Add company logo placeholder (colored initial circle) for visual interest
+- Tighten card padding on mobile
 
-### 4. Enhanced Certificate Preview
-Upgrade the certificate rendering with:
-- Template-aware design (use template colors from the database)
-- QR code linking to the new public certificate page
-- Certificate type badge (Achievement, Participation, Completion, Membership)
-- Signature area with "AITD Events" branding
+### Games Arena
+- Slightly reduce section padding on mobile
+- Make game preview cards tappable with proper links
 
-### 5. Share Flow Improvements
-- Direct share to LinkedIn with credential metadata (not just a generic post)
-- Share to Twitter/X with certificate image preview
-- Copy shareable link button
-- Track shares in the database (`shared_to_linkedin`, `shared_to_twitter` columns already exist)
+### Campus Ambassador & CTA
+- No major changes needed, minor spacing tweaks
 
-## File Changes
+### Community/Leaderboard
+- Reduce redundancy -- the stats appear twice (hero + community section). Remove the community stats grid and keep only the leaderboard
+
+---
+
+## 2. Navigation Improvements
+
+### Top Navbar (`Navbar.tsx`)
+- Reduce desktop button clutter: combine Profile/Dashboard into a single user avatar dropdown
+- Add active indicator (bottom bar) animation for desktop nav links
+- Improve mobile hamburger menu: add user avatar and name at the top when logged in
+- Add a "Certificates" link under the Learning section in mobile menu
+
+### Bottom Nav (`MobileBottomNav.tsx`)
+- Add a subtle active indicator dot/pill beneath the active icon (currently just color change)
+- Increase the bottom sheet height from 65vh to 70vh for more breathing room
+- Add a search bar at the top of the "More" bottom sheet for quick navigation
+
+---
+
+## 3. Image Size Standardization
+
+### Event Images
+- All event cards (homepage + Events page): `aspect-[4/3]` with `object-cover` -- already in `EventCard.tsx`, but homepage renders custom cards. Fix by reusing `EventCard` or matching the aspect ratio.
+
+### Course Thumbnails
+- Standardize to `aspect-[16/10]` across homepage featured courses and Courses page
+- Add a gradient fallback for missing thumbnails
+
+### Job Cards
+- No images currently, but add a colored company initial circle (first letter of company name) as a visual anchor
+
+### General
+- Add `loading="lazy"` to all off-screen images (most already have it)
+- Ensure all images use `object-cover` to prevent stretching/gaps
+
+---
+
+## 4. Footer Enhancement
+- Update copyright year from 2025 to 2026
+- Add "Courses" and "Scholarships" to quick links
+- Minor spacing adjustments
+
+---
+
+## File Changes Summary
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/pages/CertificatePublic.tsx` | **Create** | Public certificate view page at `/certificate/:id` |
-| `src/pages/Certificates.tsx` | Edit | Improve UI, better LinkedIn flow, add badge tab |
-| `src/components/certificates/CertificatePreview.tsx` | Edit | Template-aware rendering, improved design |
-| `src/components/certificates/DigitalBadge.tsx` | **Create** | Compact badge component for achievements |
-| `src/components/certificates/ShareCertificatePanel.tsx` | **Create** | Reusable share panel with LinkedIn credential, Twitter, copy link |
-| `src/App.tsx` | Edit | Add route for `/certificate/:certificateNumber` |
+| `src/pages/Home.tsx` | Edit | Hero spacing, reuse EventCard, standardize image aspects, remove duplicate stats, tighten mobile spacing |
+| `src/components/Navbar.tsx` | Edit | User avatar dropdown, add Certificates to learning, active link animation |
+| `src/components/MobileBottomNav.tsx` | Edit | Active indicator pill, search bar in More sheet, height increase |
+| `src/pages/Courses.tsx` | Edit | Standardize thumbnail aspect ratio, gradient fallback |
+| `src/pages/Jobs.tsx` | Edit | Company initial avatar, minor card UI polish |
+| `src/components/EventCard.tsx` | Edit | Minor polish -- ensure consistent border radius and shadow |
+| `src/components/Footer.tsx` | Edit | Update year, add more quick links |
+| `src/index.css` | Edit | Add active-indicator utility class, refine shadow tokens |
+
+---
 
 ## Technical Details
 
-### Public Certificate Route
-- Route: `/certificate/:certificateNumber`
-- Uses the existing `verify_certificate` RPC function (SECURITY DEFINER, returns only safe fields)
-- No authentication required -- fully public
-- Renders the certificate with share buttons
+### Image Aspect Ratio Strategy
+All image containers will use Tailwind's `aspect-[ratio]` utility with `object-cover` and `overflow-hidden` to ensure:
+- Consistent card heights in grids
+- No image stretching or letterboxing
+- Graceful fallback gradients when images are missing
 
-### LinkedIn Add-to-Profile URL Parameters
-The LinkedIn integration will use these specific parameters:
-- `name`: Certificate title (e.g., "AITD Events - Certificate of Excellence")
-- `organizationName`: "AITD Events"
-- `issueYear` / `issueMonth`: Extracted from `issue_date`
-- `certUrl`: Public certificate page URL
-- `certId`: The `certificate_number`
+### Navigation User Dropdown
+Replace the separate Profile, Dashboard, and Logout buttons with a single avatar dropdown:
+```text
+[Avatar] v
+  -- My Profile
+  -- Dashboard  
+  -- Admin (if admin)
+  -- Sign Out
+```
 
-### Share Tracking
-When a user shares to LinkedIn or Twitter, update the `issued_certificates` row:
-- Set `shared_to_linkedin = true` or `shared_to_twitter = true`
-- This uses the existing columns in the database
+### Active Nav Indicator
+Add an animated bottom border that slides to the active link using CSS transitions, replacing the current full-background highlight for a cleaner look on desktop.
 
-### Digital Badge Component
-A compact circular/shield-shaped badge showing:
-- Certificate type icon (trophy, award, star)
-- Recipient name
-- Issue date
-- Downloadable as PNG via html2canvas
-
-### Certificate Page Open Graph Tags
-Update `index.html` or use `react-helmet` equivalent to set dynamic OG tags for certificate pages so shared links show a rich preview on social media.
+### Company Initial Avatar (Jobs)
+Generate a colored circle from the first letter of the company name:
+```text
+[B] Buildspace
+[G] Google
+```
+Color is derived from a hash of the company name for consistency.
 

@@ -126,15 +126,37 @@ export default function Auth() {
   }, [resendCountdown]);
 
   useEffect(() => {
+    // Listen for PASSWORD_RECOVERY auth event FIRST (before any URL manipulation)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setShowResetPassword(true);
+        // Clean up URL only AFTER Supabase has processed the tokens
+        setTimeout(() => {
+          window.history.replaceState({}, '', '/auth');
+        }, 100);
+      }
+      if (event === 'SIGNED_IN' && !showResetPassword) {
+        // Auto-route on sign in (e.g., after email verification redirect)
+        checkSession();
+      }
+    });
+
     // Check for recovery token in URL hash fragment (Supabase sends type=recovery in hash)
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    if (hashParams.get('type') === 'recovery') {
-      setShowResetPassword(true);
-      // Clean up URL to prevent issues on refresh
-      window.history.replaceState({}, '', '/auth');
+    const hashFragment = window.location.hash.substring(1);
+    if (hashFragment) {
+      const hashParams = new URLSearchParams(hashFragment);
+      const hashType = hashParams.get('type');
+      if (hashType === 'recovery') {
+        // Don't clear URL yet — let onAuthStateChange handle it after Supabase processes tokens
+        setShowResetPassword(true);
+      }
     }
 
-    checkSession();
+    // Only check session if not in a recovery/reset flow
+    if (!showResetPassword && !isResetFlow) {
+      checkSession();
+    }
+    
     if (adminInviteCode) {
       validateAdminInvite();
     }
@@ -157,15 +179,6 @@ export default function Auth() {
       }
       setShowVerificationError(true);
     }
-
-    // Listen for PASSWORD_RECOVERY auth event
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setShowResetPassword(true);
-        // Clean up URL
-        window.history.replaceState({}, '', '/auth');
-      }
-    });
 
     return () => subscription.unsubscribe();
   }, [adminInviteCode, isResetFlow, isVerifiedFlow, errorCode, errorDescription]);
@@ -219,7 +232,7 @@ export default function Auth() {
       emailOnlySchema.parse({ email });
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth?reset=true`,
+        redirectTo: `${window.location.origin}/auth`,
       });
 
       if (error) throw error;
@@ -279,9 +292,12 @@ export default function Auth() {
 
       if (error) throw error;
 
+      // Sign out after password reset so user logs in fresh with new password
+      await supabase.auth.signOut();
+
       toast({
         title: "Password updated!",
-        description: "Your password has been reset successfully. Please login.",
+        description: "Your password has been reset successfully. Please login with your new password.",
       });
       
       setShowResetPassword(false);
@@ -391,7 +407,7 @@ export default function Auth() {
           if (error.message?.includes("Invalid login credentials")) {
             toast({
               title: "Invalid credentials",
-              description: "Please check your email and password and try again.",
+              description: "The email or password you entered is incorrect. If you've forgotten your password, use the 'Forgot password?' link.",
               variant: "destructive",
             });
             setLoading(false);
@@ -402,7 +418,16 @@ export default function Auth() {
             setShowVerificationPending(true);
             toast({
               title: "Email not verified",
-              description: "Please check your inbox for the verification link.",
+              description: "Please check your inbox for the verification link before signing in.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+          if (error.message?.includes("Too many requests") || error.status === 429) {
+            toast({
+              title: "Too many attempts",
+              description: "Please wait a few minutes before trying again.",
               variant: "destructive",
             });
             setLoading(false);
@@ -885,7 +910,8 @@ export default function Auth() {
               <p className="text-muted-foreground">
                 Enter your new password below
               </p>
-            </div>
+                <PasswordStrengthMeter password={password} />
+              </div>
 
             <form onSubmit={handleResetPassword} className="space-y-5">
               <div className="space-y-2">

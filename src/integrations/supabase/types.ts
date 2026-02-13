@@ -4040,6 +4040,63 @@ export type Database = {
         }
         Relationships: []
       }
+      showcase_members: {
+        Row: {
+          bio: string | null
+          college: string | null
+          created_at: string
+          created_by: string | null
+          designation: string
+          display_order: number | null
+          full_name: string
+          github_url: string | null
+          id: string
+          instagram_url: string | null
+          is_active: boolean | null
+          linkedin_url: string | null
+          photo_url: string | null
+          role_type: string
+          twitter_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          college?: string | null
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          display_order?: number | null
+          full_name: string
+          github_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          is_active?: boolean | null
+          linkedin_url?: string | null
+          photo_url?: string | null
+          role_type?: string
+          twitter_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          college?: string | null
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          display_order?: number | null
+          full_name?: string
+          github_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          is_active?: boolean | null
+          linkedin_url?: string | null
+          photo_url?: string | null
+          role_type?: string
+          twitter_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content_key: string

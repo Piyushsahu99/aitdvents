@@ -46,6 +46,8 @@ const moreNavLinks = [
   { 
     category: "Connect",
     items: [
+      { name: "Our Team", path: "/our-team", icon: Users },
+      { name: "Event Gallery", path: "/gallery", icon: Calendar },
       { name: "Network", path: "/network", icon: Users },
       { name: "Groups", path: "/groups", icon: Users },
       { name: "Community", path: "/community", icon: MessageCircle },

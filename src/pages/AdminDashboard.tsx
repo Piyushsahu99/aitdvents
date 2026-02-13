@@ -36,6 +36,7 @@ import { CRMDashboard } from "@/components/crm/CRMDashboard";
 import { PlatformMetrics } from "@/components/admin/PlatformMetrics";
 import { LearningResourcesManager } from "@/components/admin/LearningResourcesManager";
 import { EventGalleryManager } from "@/components/admin/EventGalleryManager";
+import { ShowcaseMemberManager } from "@/components/admin/ShowcaseMemberManager";
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -586,6 +587,7 @@ export default function AdminDashboard() {
               <TabsTrigger value="crm" className="text-xs sm:text-sm px-2 sm:px-3"><UserCog className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />CRM</TabsTrigger>
               <TabsTrigger value="metrics" className="text-xs sm:text-sm px-2 sm:px-3"><BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Metrics</span></TabsTrigger>
               <TabsTrigger value="gallery" className="text-xs sm:text-sm px-2 sm:px-3"><Camera className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Gallery</span></TabsTrigger>
+              <TabsTrigger value="showcase" className="text-xs sm:text-sm px-2 sm:px-3"><Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="hidden sm:inline">Showcase</span></TabsTrigger>
             </TabsList>
           </div>
 
@@ -1108,6 +1110,11 @@ export default function AdminDashboard() {
           {/* Event Gallery Tab */}
           <TabsContent value="gallery">
             <EventGalleryManager />
+          </TabsContent>
+
+          {/* Showcase Members Tab */}
+          <TabsContent value="showcase">
+            <ShowcaseMemberManager />
           </TabsContent>
         </Tabs>
       </div>

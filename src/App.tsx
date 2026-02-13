@@ -65,6 +65,7 @@ import IPLAuction from "./pages/IPLAuction";
 import CreateAuction from "./pages/CreateAuction";
 import CertificatePublic from "./pages/CertificatePublic";
 import EventGallery from "./pages/EventGallery";
+import OurTeam from "./pages/OurTeam";
 
 const queryClient = new QueryClient();
 
@@ -136,6 +137,7 @@ const App = () => (
               <Route path="/create-auction" element={<CreateAuction />} />
               <Route path="/certificate/:certificateNumber" element={<CertificatePublic />} />
               <Route path="/gallery" element={<EventGallery />} />
+              <Route path="/our-team" element={<OurTeam />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

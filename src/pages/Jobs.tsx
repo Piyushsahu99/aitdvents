@@ -336,7 +336,7 @@ export default function Jobs() {
                   return (
                   <Card
                     key={job.id}
-                    className={`group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in-up cursor-pointer ${isUrgent ? 'ring-2 ring-red-500/30' : ''}`}
+                    className={`group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in cursor-pointer ${isUrgent ? 'ring-2 ring-red-500/30' : ''}`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                     onClick={() => openJobDetail(job)}
                   >

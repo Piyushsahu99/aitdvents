@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileCompletionPopup } from "@/components/ProfileCompletionPopup";
 import { ContributorLeaderboard } from "@/components/ContributorLeaderboard";
+import { EventCard } from "@/components/EventCard";
 import { POINT_VALUES } from "@/hooks/useEarnCoins";
 import aitdMascot from "@/assets/aitd-mascot.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -45,6 +46,7 @@ interface Event {
   days_left: number | null;
   applied_count: number;
   created_at: string | null;
+  college?: string | null;
 }
 
 interface Job {
@@ -167,12 +169,19 @@ export default function Home() {
     { icon: Lightbulb, title: "All-in-One Platform", desc: "Everything a student needs — learn, earn, grow & connect", color: "from-rose-500 to-orange-500" },
   ];
 
+  const gameCards = [
+    { title: "Live Quiz", icon: Gamepad2, color: "from-purple-400 to-pink-400", badge: "Popular", link: "/quiz" },
+    { title: "IPL Auction", icon: Trophy, color: "from-blue-400 to-cyan-400", badge: "Coming Soon", link: "/ipl-auction" },
+    { title: "Spin & Win", icon: Target, color: "from-orange-400 to-amber-400", badge: "Coming Soon", link: "/spin-wheel" },
+    { title: "Lucky Draw", icon: Lightbulb, color: "from-green-400 to-emerald-400", badge: "Coming Soon", link: "/lucky-draw" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <ProfileCompletionPopup />
 
       {/* ─── HERO SECTION ─── */}
-      <section className="relative min-h-[55vh] sm:min-h-[60vh] lg:min-h-[75vh] flex items-center py-6 sm:py-10 lg:py-14 px-4 overflow-hidden">
+      <section className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[70vh] flex items-center py-5 sm:py-8 lg:py-14 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -182,25 +191,25 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left order-2 lg:order-1">
-              <Badge className="mb-4 px-3 py-1.5 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20 animate-fade-in-down">
+              <Badge className="mb-3 px-3 py-1.5 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20 animate-fade-in-down">
                 <Heart className="h-3.5 w-3.5 mr-1.5 text-primary" />
                 Built for Tier 2 & Tier 3 College Students
               </Badge>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 animate-fade-in-up leading-tight tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 animate-fade-in-up leading-tight tracking-tight">
                 <span className="text-primary">AITD</span>{" "}
                 <span className="text-foreground">Events</span>
-                <span className="block mt-2 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold">
+                <span className="block mt-1.5 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold">
                   <span className="text-foreground">Learn.</span>{" "}
                   <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">Earn.</span>{" "}
                   <span className="text-foreground">Grow.</span>
                 </span>
               </h1>
 
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-fade-in-up">
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-5 sm:mb-7 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-fade-in-up">
                 India's student-powered platform where you share opportunities, upload notes, watch reels, find jobs & scholarships — all at one place.
               </p>
 
@@ -220,7 +229,7 @@ export default function Home() {
               </div>
 
               {/* Trust pills */}
-              <div className="flex flex-wrap items-center gap-2 mt-6 justify-center lg:justify-start animate-fade-in-up">
+              <div className="flex flex-wrap items-center gap-2 mt-5 justify-center lg:justify-start animate-fade-in-up">
                 {[
                   { icon: CheckCircle2, label: "100% Free" },
                   { icon: Coins, label: "Earn While Learning" },
@@ -239,12 +248,12 @@ export default function Home() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-warning/20 rounded-full blur-3xl scale-90 animate-pulse-soft" />
                 <div className="absolute inset-4 bg-gradient-to-tr from-warning/15 to-primary/15 rounded-full blur-2xl scale-75 animate-float" />
-                <div className="relative z-10 rounded-full p-1 bg-gradient-to-br from-primary/30 via-warning/20 to-accent/30 animate-float-slow">
+                <div className="relative z-10 rounded-full p-1 bg-gradient-to-br from-primary/30 via-warning/20 to-accent/30 ring-2 ring-primary/20 ring-offset-2 ring-offset-background animate-float-slow">
                   <div className="rounded-full p-1 bg-background/50 backdrop-blur-sm">
                     <img
                       src={aitdMascot}
                       alt="AITD Events Mascot"
-                      className="w-44 sm:w-64 md:w-72 lg:w-88 h-auto drop-shadow-2xl mascot-hover rounded-full"
+                      className="w-40 sm:w-60 md:w-68 lg:w-80 h-auto drop-shadow-2xl mascot-hover rounded-full"
                       loading="eager"
                     />
                   </div>
@@ -254,7 +263,7 @@ export default function Home() {
           </div>
 
           {/* Quick Stats */}
-          <div className="flex items-center justify-center gap-6 sm:gap-10 lg:gap-16 mt-10 sm:mt-14 pt-8 border-t border-border/50 animate-fade-in-up">
+          <div className="flex items-center justify-center gap-5 sm:gap-10 lg:gap-16 mt-8 sm:mt-12 pt-6 border-t border-border/50 animate-fade-in-up">
             {[
               { value: stats.students, label: "Students" },
               { value: stats.colleges, label: "Colleges" },
@@ -263,11 +272,11 @@ export default function Home() {
             ].map((s, i) => (
               <div key={s.label} className={`text-center ${i >= 3 ? "hidden sm:block" : ""}`}>
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary">{s.value || 0}+</div>
-                <div className="text-xs sm:text-sm text-muted-foreground">{s.label}</div>
+                <div className="text-[10px] sm:text-sm text-muted-foreground">{s.label}</div>
               </div>
             )).reduce<React.ReactNode[]>((acc, item, i) => {
               if (i > 0) acc.push(
-                <div key={`sep-${i}`} className={`w-px h-10 bg-border/50 ${i >= 3 ? "hidden sm:block" : ""}`} />
+                <div key={`sep-${i}`} className={`w-px h-8 bg-border/50 ${i >= 3 ? "hidden sm:block" : ""}`} />
               );
               acc.push(item);
               return acc;
@@ -277,18 +286,18 @@ export default function Home() {
       </section>
 
       {/* ─── MISSION — Tier 2/3 Focus ─── */}
-      <section className="py-10 sm:py-14 lg:py-16 px-4 bg-gradient-to-b from-muted/40 to-background">
+      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gradient-to-b from-muted/40 to-background">
         <div className="container mx-auto">
-          <div className="text-center mb-8 sm:mb-10">
-            <Badge className="mb-3 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
+          <div className="text-center mb-6 sm:mb-8">
+            <Badge className="mb-2 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
               <Target className="w-3 h-3 mr-1" />
               Our Mission
             </Badge>
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 leading-tight">
               Empowering <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">Tier 2 & Tier 3</span> College Students
             </h2>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Every student deserves equal access to opportunities — no matter which college or city. AITD Events bridges the gap with a student-powered ecosystem.
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Every student deserves equal access to opportunities — no matter which college or city.
             </p>
           </div>
 
@@ -298,24 +307,24 @@ export default function Home() {
               return (
                 <div
                   key={item.title}
-                  className="group p-3.5 sm:p-5 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in-up"
-                  style={{ animationDelay: `${idx * 0.05}s` }}
+                  className="group p-3 sm:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/30 active:scale-[0.97] transition-all duration-200 hover:shadow-md animate-fade-in"
+                  style={{ animationDelay: `${idx * 0.04}s` }}
                 >
-                  <div className={`relative inline-flex p-2 sm:p-2.5 rounded-xl bg-gradient-to-br ${item.color} text-white mb-2.5 sm:mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                  <div className={`relative inline-flex p-2 sm:p-2.5 rounded-xl bg-gradient-to-br ${item.color} text-white mb-2 sm:mb-2.5 shadow-md group-hover:scale-110 transition-transform`}>
                     <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${item.color} opacity-20 blur-md`} />
                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                  <h3 className="font-bold text-xs sm:text-sm mb-1 text-foreground leading-tight">{item.title}</h3>
+                  <h3 className="font-bold text-xs sm:text-sm mb-0.5 text-foreground leading-tight">{item.title}</h3>
                   <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               );
             })}
           </div>
 
-          <div className="text-center mt-6 sm:mt-8">
-            <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/15 rounded-full px-4 sm:px-6 py-2.5">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-xs sm:text-sm font-medium text-primary">
+          <div className="text-center mt-5 sm:mt-7">
+            <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/15 rounded-full px-4 sm:px-6 py-2">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-[11px] sm:text-sm font-medium text-primary">
                 Built by students, for students — from every corner of India 🇮🇳
               </span>
             </div>
@@ -336,14 +345,14 @@ export default function Home() {
       </div>
 
       {/* ─── QUICK ACCESS FEATURES ─── */}
-      <section className="py-8 sm:py-12 lg:py-14 px-3 sm:px-4">
+      <section className="py-7 sm:py-10 lg:py-14 px-3 sm:px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-5 sm:mb-8">
+          <div className="text-center mb-4 sm:mb-6">
             <Badge className="mb-2 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
               <Zap className="w-3 h-3 mr-1" />
               Explore
             </Badge>
-            <h2 className="text-lg sm:text-2xl md:text-3xl font-bold mb-1.5">
+            <h2 className="text-lg sm:text-2xl md:text-3xl font-bold mb-1">
               What do you want to <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">do today?</span>
             </h2>
             <p className="text-[11px] sm:text-sm text-muted-foreground">Tap to explore opportunities</p>
@@ -353,15 +362,15 @@ export default function Home() {
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <Link key={feature.title} to={feature.link} className="animate-fade-in-up group" style={{ animationDelay: `${index * 0.03}s` }}>
-                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 active:scale-95 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+                <Link key={feature.title} to={feature.link} className="animate-fade-in group" style={{ animationDelay: `${index * 0.03}s` }}>
+                  <div className="relative flex flex-col items-center p-2.5 sm:p-3 lg:p-4 rounded-xl bg-card border border-border/50 hover:border-primary/40 active:scale-95 transition-all duration-200 hover:shadow-md">
                     {feature.coins > 0 && (
                       <div className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-warning to-primary text-white text-[8px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
                         <Coins className="h-2 w-2 sm:h-2.5 sm:w-2.5" />+{feature.coins}
                       </div>
                     )}
-                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 active:scale-95 transition-all shadow-md group-hover:scale-110 group-hover:shadow-lg`}>
-                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <div className={`p-2.5 sm:p-3 rounded-xl bg-gradient-to-br ${feature.gradient} text-white mb-1.5 sm:mb-2 shadow-md group-hover:scale-110 transition-transform`}>
+                      <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <span className="font-medium text-[10px] sm:text-xs lg:text-sm text-center leading-tight text-foreground group-hover:text-primary transition-colors">
                       {feature.title}
@@ -376,14 +385,14 @@ export default function Home() {
 
       {/* ─── FEATURED COURSES ─── */}
       {featuredCourses.length > 0 && (
-        <section className="py-10 sm:py-14 lg:py-20 px-4 bg-muted/20">
+        <section className="py-8 sm:py-12 lg:py-16 px-4 bg-muted/20">
           <div className="container mx-auto">
-            <div className="text-center mb-6 sm:mb-10">
+            <div className="text-center mb-5 sm:mb-8">
               <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-info/10 text-info border-info/20">
                 <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
                 Featured Courses
               </Badge>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1.5">
                 Start Learning <span className="bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">Today</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
@@ -391,10 +400,10 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-5 sm:mb-7">
               {featuredCourses.map((course, index) => (
-                <Link key={course.id} to={`/courses/${course.id}`} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full border-border/50">
+                <Link key={course.id} to={`/courses/${course.id}`} className="animate-fade-in" style={{ animationDelay: `${index * 0.08}s` }}>
+                  <Card className="group hover:shadow-lg active:scale-[0.98] transition-all duration-300 cursor-pointer overflow-hidden h-full border-border/50">
                     <div className="relative aspect-[16/10] overflow-hidden">
                       {course.thumbnail_url ? (
                         <img src={course.thumbnail_url} alt={course.title}
@@ -407,21 +416,21 @@ export default function Home() {
                         </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
                         {course.is_free ? (
-                          <Badge className="bg-success text-success-foreground border-0 text-xs">Free</Badge>
+                          <Badge className="bg-success text-success-foreground border-0 text-[10px] sm:text-xs">Free</Badge>
                         ) : (
-                          <Badge className="bg-primary text-primary-foreground border-0 text-xs">₹{course.price}</Badge>
+                          <Badge className="bg-primary text-primary-foreground border-0 text-[10px] sm:text-xs">₹{course.price}</Badge>
                         )}
                       </div>
-                      <Badge className="absolute bottom-3 left-3 bg-white/90 text-foreground text-xs">{course.category}</Badge>
+                      <Badge className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-white/90 text-foreground text-[10px] sm:text-xs">{course.category}</Badge>
                     </div>
-                    <CardHeader className="p-3 sm:p-4 pb-2">
-                      <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base lg:text-lg">{course.title}</CardTitle>
-                      <p className="text-xs sm:text-sm text-muted-foreground">by {course.instructor_name}</p>
+                    <CardHeader className="p-3 sm:p-4 pb-1.5">
+                      <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">{course.title}</CardTitle>
+                      <p className="text-[11px] sm:text-sm text-muted-foreground">by {course.instructor_name}</p>
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0">
-                      <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-center justify-between text-[10px] sm:text-sm text-muted-foreground">
                         <div className="flex items-center gap-1"><Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-500 text-yellow-500" /><span className="font-medium">{course.rating.toFixed(1)}</span></div>
                         <div className="flex items-center gap-1"><Clock className="w-3 h-3 sm:w-4 sm:h-4" /><span>{course.duration}</span></div>
                         <div className="flex items-center gap-1"><Users className="w-3 h-3 sm:w-4 sm:h-4" /><span>{course.enrolled_count}</span></div>
@@ -443,16 +452,16 @@ export default function Home() {
         </section>
       )}
 
-      {/* ─── HIGHLIGHTED EVENTS ─── */}
+      {/* ─── HIGHLIGHTED EVENTS — Using EventCard ─── */}
       {highlightedEvents.length > 0 && (
-        <section className="py-10 sm:py-14 lg:py-20 px-4">
+        <section className="py-8 sm:py-12 lg:py-16 px-4">
           <div className="container mx-auto">
-            <div className="text-center mb-6 sm:mb-10">
+            <div className="text-center mb-5 sm:mb-8">
               <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
                 Newly Added
               </Badge>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1.5">
                 Latest <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">Events</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
@@ -460,39 +469,26 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 mb-5 sm:mb-7">
               {highlightedEvents.map((event, index) => (
-                <Link key={event.id} to="/events" className="animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s` }}>
-                  <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50 hover:border-primary/30">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      {event.poster_url ? (
-                        <img src={event.poster_url} alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
-                      ) : (
-                        <div className={`w-full h-full bg-gradient-to-br ${
-                          index % 4 === 0 ? 'from-orange-500 to-amber-600' : index % 4 === 1 ? 'from-teal-500 to-cyan-600' :
-                          index % 4 === 2 ? 'from-blue-500 to-cyan-600' : 'from-emerald-500 to-teal-600'
-                        }`} />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-                        <Badge className="bg-primary text-primary-foreground border-0 text-[10px] sm:text-xs px-1.5 py-0.5 animate-pulse">New</Badge>
-                        {event.is_free && <Badge className="bg-success text-success-foreground border-0 text-[10px] sm:text-xs px-1.5 py-0.5">Free</Badge>}
-                      </div>
-                      <div className="absolute bottom-2 left-2 right-2">
-                        <h3 className="text-white font-semibold text-xs sm:text-sm line-clamp-2 drop-shadow-lg">{event.title}</h3>
-                      </div>
-                    </div>
-                    <CardContent className="p-2 sm:p-3">
-                      <div className="flex items-center justify-between text-[10px] sm:text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1"><Users className="w-3 h-3" /><span>{event.applied_count || 0}</span></div>
-                        {event.days_left !== null && (
-                          <div className="flex items-center gap-1"><Clock className="w-3 h-3" /><span>{event.days_left}d left</span></div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <div key={event.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.06}s` }}>
+                  <EventCard
+                    title={event.title}
+                    description={event.description}
+                    date={event.date}
+                    location={event.location}
+                    category={event.category}
+                    poster_url={event.poster_url || undefined}
+                    external_link={event.external_link || undefined}
+                    is_online={event.is_online}
+                    is_free={event.is_free}
+                    days_left={event.days_left ?? undefined}
+                    applied_count={event.applied_count}
+                    gradientIndex={index}
+                    college={event.college}
+                    onClick={() => window.location.href = '/events'}
+                  />
+                </div>
               ))}
             </div>
 
@@ -508,28 +504,28 @@ export default function Home() {
       )}
 
       {/* ─── GAMES ARENA ─── */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-purple-600 via-primary to-pink-500 relative overflow-hidden">
+      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gradient-to-br from-purple-600 via-primary to-pink-500 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[20%] right-[10%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[15%] left-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-black/10 rounded-full blur-3xl animate-float-delayed" />
         </div>
 
         <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <div className="text-center lg:text-left text-white">
-              <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm animate-pulse">
+              <Badge className="mb-3 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm animate-pulse">
                 <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
                 Games Arena
               </Badge>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
                 Play, Compete & <span className="opacity-90">Win!</span>
               </h2>
-              <p className="text-sm sm:text-base lg:text-lg opacity-90 mb-4 sm:mb-6 max-w-xl mx-auto lg:mx-0">
+              <p className="text-sm sm:text-base lg:text-lg opacity-90 mb-4 max-w-xl mx-auto lg:mx-0">
                 Join live quizzes hosted by top brands, compete in real-time, and win cash prizes & certificates!
               </p>
-              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 max-w-sm mx-auto lg:mx-0">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5 max-w-sm mx-auto lg:mx-0">
                 {[{ icon: Trophy, label: "Win Prizes" }, { icon: Users, label: "Compete Live" }, { icon: Zap, label: "Instant Results" }].map((item) => (
-                  <div key={item.label} className="flex flex-col items-center gap-1.5 text-xs sm:text-sm bg-white/15 rounded-xl px-3 py-3 backdrop-blur-sm border border-white/20">
+                  <div key={item.label} className="flex flex-col items-center gap-1.5 text-xs sm:text-sm bg-white/15 rounded-xl px-3 py-2.5 backdrop-blur-sm border border-white/20 active:scale-95 transition-transform">
                     <item.icon className="w-5 h-5 sm:w-6 sm:h-6" /><span>{item.label}</span>
                   </div>
                 ))}
@@ -541,20 +537,17 @@ export default function Home() {
               </Link>
             </div>
             <div className="relative flex justify-center lg:justify-end">
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-sm lg:max-w-md">
-                {[
-                  { title: "Live Quiz", icon: Gamepad2, color: "from-purple-400 to-pink-400", badge: "Popular" },
-                  { title: "IPL Auction", icon: Trophy, color: "from-blue-400 to-cyan-400", badge: "Coming Soon" },
-                  { title: "Spin & Win", icon: Target, color: "from-orange-400 to-amber-400", badge: "Coming Soon" },
-                  { title: "Predictions", icon: Lightbulb, color: "from-green-400 to-emerald-400", badge: "Coming Soon" },
-                ].map((game) => (
-                  <div key={game.title} className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${game.color} flex items-center justify-center mb-2 shadow-lg`}>
-                      <game.icon className="h-6 w-6 text-white" />
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-4 max-w-sm lg:max-w-md">
+                {gameCards.map((game) => (
+                  <Link key={game.title} to={game.link}>
+                    <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3.5 sm:p-4 border border-white/20 active:scale-95 hover:bg-white/25 transition-all duration-200 cursor-pointer">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${game.color} flex items-center justify-center mb-2 shadow-lg`}>
+                        <game.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-xs sm:text-sm text-white">{game.title}</h3>
+                      <Badge className="mt-1 text-[10px] bg-white/20 border-white/30 text-white">{game.badge}</Badge>
                     </div>
-                    <h3 className="font-semibold text-sm">{game.title}</h3>
-                    <Badge className="mt-1 text-[10px] bg-white/20 border-white/30">{game.badge}</Badge>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -564,14 +557,14 @@ export default function Home() {
 
       {/* ─── LATEST JOBS ─── */}
       {latestJobs.length > 0 && (
-        <section className="py-10 sm:py-14 lg:py-20 px-4 bg-muted/20">
+        <section className="py-8 sm:py-12 lg:py-16 px-4 bg-muted/20">
           <div className="container mx-auto">
-            <div className="text-center mb-6 sm:mb-10">
+            <div className="text-center mb-5 sm:mb-8">
               <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
                 <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
                 Newly Added
               </Badge>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1.5">
                 Latest <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">Opportunities</span>
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
@@ -579,17 +572,17 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 mb-5 sm:mb-7">
               {latestJobs.map((job, index) => {
                 const companyInitial = job.company?.charAt(0)?.toUpperCase() || "?";
                 const hashCode = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
                 const colors = ["bg-primary", "bg-accent", "bg-info", "bg-success", "bg-warning"];
                 const bgColor = colors[Math.abs(hashCode) % colors.length];
                 return (
-                <Link key={job.id} to="/jobs" className="animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s` }}>
-                  <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer h-full border-border/50 hover:border-primary/30">
-                    <CardHeader className="p-3 sm:p-4 pb-2">
-                      <div className="flex items-center gap-2 mb-2">
+                <Link key={job.id} to="/jobs" className="animate-fade-in" style={{ animationDelay: `${index * 0.06}s` }}>
+                  <Card className="group hover:shadow-lg active:scale-[0.98] transition-all duration-200 cursor-pointer h-full border-border/50 hover:border-primary/30">
+                    <CardHeader className="p-3 sm:p-4 pb-1.5">
+                      <div className="flex items-center gap-2 mb-1.5">
                         <Badge className="bg-primary text-primary-foreground border-0 text-[10px] sm:text-xs px-1.5 py-0.5 animate-pulse">New</Badge>
                         <Badge variant="outline" className="text-[10px] sm:text-xs">{job.type}</Badge>
                       </div>
@@ -625,27 +618,27 @@ export default function Home() {
       )}
 
       {/* ─── CAMPUS AMBASSADOR ─── */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-primary via-warning to-primary text-white relative overflow-hidden">
+      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gradient-to-br from-primary via-warning to-primary text-white relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[10%] left-[5%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[10%] right-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-white/10 rounded-full blur-3xl animate-float-delayed" />
         </div>
 
         <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <div className="text-center lg:text-left">
-              <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm">
+              <Badge className="mb-3 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm">
                 <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
                 Campus Ambassador Program
               </Badge>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3">
                 Represent AITD at Your College
               </h2>
-              <p className="text-sm sm:text-base opacity-90 mb-4 sm:mb-6 max-w-lg mx-auto lg:mx-0">
+              <p className="text-sm sm:text-base opacity-90 mb-4 max-w-lg mx-auto lg:mx-0">
                 Join our campus ambassador program and earn rewards while helping fellow students discover opportunities!
               </p>
 
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6 max-w-sm mx-auto lg:mx-0">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-5 max-w-sm mx-auto lg:mx-0">
                 {[
                   { icon: TrendingUp, label: "Earn Upto ₹10,000" },
                   { icon: Star, label: "Verified Certificate" },
@@ -673,9 +666,9 @@ export default function Home() {
                 { value: stats.students.toString(), label: "Students" },
                 { value: stats.events.toString(), label: "Events" },
               ].map((stat) => (
-                <div key={stat.label} className="p-3 sm:p-4 lg:p-6 bg-white/10 backdrop-blur-sm rounded-xl lg:rounded-2xl border border-white/20">
-                  <div className="text-xl sm:text-2xl lg:text-4xl font-bold mb-1">{stat.value}</div>
-                  <div className="text-xs sm:text-sm opacity-90">{stat.label}</div>
+                <div key={stat.label} className="p-3 sm:p-4 lg:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 active:scale-95 transition-transform">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold mb-0.5">{stat.value}</div>
+                  <div className="text-[11px] sm:text-sm opacity-90">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -684,16 +677,16 @@ export default function Home() {
       </section>
 
       {/* ─── EVENT PHOTO GALLERY CTA ─── */}
-      <section className="py-10 sm:py-14 lg:py-16 px-4 bg-gradient-to-r from-primary/5 via-accent/5 to-warning/5">
+      <section className="py-8 sm:py-12 lg:py-14 px-4 bg-gradient-to-r from-primary/5 via-accent/5 to-warning/5">
         <div className="container mx-auto text-center">
-          <Badge className="mb-3 bg-primary/10 text-primary border-primary/20 text-xs sm:text-sm">
+          <Badge className="mb-2 bg-primary/10 text-primary border-primary/20 text-xs sm:text-sm">
             <Camera className="w-3 h-3 mr-1" />
             Event Memories
           </Badge>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1.5">
             Relive Our <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">Past Events</span>
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto mb-5">
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto mb-4">
             Access event photos from Google Drive. Enter the password shared during the event to unlock your gallery!
           </p>
           <Link to="/gallery">
@@ -707,17 +700,17 @@ export default function Home() {
       </section>
 
       {/* ─── WHO'S USING ─── */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4">
+      <section className="py-8 sm:py-12 lg:py-16 px-4">
         <div className="container mx-auto">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-2 sm:mb-3">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-1.5 sm:mb-2">
             Who's using <span className="bg-gradient-to-r from-primary to-warning bg-clip-text text-transparent">AITD</span>?
           </h2>
-          <p className="text-center text-muted-foreground mb-6 sm:mb-10 max-w-xl mx-auto text-xs sm:text-sm md:text-base">
+          <p className="text-center text-muted-foreground mb-5 sm:mb-8 max-w-xl mx-auto text-xs sm:text-sm md:text-base">
             Join thousands of students, companies, and institutions transforming tech education
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {personas.map((persona, index) => (
-              <div key={persona.title} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={persona.title} className="animate-fade-in" style={{ animationDelay: `${index * 0.08}s` }}>
                 <PersonaCard {...persona} />
               </div>
             ))}
@@ -726,19 +719,19 @@ export default function Home() {
       </section>
 
       {/* ─── COMMUNITY & LEADERBOARD ─── */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-muted/20 relative overflow-hidden">
+      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-muted/20 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[20%] left-[10%] w-40 sm:w-64 h-40 sm:h-64 bg-primary/5 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[20%] right-[10%] w-48 sm:w-80 h-48 sm:h-80 bg-accent/5 rounded-full blur-3xl animate-float-delayed" />
         </div>
 
         <div className="container mx-auto relative z-10">
-          <div className="text-center mb-8 sm:mb-12">
+          <div className="text-center mb-6 sm:mb-10">
             <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-primary/10 text-primary border-primary/20">
               <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
               Growing Community
             </Badge>
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1.5">
               Join Our <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Community</span>
             </h2>
           </div>
@@ -750,17 +743,17 @@ export default function Home() {
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-primary via-warning to-accent text-white relative overflow-hidden">
+      <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gradient-to-br from-primary via-warning to-accent text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
         <div className="container mx-auto relative z-10 text-center">
-          <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 text-xs sm:text-sm">
+          <Badge className="mb-3 bg-white/20 text-white border-white/30 text-xs sm:text-sm">
             <Rocket className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
             Start Your Journey
           </Badge>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3">
             Ready to Build Your Future?
           </h2>
-          <p className="text-sm sm:text-base lg:text-lg opacity-90 mb-6 sm:mb-8 max-w-xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-lg opacity-90 mb-5 sm:mb-7 max-w-xl mx-auto">
             Join thousands of students already learning, competing, and growing with us.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center px-4 sm:px-0">

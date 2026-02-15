@@ -105,7 +105,7 @@ export function ContributorLeaderboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchLeaderboard(true);
-    }, 30000); // 30 seconds
+    }, 10000); // 10 seconds
 
     return () => clearInterval(interval);
   }, [fetchLeaderboard]);

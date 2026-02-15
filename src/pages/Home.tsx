@@ -87,10 +87,10 @@ export default function Home() {
     fetchLatestJobs();
     fetchPlatformStats();
 
-    // Auto-refresh stats every 30 seconds for real-time feel
+    // Auto-refresh stats every 10 seconds for real-time feel
     const interval = setInterval(() => {
       fetchPlatformStats();
-    }, 30000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 

@@ -151,6 +151,26 @@ export default function Hackathons() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* HackSamarth 2026 Featured Banner */}
+        <Card className="mb-8 overflow-hidden border-primary/30 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 hover:shadow-lg transition-all">
+          <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                <Trophy className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-bold text-lg">HackSamarth 2026</h3>
+                  <Badge className="bg-primary/90 text-primary-foreground border-0 text-xs">Featured</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">PPT Submission Round is LIVE! Submit your innovation idea now.</p>
+              </div>
+            </div>
+            <Button onClick={() => window.location.href = '/hacksamarth'} className="shrink-0 gap-2">
+              View Details <Zap className="h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
         {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <SearchBar

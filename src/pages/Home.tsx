@@ -288,6 +288,69 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── HACKSAMARTH 2026 HIGHLIGHT ─── */}
+      <section className="py-6 sm:py-8 px-4">
+        <div className="container mx-auto">
+          <div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/15 shadow-lg">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
+            <div className="relative z-10 p-5 sm:p-8 md:p-10">
+              <div className="flex flex-col md:flex-row items-center gap-5 md:gap-8">
+                <div className="flex-1 text-center md:text-left">
+                  <Badge className="mb-3 bg-primary/15 text-primary border-primary/30 text-xs sm:text-sm px-3 py-1">
+                    <Trophy className="w-3.5 h-3.5 mr-1.5" />
+                    Organized by AITD Events
+                  </Badge>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
+                    HackSamarth 2026
+                  </h2>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-2 font-medium">
+                    🏆 National Level Hackathon — PPT Submission Round Now Open!
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-5 max-w-lg">
+                    Submit your innovative idea as a PPT and compete with the best minds across India. Download the official template below and submit through our Google Form.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                    <Link to="/hacksamarth">
+                      <Button size="lg" className="w-full sm:w-auto gap-2 shadow-lg active:scale-95 transition-transform">
+                        <FileText className="h-4 w-4" />
+                        Submit Your PPT
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <a href="/templates/HackSamarth-PPT-Template.pdf" download>
+                      <Button size="lg" variant="outline" className="w-full sm:w-auto gap-2 border-2 border-primary/40 text-primary active:scale-95 transition-transform">
+                        <FileText className="h-4 w-4" />
+                        Download PPT Template
+                      </Button>
+                    </a>
+                  </div>
+                  <div className="mt-4">
+                    <a
+                      href="https://forms.gle/AjZr3XjvZvbjZJKLA"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-primary hover:underline font-medium"
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                      Or submit directly via Google Form →
+                    </a>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-3 shrink-0">
+                  <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl">
+                    <Rocket className="h-14 w-14 sm:h-18 sm:w-18 text-white" />
+                  </div>
+                  <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-xs animate-pulse">
+                    <Clock className="w-3 h-3 mr-1" />
+                    Submissions Open
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── MISSION — Tier 2/3 Focus ─── */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 bg-gradient-to-b from-muted/40 to-background">
         <div className="container mx-auto">

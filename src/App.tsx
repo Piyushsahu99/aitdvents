@@ -66,6 +66,7 @@ import CreateAuction from "./pages/CreateAuction";
 import CertificatePublic from "./pages/CertificatePublic";
 import EventGallery from "./pages/EventGallery";
 import OurTeam from "./pages/OurTeam";
+import HackSamarth from "./pages/HackSamarth";
 
 const queryClient = new QueryClient();
 
@@ -138,6 +139,7 @@ const App = () => (
               <Route path="/certificate/:certificateNumber" element={<CertificatePublic />} />
               <Route path="/gallery" element={<EventGallery />} />
               <Route path="/our-team" element={<OurTeam />} />
+              <Route path="/hacksamarth" element={<HackSamarth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

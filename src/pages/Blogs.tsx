@@ -7,12 +7,14 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Calendar, Clock, Sparkles, BookOpen, PenTool } from "lucide-react";
 import blogHero from "@/assets/blog-hero.jpg";
+import { BlogWriteModal } from "@/components/BlogWriteModal";
 
 export default function Blogs() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showWriteModal, setShowWriteModal] = useState(false);
 
   useEffect(() => {
     fetchBlogs();
@@ -64,7 +66,7 @@ export default function Blogs() {
             <p className="text-xl text-muted-foreground mb-8">
               Read and share experiences from the student community
             </p>
-            <Button size="lg" className="shadow-lg hover:shadow-xl transition-shadow">
+            <Button size="lg" className="shadow-lg hover:shadow-xl transition-shadow" onClick={() => setShowWriteModal(true)}>
               <PenTool className="mr-2 h-5 w-5" />
               Write a Blog
             </Button>
@@ -149,6 +151,12 @@ export default function Blogs() {
           </div>
         )}
       </div>
+
+      <BlogWriteModal
+        open={showWriteModal}
+        onOpenChange={setShowWriteModal}
+        onBlogCreated={fetchBlogs}
+      />
     </div>
   );
 }

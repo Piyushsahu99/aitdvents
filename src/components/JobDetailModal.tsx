@@ -76,35 +76,38 @@ export function JobDetailModal({ job, open, onOpenChange, onApply }: JobDetailMo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0">
-        {/* Header with gradient */}
-        <div className={`p-6 pb-4 ${typeColors[job.type] || 'bg-primary'} bg-opacity-10`}>
-          <DialogHeader>
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0`}>
-                {job.type}
-              </Badge>
-              <Badge variant="outline" className="bg-background/50">
-                {job.category}
-              </Badge>
-              {isUrgent && !isExpired && (
-                <Badge className="bg-red-500 text-white border-0 animate-pulse">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  {daysRemaining === 0 ? "Last day!" : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left`}
+        {/* Header with gradient accent */}
+        <div className="relative">
+          <div className={`h-2 w-full ${typeColors[job.type] || 'bg-primary'}`} />
+          <div className="p-6 pb-4">
+            <DialogHeader>
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0`}>
+                  {job.type}
                 </Badge>
-              )}
-              {isExpired && (
-                <Badge variant="destructive">Deadline Passed</Badge>
-              )}
-            </div>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground">
-              {job.title}
-            </DialogTitle>
-          </DialogHeader>
+                <Badge variant="outline" className="bg-background/50">
+                  {job.category}
+                </Badge>
+                {isUrgent && !isExpired && (
+                  <Badge className="bg-red-500 text-white border-0 animate-pulse">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    {daysRemaining === 0 ? "Last day!" : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left`}
+                  </Badge>
+                )}
+                {isExpired && (
+                  <Badge variant="destructive">Deadline Passed</Badge>
+                )}
+              </div>
+              <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground">
+                {job.title}
+              </DialogTitle>
+            </DialogHeader>
+          </div>
         </div>
 
-        <div className="p-6 pt-4 space-y-6">
+        <div className="p-6 pt-2 space-y-6">
           {/* Key Details Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
               <div className="p-2 rounded-lg bg-orange-500/10">
                 <Building className="h-5 w-5 text-orange-500" />
@@ -145,6 +148,25 @@ export function JobDetailModal({ job, open, onOpenChange, onApply }: JobDetailMo
               </div>
             </div>
           </div>
+
+          {/* Opportunity / Apply Link - prominent display */}
+          {job.apply_link && (
+            <a 
+              href={job.apply_link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 hover:border-emerald-500/50 transition-colors group/link"
+            >
+              <div className="p-2 rounded-lg bg-emerald-500/20">
+                <ExternalLink className="h-5 w-5 text-emerald-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Opportunity Link</p>
+                <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70 truncate">{job.apply_link}</p>
+              </div>
+              <ExternalLink className="h-4 w-4 text-emerald-500 group-hover/link:translate-x-1 transition-transform flex-shrink-0" />
+            </a>
+          )}
 
           {/* Deadline */}
           {job.apply_by && (
@@ -200,16 +222,6 @@ export function JobDetailModal({ job, open, onOpenChange, onApply }: JobDetailMo
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Apply Link Info */}
-          {job.apply_link && (
-            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
-              <p className="text-sm text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
-                <ExternalLink className="h-4 w-4" />
-                Clicking "Apply Now" will take you to the company's official application page.
-              </p>
             </div>
           )}
 

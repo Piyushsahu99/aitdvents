@@ -332,156 +332,133 @@ export default function Jobs() {
                 {filteredJobs.map((job, index) => {
                   const daysRemaining = getDaysRemaining(job.apply_by);
                   const isUrgent = daysRemaining !== null && daysRemaining <= 3 && daysRemaining >= 0;
+                  const isExpired = daysRemaining !== null && daysRemaining < 0;
                   
                   return (
                   <Card
                     key={job.id}
-                    className={`group overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 animate-fade-in cursor-pointer ${isUrgent ? 'ring-2 ring-red-500/30' : ''}`}
+                    className={`group overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-border/50 animate-fade-in cursor-pointer relative ${isUrgent ? 'ring-2 ring-red-500/30' : ''} ${isExpired ? 'opacity-60' : ''}`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                     onClick={() => openJobDetail(job)}
                   >
-                    <CardContent className="p-0">
-                      <div className="flex flex-col lg:flex-row">
-                        {/* Left accent */}
-                        <div className={`w-full lg:w-2 h-2 lg:h-auto ${typeColors[job.type] || 'bg-primary'}`} />
-                        
-                        <div className="flex-1 p-6">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                           <div className="flex-1">
-                              {/* Header with company initial */}
-                              <div className="flex items-center gap-3 mb-3">
-                                {(() => {
-                                  const initial = job.company?.charAt(0)?.toUpperCase() || "?";
-                                  const hash = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
-                                  const bgColors = ["bg-primary", "bg-accent", "bg-info", "bg-success", "bg-warning"];
-                                  const bg = bgColors[Math.abs(hash) % bgColors.length];
-                                  return (
-                                    <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
-                                      {initial}
-                                    </div>
-                                  );
-                                })()}
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <h3 className="text-xl font-bold text-foreground group-hover:text-orange-500 transition-colors">
-                                    {job.title}
-                                  </h3>
-                                  <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0`}>
-                                    {job.type}
-                                  </Badge>
-                                </div>
-                              </div>
-                              
-                              {/* Details Grid */}
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-                                <div className="flex items-center gap-2">
-                                  <div className="p-1.5 rounded-lg bg-orange-500/10">
-                                    <Building className="h-4 w-4 text-orange-500" />
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">Company</p>
-                                    <p className="text-sm font-medium">{job.company}</p>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex items-center gap-2">
-                                  <div className="p-1.5 rounded-lg bg-blue-500/10">
-                                    <MapPin className="h-4 w-4 text-blue-500" />
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">Location</p>
-                                    <p className="text-sm font-medium">{job.location}</p>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex items-center gap-2">
-                                  <div className="p-1.5 rounded-lg bg-violet-500/10">
-                                    <Clock className="h-4 w-4 text-violet-500" />
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">Duration</p>
-                                    <p className="text-sm font-medium">{job.duration}</p>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex items-center gap-2">
-                                  <div className="p-1.5 rounded-lg bg-emerald-500/10">
-                                    <Banknote className="h-4 w-4 text-emerald-500" />
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">Stipend</p>
-                                    <p className="text-sm font-bold text-emerald-600">{job.stipend}</p>
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              {job.description && (
-                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                                  {job.description}
-                                </p>
-                              )}
-                              
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Badge variant="outline" className="rounded-full">
-                                  {job.category}
-                                </Badge>
-                                {job.apply_link && (
-                                  <Badge variant="secondary" className="rounded-full bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                    External Link
-                                  </Badge>
-                                )}
-                                {isUrgent && (
-                                  <Badge className="rounded-full bg-red-500 text-white border-0 animate-pulse">
-                                    {daysRemaining === 0 ? "Last day!" : `${daysRemaining} days left`}
-                                  </Badge>
-                                )}
-                                {job.apply_by && !isUrgent && (
-                                  <Badge variant="secondary" className="rounded-full bg-amber-500/10 text-amber-600 border-amber-500/20">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    Apply by: {job.apply_by}
-                                  </Badge>
-                                )}
-                              </div>
+                    {/* Top gradient accent bar */}
+                    <div className={`h-1.5 w-full ${typeColors[job.type] || 'bg-primary'}`} />
+                    
+                    <CardContent className="p-5">
+                      {/* Header */}
+                      <div className="flex items-start gap-3 mb-4">
+                        {(() => {
+                          const initial = job.company?.charAt(0)?.toUpperCase() || "?";
+                          const hash = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
+                          const bgColors = ["bg-primary", "bg-accent", "bg-blue-500", "bg-emerald-500", "bg-violet-500"];
+                          const bg = bgColors[Math.abs(hash) % bgColors.length];
+                          return (
+                            <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-lg`}>
+                              {initial}
                             </div>
-                            
-                            <div className="flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
-                              {/* Share Buttons */}
-                              <div className="flex items-center gap-1 justify-end">
-                                <span className="text-xs text-muted-foreground mr-1 hidden sm:inline">Share:</span>
-                                <ShareButtons 
-                                  title={job.title}
-                                  url={job.apply_link || `${window.location.origin}/jobs?id=${job.id}`}
-                                  type="job"
-                                  referenceId={job.id}
-                                  compact
-                                />
-                              </div>
-                              <div className="flex gap-2">
-                                <Button 
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openJobDetail(job);
-                                  }}
-                                  className="border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
-                                >
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  Details
-                                </Button>
-                                <Button 
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleApply(job);
-                                  }}
-                                  className="flex-1 sm:flex-none bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg"
-                                >
-                                  Apply
-                                  <ExternalLink className="h-4 w-4 ml-2" />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
+                          );
+                        })()}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-foreground group-hover:text-orange-500 transition-colors truncate">
+                            {job.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground font-medium">{job.company}</p>
+                        </div>
+                        <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0 flex-shrink-0 text-xs`}>
+                          {job.type}
+                        </Badge>
+                      </div>
+
+                      {/* Info chips */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex items-center gap-1.5 text-xs bg-muted/60 rounded-full px-2.5 py-1">
+                          <MapPin className="h-3 w-3 text-blue-500" />
+                          <span className="text-muted-foreground">{job.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs bg-muted/60 rounded-full px-2.5 py-1">
+                          <Clock className="h-3 w-3 text-violet-500" />
+                          <span className="text-muted-foreground">{job.duration}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs bg-emerald-500/10 rounded-full px-2.5 py-1 font-semibold">
+                          <Banknote className="h-3 w-3 text-emerald-500" />
+                          <span className="text-emerald-600">{job.stipend}</span>
+                        </div>
+                      </div>
+                              
+                      {job.description && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+                          {job.description}
+                        </p>
+                      )}
+
+                      {/* Badges row */}
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                        <Badge variant="outline" className="rounded-full text-xs">
+                          {job.category}
+                        </Badge>
+                        {isUrgent && !isExpired && (
+                          <Badge className="rounded-full bg-red-500 text-white border-0 animate-pulse text-xs">
+                            🔥 {daysRemaining === 0 ? "Last day!" : `${daysRemaining} days left`}
+                          </Badge>
+                        )}
+                        {isExpired && (
+                          <Badge variant="destructive" className="rounded-full text-xs">
+                            Expired
+                          </Badge>
+                        )}
+                        {job.apply_by && !isUrgent && !isExpired && (
+                          <Badge variant="secondary" className="rounded-full bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
+                            <Clock className="h-3 w-3 mr-1" />
+                            Apply by: {job.apply_by}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Apply link highlight */}
+                      {job.apply_link && (
+                        <div className="flex items-center gap-2 mb-4 p-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20" onClick={(e) => { e.stopPropagation(); window.open(job.apply_link, '_blank', 'noopener,noreferrer'); }}>
+                          <ExternalLink className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                          <span className="text-xs text-emerald-600 font-medium truncate">{job.apply_link}</span>
+                          <ArrowRight className="h-3 w-3 text-emerald-500 flex-shrink-0 ml-auto" />
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-between pt-3 border-t border-border/50" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-1">
+                          <ShareButtons 
+                            title={job.title}
+                            url={job.apply_link || `${window.location.origin}/jobs?id=${job.id}`}
+                            type="job"
+                            referenceId={job.id}
+                            compact
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openJobDetail(job);
+                            }}
+                            className="text-muted-foreground hover:text-orange-500 h-8 px-3"
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </Button>
+                          <Button 
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleApply(job);
+                            }}
+                            disabled={isExpired}
+                            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md h-8 px-4"
+                          >
+                            {job.apply_link ? 'Apply' : 'Apply Now'}
+                            <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
+                          </Button>
                         </div>
                       </div>
                     </CardContent>

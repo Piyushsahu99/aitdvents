@@ -291,36 +291,62 @@ export default function Home() {
       {/* ─── HACKSAMARTH 2026 HIGHLIGHT ─── */}
       <section className="py-6 sm:py-8 px-4">
         <div className="container mx-auto">
-          <div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/15 shadow-lg">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
+          <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/15 via-background to-accent/10 shadow-2xl">
+            {/* Decorative elements */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-transparent to-transparent" />
+            <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-primary/8 blur-3xl" />
+            <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-accent/10 blur-3xl" />
+            
             <div className="relative z-10 p-5 sm:p-8 md:p-10">
-              <div className="flex flex-col md:flex-row items-center gap-5 md:gap-8">
+              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10">
                 <div className="flex-1 text-center md:text-left">
-                  <Badge className="mb-3 bg-primary/15 text-primary border-primary/30 text-xs sm:text-sm px-3 py-1">
-                    <Trophy className="w-3.5 h-3.5 mr-1.5" />
-                    Organized by AITD Events
-                  </Badge>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
+                  <div className="flex flex-wrap items-center gap-2 justify-center md:justify-start mb-3">
+                    <Badge className="bg-primary/15 text-primary border-primary/30 text-xs sm:text-sm px-3 py-1">
+                      <Trophy className="w-3.5 h-3.5 mr-1.5" />
+                      Organized by AITD Events
+                    </Badge>
+                    <Badge className="bg-green-500/15 text-green-600 border-green-500/30 text-xs px-3 py-1 animate-pulse">
+                      🔥 2000+ Registrations
+                    </Badge>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight tracking-tight">
                     HackSamarth 2026
                   </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-2 font-medium">
+                  <p className="text-sm sm:text-base text-foreground/80 mb-1.5 font-semibold">
                     🏆 National Level Hackathon — PPT Submission Round Now Open!
                   </p>
                   <p className="text-xs sm:text-sm text-muted-foreground mb-5 max-w-lg">
-                    Submit your innovative idea as a PPT and compete with the best minds across India. Download the official template below and submit through our Google Form.
+                    Submit your innovative idea as a PPT and compete with the best minds across India. Download the official template and submit through our Google Form.
                   </p>
+
+                  {/* Stats row */}
+                  <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-5">
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground/70">
+                      <Users className="h-4 w-4 text-primary" />
+                      <span><strong className="text-foreground">2000+</strong> Registrations</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground/70">
+                      <Trophy className="h-4 w-4 text-primary" />
+                      <span><strong className="text-foreground">₹50K+</strong> Prizes</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground/70">
+                      <Zap className="h-4 w-4 text-primary" />
+                      <span><strong className="text-foreground">Pan India</strong> Participation</span>
+                    </div>
+                  </div>
+
                   <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
                     <Link to="/hacksamarth">
-                      <Button size="lg" className="w-full sm:w-auto gap-2 shadow-lg active:scale-95 transition-transform">
+                      <Button size="lg" className="w-full sm:w-auto gap-2 shadow-lg active:scale-95 transition-transform text-base font-bold">
                         <FileText className="h-4 w-4" />
                         Submit Your PPT
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     </Link>
                     <a href="/templates/HackSamarth-PPT-Template.pdf" download>
-                      <Button size="lg" variant="outline" className="w-full sm:w-auto gap-2 border-2 border-primary/40 text-primary active:scale-95 transition-transform">
+                      <Button size="lg" variant="outline" className="w-full sm:w-auto gap-2 border-2 border-primary/40 text-primary active:scale-95 transition-transform font-semibold">
                         <FileText className="h-4 w-4" />
-                        Download PPT Template
+                        Download Template
                       </Button>
                     </a>
                   </div>
@@ -336,11 +362,14 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-3 shrink-0">
-                  <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl">
-                    <Rocket className="h-14 w-14 sm:h-18 sm:w-18 text-white" />
+                <div className="flex flex-col items-center gap-4 shrink-0">
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-2xl bg-primary/30 blur-xl animate-pulse" />
+                    <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl">
+                      <Rocket className="h-16 w-16 sm:h-20 sm:w-20 text-white drop-shadow-lg" />
+                    </div>
                   </div>
-                  <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-xs animate-pulse">
+                  <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-xs animate-pulse font-semibold">
                     <Clock className="w-3 h-3 mr-1" />
                     Submissions Open
                   </Badge>

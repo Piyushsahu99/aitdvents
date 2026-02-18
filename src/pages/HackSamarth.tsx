@@ -80,12 +80,18 @@ export default function HackSamarth() {
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
               Submit your idea as a PPT and compete with the best minds across India. Shortlisted teams advance to the prototype round!
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
               <Button size="lg" onClick={handleSubmitPPT} className="text-lg px-8 gap-2 shadow-lg">
                 <FileText className="h-5 w-5" />
                 Submit Your PPT
                 <ArrowRight className="h-5 w-5" />
               </Button>
+              <a href="/templates/HackSamarth-PPT-Template.pdf" download>
+                <Button size="lg" variant="outline" className="text-lg px-8 gap-2 border-2 border-primary/40 text-primary w-full">
+                  <FileText className="h-5 w-5" />
+                  Download PPT Template
+                </Button>
+              </a>
               {!user && (
                 <Button size="lg" variant="outline" onClick={() => setShowAuthModal(true)} className="text-lg px-8">
                   Sign Up First

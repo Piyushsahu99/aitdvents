@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useToast } from "@/hooks/use-toast";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { ImageUploader } from "./ImageUploader";
-import { Edit, Loader2, Image as ImageIcon } from "lucide-react";
+import { Edit, Loader2, Sparkles } from "lucide-react";
 
 interface Event {
   id: string;
@@ -32,6 +32,7 @@ interface EventEditorProps {
 export function EventEditor({ event, open, onOpenChange, onSave }: EventEditorProps) {
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [generatingPoster, setGeneratingPoster] = useState(false);
   const { toast } = useToast();
   const { uploadImage, uploading } = useImageUpload({ bucket: 'event-posters' });
 
@@ -42,9 +43,43 @@ export function EventEditor({ event, open, onOpenChange, onSave }: EventEditorPr
     }
   });
 
+  const handleGeneratePoster = async () => {
+    if (!editingEvent?.title || !editingEvent?.description) {
+      toast({ title: "Missing Info", description: "Title and description are required to generate a poster.", variant: "destructive" });
+      return;
+    }
+
+    setGeneratingPoster(true);
+    try {
+      toast({ title: "Generating Poster", description: "AI is creating a poster for your event..." });
+
+      const { data, error } = await supabase.functions.invoke('generate-poster', {
+        body: {
+          title: editingEvent.title,
+          description: editingEvent.description,
+          type: 'event',
+          category: editingEvent.category,
+          date: editingEvent.date,
+          location: editingEvent.location,
+        }
+      });
+
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setEditingEvent({ ...editingEvent, poster_url: data.imageUrl });
+        toast({ title: "Poster Generated!", description: "AI poster has been created. Save to apply." });
+      } else {
+        throw new Error(data?.error || 'No image generated');
+      }
+    } catch (error: any) {
+      toast({ title: "Generation Failed", description: error.message || "Could not generate poster.", variant: "destructive" });
+    } finally {
+      setGeneratingPoster(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!editingEvent) return;
-
     setProcessing(true);
     try {
       const { error } = await supabase
@@ -79,7 +114,6 @@ export function EventEditor({ event, open, onOpenChange, onSave }: EventEditorPr
     return url;
   };
 
-  // Update local state when prop changes
   if (event && (!editingEvent || editingEvent.id !== event.id)) {
     setEditingEvent(event);
   }
@@ -162,12 +196,30 @@ export function EventEditor({ event, open, onOpenChange, onSave }: EventEditorPr
             </div>
 
             <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Event Poster</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGeneratePoster}
+                  disabled={generatingPoster}
+                  className="gap-1.5 text-xs"
+                >
+                  {generatingPoster ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  )}
+                  {generatingPoster ? "Generating..." : "AI Generate Poster"}
+                </Button>
+              </div>
               <ImageUploader
                 value={editingEvent.poster_url || ""}
                 onChange={(url) => setEditingEvent({ ...editingEvent, poster_url: url })}
                 onUpload={handleImageUpload}
                 uploading={uploading}
-                label="Event Poster"
+                label=""
               />
             </div>
 

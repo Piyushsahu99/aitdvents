@@ -431,7 +431,7 @@ export default function AdminDashboard() {
       const blogResponse = await supabase.functions.invoke('generate-content', { body: { event: formData, type: 'blog' } });
       const hashtagsResponse = await supabase.functions.invoke('generate-content', { body: { event: formData, type: 'hashtags' } });
       const posterDescResponse = await supabase.functions.invoke('generate-content', { body: { event: formData, type: 'poster' } });
-      const posterResponse = await supabase.functions.invoke('generate-poster', { body: { description: posterDescResponse.data?.description } });
+      const posterResponse = await supabase.functions.invoke('generate-poster', { body: { title: formData.title, description: posterDescResponse.data?.description || formData.description, type: 'event', category: formData.category, date: formData.date, location: formData.location } });
 
       const { data: event, error: eventError } = await supabase.from("events").insert([{
         ...formData,

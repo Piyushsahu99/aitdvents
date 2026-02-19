@@ -2310,6 +2310,7 @@ export type Database = {
           duration: string
           id: string
           location: string
+          poster_url: string | null
           requirements: string | null
           status: Database["public"]["Enums"]["event_status"]
           stipend: string
@@ -2328,6 +2329,7 @@ export type Database = {
           duration: string
           id?: string
           location: string
+          poster_url?: string | null
           requirements?: string | null
           status?: Database["public"]["Enums"]["event_status"]
           stipend: string
@@ -2346,6 +2348,7 @@ export type Database = {
           duration?: string
           id?: string
           location?: string
+          poster_url?: string | null
           requirements?: string | null
           status?: Database["public"]["Enums"]["event_status"]
           stipend?: string

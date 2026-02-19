@@ -7,9 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import { ImageUploader } from "./ImageUploader";
-import { Edit, Loader2, Link2 } from "lucide-react";
+import { Edit, Loader2, Link2, Sparkles } from "lucide-react";
 
 interface Job {
   id: string;
@@ -24,6 +22,7 @@ interface Job {
   requirements: string | null;
   apply_by: string | null;
   apply_link: string | null;
+  poster_url: string | null;
 }
 
 interface JobEditorProps {
@@ -36,11 +35,46 @@ interface JobEditorProps {
 export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [generatingPoster, setGeneratingPoster] = useState(false);
   const { toast } = useToast();
+
+  const handleGeneratePoster = async () => {
+    if (!editingJob?.title || !editingJob?.description) {
+      toast({ title: "Missing Info", description: "Title and description are required to generate a poster.", variant: "destructive" });
+      return;
+    }
+
+    setGeneratingPoster(true);
+    try {
+      toast({ title: "Generating Poster", description: "AI is creating a poster for this job..." });
+
+      const { data, error } = await supabase.functions.invoke('generate-poster', {
+        body: {
+          title: editingJob.title,
+          description: editingJob.description,
+          type: 'job',
+          category: editingJob.category,
+          company: editingJob.company,
+          location: editingJob.location,
+        }
+      });
+
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setEditingJob({ ...editingJob, poster_url: data.imageUrl });
+        toast({ title: "Poster Generated!", description: "AI poster has been created. Save to apply." });
+      } else {
+        throw new Error(data?.error || 'No image generated');
+      }
+    } catch (error: any) {
+      toast({ title: "Generation Failed", description: error.message || "Could not generate poster.", variant: "destructive" });
+    } finally {
+      setGeneratingPoster(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!editingJob) return;
-
     setProcessing(true);
     try {
       const { error } = await supabase
@@ -57,6 +91,7 @@ export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
           requirements: editingJob.requirements,
           apply_by: editingJob.apply_by,
           apply_link: editingJob.apply_link,
+          poster_url: editingJob.poster_url,
         })
         .eq("id", editingJob.id);
 
@@ -71,7 +106,6 @@ export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
     }
   };
 
-  // Update local state when prop changes
   if (job && (!editingJob || editingJob.id !== job.id)) {
     setEditingJob(job);
   }
@@ -176,6 +210,9 @@ export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
                     <SelectItem value="Marketing">Marketing</SelectItem>
                     <SelectItem value="Business">Business</SelectItem>
                     <SelectItem value="Data Science">Data Science</SelectItem>
+                    <SelectItem value="Research">Research</SelectItem>
+                    <SelectItem value="Government">Government</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -210,6 +247,45 @@ export function JobEditor({ job, open, onOpenChange, onSave }: JobEditorProps) {
                 rows={3}
                 placeholder="Job requirements and qualifications..."
               />
+            </div>
+
+            {/* AI Poster Generation */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Job Poster</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGeneratePoster}
+                  disabled={generatingPoster}
+                  className="gap-1.5 text-xs"
+                >
+                  {generatingPoster ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  )}
+                  {generatingPoster ? "Generating..." : "AI Generate Poster"}
+                </Button>
+              </div>
+              {editingJob.poster_url && (
+                <div className="relative rounded-lg overflow-hidden border border-border">
+                  <img
+                    src={editingJob.poster_url}
+                    alt="Job poster"
+                    className="w-full max-h-64 object-contain bg-muted"
+                  />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-2 right-2 text-xs"
+                    onClick={() => setEditingJob({ ...editingJob, poster_url: null })}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2 justify-end pt-4">

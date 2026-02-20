@@ -79,7 +79,7 @@ export const Footer = () => {
   return (
     <footer className="border-t border-border bg-muted/30 mt-auto">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <img src={logo} alt="AITD Events" className="h-10 w-10 rounded-md" />
@@ -99,7 +99,37 @@ export const Footer = () => {
               <li><Link to="/courses" className="text-muted-foreground hover:text-primary transition-colors">Courses</Link></li>
               <li><Link to="/scholarships" className="text-muted-foreground hover:text-primary transition-colors">Scholarships</Link></li>
               <li><Link to="/blogs" className="text-muted-foreground hover:text-primary transition-colors">Blogs</Link></li>
+              <li>
+                <Link to="/reels" className="inline-flex items-center gap-1.5 font-medium transition-colors" style={{background: "linear-gradient(90deg, #ec4899, #a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>
+                  🎬 Reels
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{background: "linear-gradient(135deg, #ec4899, #a855f7)"}}>NEW</span>
+                </Link>
+              </li>
             </ul>
+          </div>
+
+          {/* Reels Promo Block */}
+          <div>
+            <h3 className="font-semibold mb-4">🎬 Reels — Watch & Earn</h3>
+            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+              Watch educational shorts, share yours & earn AITD Coins
+            </p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-600 border border-yellow-500/20">
+                🪙 +2 coins to watch
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-600 border border-yellow-500/20">
+                🪙 +10 coins to upload
+              </span>
+            </div>
+            <div className="flex flex-col gap-2 text-sm">
+              <Link to="/reels" className="inline-flex items-center gap-1 font-medium text-pink-500 hover:text-pink-400 transition-colors">
+                Watch Reels →
+              </Link>
+              <Link to="/reels?upload=1" className="inline-flex items-center gap-1 font-medium text-purple-500 hover:text-purple-400 transition-colors">
+                Share Your Reel →
+              </Link>
+            </div>
           </div>
 
           <div>

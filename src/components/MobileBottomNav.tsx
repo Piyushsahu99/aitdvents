@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Calendar, label: "Events", path: "/events" },
-  { icon: Gamepad2, label: "Quiz", path: "/quiz" },
+  { icon: Video, label: "Reels", path: "/reels" },
   { icon: Briefcase, label: "Jobs", path: "/jobs" },
 ];
 
@@ -49,11 +49,16 @@ const allNavItems: { category: string; items: MobileNavItem[] }[] = [
     ],
   },
   {
+    category: "Explore",
+    items: [
+      { name: "Quiz", path: "/quiz", icon: Gamepad2 },
+    ],
+  },
+  {
     category: "Tools",
     items: [
       { name: "AI Chat", path: "/ai-chat", icon: Sparkles },
       { name: "AI Tools", path: "/ai-tools", icon: Sparkles },
-      { name: "Reels", path: "/reels", icon: Video },
       { name: "Blogs", path: "/blogs", icon: FileText },
       { name: "Resume", path: "/resume", icon: FileText },
     ],

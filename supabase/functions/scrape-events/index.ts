@@ -239,21 +239,33 @@ Deno.serve(async (req) => {
   }
 });
 
+function cleanTitle(raw: string): string {
+  // Remove anything after " | " (site name suffixes like "| Unstop")
+  let title = raw.split(' | ')[0].split(' - Unstop')[0].trim();
+  // Remove trailing numeric IDs like " - 12345" or " (12345)"
+  title = title.replace(/\s*[-–]\s*\d{4,}\s*$/, '').trim();
+  title = title.replace(/\s*\(\d{4,}\)\s*$/, '').trim();
+  // Decode HTML entities
+  title = title.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  return title.slice(0, 200);
+}
+
 function parseEventFromMarkdown(markdown: string, link: string): ScrapedEvent | null {
   try {
-    // Extract title (usually first heading)
+    // Extract title — prefer first H1, then H2
     const titleMatch = markdown.match(/^#\s+(.+)$/m) || markdown.match(/^##\s+(.+)$/m);
-    const title = titleMatch ? titleMatch[1].trim() : '';
+    const rawTitle = titleMatch ? titleMatch[1].trim() : '';
+    const title = cleanTitle(rawTitle);
 
     if (!title || title.length < 5) {
       return null;
     }
 
-    // Extract description (first paragraph after title)
+    // Extract description (first substantial paragraph after title)
     const lines = markdown.split('\n').filter(l => l.trim());
     let description = '';
     for (const line of lines) {
-      if (!line.startsWith('#') && line.length > 50) {
+      if (!line.startsWith('#') && line.length > 50 && !line.startsWith('!')) {
         description = line.trim().slice(0, 500);
         break;
       }
@@ -312,7 +324,7 @@ function parseEventFromMarkdown(markdown: string, link: string): ScrapedEvent | 
     }
 
     return {
-      title: title.slice(0, 200),
+      title,
       description,
       date: date.toISOString().split('T')[0],
       location,

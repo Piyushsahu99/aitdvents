@@ -96,6 +96,21 @@ export default function Home() {
 
   const fetchHighlightedEvents = async () => {
     try {
+      // First try featured events ordered by position
+      const { data: featured, error: featuredErr } = await supabase
+        .from("events")
+        .select("*")
+        .eq("status", "live")
+        .eq("is_featured", true)
+        .order("home_position", { ascending: true })
+        .limit(4);
+
+      if (!featuredErr && featured && featured.length > 0) {
+        setHighlightedEvents(featured);
+        return;
+      }
+
+      // Fallback: newest live events
       const { data, error } = await supabase
         .from("events").select("*").eq("status", "live")
         .order("created_at", { ascending: false }).limit(4);

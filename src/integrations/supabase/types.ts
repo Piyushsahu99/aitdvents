@@ -1891,7 +1891,9 @@ export type Database = {
           description: string
           external_link: string | null
           hashtags: string[] | null
+          home_position: number | null
           id: string
+          is_featured: boolean
           is_free: boolean | null
           is_online: boolean | null
           location: string
@@ -1913,7 +1915,9 @@ export type Database = {
           description: string
           external_link?: string | null
           hashtags?: string[] | null
+          home_position?: number | null
           id?: string
+          is_featured?: boolean
           is_free?: boolean | null
           is_online?: boolean | null
           location: string
@@ -1935,7 +1939,9 @@ export type Database = {
           description?: string
           external_link?: string | null
           hashtags?: string[] | null
+          home_position?: number | null
           id?: string
+          is_featured?: boolean
           is_free?: boolean | null
           is_online?: boolean | null
           location?: string

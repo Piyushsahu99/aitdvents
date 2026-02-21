@@ -67,6 +67,7 @@ import CertificatePublic from "./pages/CertificatePublic";
 import EventGallery from "./pages/EventGallery";
 import OurTeam from "./pages/OurTeam";
 import HackSamarth from "./pages/HackSamarth";
+import BlogDetail from "./pages/BlogDetail";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/resume" element={<Resume />} />
               <Route path="/blogs" element={<Blogs />} />
+              <Route path="/blogs/:id" element={<BlogDetail />} />
               <Route path="/reels" element={<Reels />} />
               <Route path="/alumni" element={<Alumni />} />
               <Route path="/ai-tools" element={<AITools />} />

@@ -1007,6 +1007,7 @@ export type Database = {
           read_time: string
           title: string
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           ai_generated?: boolean | null
@@ -1021,6 +1022,7 @@ export type Database = {
           read_time: string
           title: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           ai_generated?: boolean | null
@@ -1035,6 +1037,7 @@ export type Database = {
           read_time?: string
           title?: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {

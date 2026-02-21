@@ -24,14 +24,14 @@ const linkReelSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
   description: z.string().trim().max(500, "Description must be less than 500 characters").optional(),
   video_url: z.string().url("Please enter a valid URL").refine((url) => {
-    const validDomains = ['youtube.com', 'youtu.be', 'instagram.com', 'linkedin.com', 'vimeo.com', 'twitter.com', 'x.com'];
+    const validDomains = ['youtube.com', 'youtu.be', 'instagram.com'];
     try {
       const urlObj = new URL(url);
       return validDomains.some(domain => urlObj.hostname.includes(domain));
     } catch {
       return false;
     }
-  }, "Only YouTube, Instagram, LinkedIn, Vimeo, and Twitter/X links are allowed"),
+  }, "Only YouTube and Instagram links are supported"),
   category: z.string().min(1, "Please select a category"),
   platform: z.string().min(1, "Please select a platform"),
   tags: z.string().max(200, "Tags must be less than 200 characters").optional(),
@@ -53,8 +53,6 @@ const CATEGORIES = ["All", "Programming", "Career Tips", "Interview Prep", "Tech
 const PLATFORMS = [
   { value: "youtube", label: "YouTube", icon: Youtube },
   { value: "instagram", label: "Instagram", icon: Instagram },
-  { value: "linkedin", label: "LinkedIn", icon: Linkedin },
-  { value: "other", label: "Other", icon: Share2 },
 ];
 
 const REPORT_REASONS = [
@@ -79,7 +77,7 @@ export default function Reels() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [submitTab, setSubmitTab] = useState<"upload" | "link">("upload");
+  const [submitTab, setSubmitTab] = useState<"upload" | "link">("link"); // Default to link tab
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -563,15 +561,19 @@ export default function Reels() {
               <div>
                 <label className="text-sm font-medium mb-2 block">Video URL *</label>
                 <Input
-                  placeholder="https://youtube.com/watch?v=..."
+                  placeholder="Paste YouTube or Instagram link here..."
                   value={formData.video_url}
                   onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
                   className={errors.video_url ? "border-destructive" : ""}
                 />
                 {errors.video_url && <p className="text-destructive text-xs mt-1">{errors.video_url}</p>}
-                <p className="text-xs text-muted-foreground mt-1">
-                  Supported: YouTube, Instagram, LinkedIn, Vimeo, Twitter/X
-                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Youtube className="w-4 h-4 text-red-500" />
+                  <Instagram className="w-4 h-4 text-pink-500" />
+                  <p className="text-xs text-muted-foreground">
+                    YouTube videos, Shorts & Instagram Reels supported
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

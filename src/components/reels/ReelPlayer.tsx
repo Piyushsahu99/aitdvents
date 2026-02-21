@@ -37,7 +37,7 @@ interface ReelPlayerProps {
 }
 
 const WATCH_TIME_THRESHOLD = 15; // seconds to earn coins
-const BASE_URL = "https://aitdevents.lovable.app";
+const BASE_URL = "https://aitdevents.lovable.app"; // Your subdomain
 
 export function ReelPlayer({ 
   reel, 
@@ -90,8 +90,27 @@ export function ReelPlayer({
     }
   };
 
+  // Extract Instagram Reel ID
+  const getInstagramReelId = (url: string): string | null => {
+    try {
+      const urlObj = new URL(url);
+      if (urlObj.hostname.includes("instagram.com")) {
+        // Match patterns like /reel/ABC123/ or /p/ABC123/
+        const match = urlObj.pathname.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/);
+        if (match && match[2]) {
+          return match[2];
+        }
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const youtubeId = getYoutubeId(reel.video_url);
+  const instagramReelId = getInstagramReelId(reel.video_url);
   const isYoutube = !!youtubeId;
+  const isInstagram = !!instagramReelId;
 
   // Handle native video playback
   useEffect(() => {
@@ -152,17 +171,22 @@ export function ReelPlayer({
 
   const handleShareAction = async (platform: "whatsapp" | "twitter" | "linkedin" | "copy") => {
     const shareUrl = getShareUrl();
-    const text = `🎬 Check this out on AITD Reels: ${reel.title}`;
+    const text = `🎬 Check out "${reel.title}" on AITD Reels! \n\n🎓 Educational content by AITD Events`;
+    const shortText = `🎬 ${reel.title} | AITD Reels`;
 
     if (platform === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n" + shareUrl)}`, "_blank");
+      window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n\n🔗 " + shareUrl)}`, "_blank");
     } else if (platform === "twitter") {
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`, "_blank");
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shortText)}&url=${encodeURIComponent(shareUrl)}&hashtags=AITDEvents,Education`, "_blank");
     } else if (platform === "linkedin") {
       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank");
     } else if (platform === "copy") {
-      await navigator.clipboard.writeText(shareUrl);
-      toast({ title: "Link copied! 🔗", description: "Share it with your friends" });
+      const fullLink = `${text}\n\n🔗 ${shareUrl}`;
+      await navigator.clipboard.writeText(fullLink);
+      toast({ 
+        title: "Link copied! 🔗", 
+        description: "Full message copied with link - ready to share!" 
+      });
     }
 
     setShowSharePanel(false);
@@ -220,11 +244,23 @@ export function ReelPlayer({
         ) : isYoutube ? (
           // YouTube embed
           <iframe
-            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${isActive ? 1 : 0}&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0&playsinline=1`}
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${isActive ? 1 : 0}&mute=1&loop=1&playlist=${youtubeId}&controls=1&modestbranding=1&rel=0&playsinline=1`}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
+        ) : isInstagram ? (
+          // Instagram Reel embed
+          <div className="w-full h-full flex items-center justify-center bg-black">
+            <div className="max-w-md w-full h-full">
+              <iframe
+                src={`https://www.instagram.com/p/${instagramReelId}/embed/`}
+                className="w-full h-full border-0"
+                allowFullScreen
+                allow="encrypted-media"
+              />
+            </div>
+          </div>
         ) : (
           // External link fallback with better styling
           <a

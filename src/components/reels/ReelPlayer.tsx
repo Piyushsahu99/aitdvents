@@ -37,7 +37,7 @@ interface ReelPlayerProps {
 }
 
 const WATCH_TIME_THRESHOLD = 15; // seconds to earn coins
-const BASE_URL = "https://aitdevents.lovable.app"; // Your subdomain
+const BASE_URL = import.meta.env.VITE_APP_URL || window.location.origin;
 
 export function ReelPlayer({ 
   reel, 

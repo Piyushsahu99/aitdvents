@@ -7,8 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:prod": "NODE_ENV=production vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:build": "docker build -t aitd-events .",
+    "docker:run": "docker run -p 8080:8080 aitd-events",
+    "gcp:deploy": "gcloud builds submit --config=cloudbuild.yaml",
+    "gcp:logs": "gcloud run services logs tail aitd-events-platform"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",

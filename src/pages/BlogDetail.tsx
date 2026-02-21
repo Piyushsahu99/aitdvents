@@ -13,7 +13,7 @@ import {
   Copy, MessageCircle, Twitter, Linkedin, BookOpen, ArrowRight
 } from "lucide-react";
 
-const PUBLISHED_BASE = "https://aitdevents.lovable.app";
+const PUBLISHED_BASE = import.meta.env.VITE_APP_URL || window.location.origin;
 
 function ShareButtons({ title, url }: { title: string; url: string }) {
   const { toast } = useToast();

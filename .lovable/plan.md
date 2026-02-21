@@ -1,63 +1,58 @@
 
-## Footer Reels Highlight + Enhanced Reel Sharing
 
-### What's Being Changed
+## Full Blog System Overhaul
 
-Two goals:
-1. Replace the "Games" section in the footer's Quick Links with a prominent **Reels** call-to-action that makes it feel like a core platform feature.
-2. Improve the **Share** button inside `ReelPlayer` so students can easily share individual reels to WhatsApp, Instagram, Twitter/X, and LinkedIn — with a referral coin reward.
+### Problems Found
+1. No blog detail/reading page -- clicking a blog card does nothing useful (links back to /blogs listing)
+2. No sharing functionality (WhatsApp, Twitter, LinkedIn, Copy Link)
+3. Missing categories like "AKTU Updates", "Roadmap", "Tips & Tricks"
+4. The fetch query joins `events(title, date)` which can cause issues and isn't used
+5. No `user_id` column on blogs table -- author ownership is matched by name string, which is fragile
 
----
+### What Will Be Built
 
-### Part 1 — Footer (`src/components/Footer.tsx`)
+**1. Blog Detail Page (`/blogs/:id`)**
+- Full reading experience with the blog content rendered nicely
+- Shows title, author, category, date, read time
+- Share buttons at top and bottom (WhatsApp, Twitter/X, LinkedIn, Copy Link)
+- "Back to Blogs" navigation
+- Related blogs sidebar/section (same category)
 
-**Current state:** The Quick Links column has Events, Bounties, Jobs, Courses, Scholarships, Blogs. There is no Reels link.
+**2. Blog Sharing**
+- Share panel on each blog detail page and on blog cards
+- WhatsApp: pre-filled message with title + link
+- Twitter/X: pre-filled tweet
+- LinkedIn: share URL
+- Copy Link with toast confirmation
+- Uses the published URL format: `https://aitdevents.lovable.app/blogs/[id]`
 
-**Changes:**
-- Add **Reels** as a highlighted entry in Quick Links, styled with a gradient pink/purple badge (matching the Reels brand color) to make it stand out visually from other plain links.
-- Add a separate **"🎬 Reels — Watch & Earn"** promotional block between the Quick Links column and the Social column. It will show:
-  - A short tagline: *"Watch educational shorts, share yours & earn AITD Coins"*
-  - A "Watch Reels →" CTA link
-  - A "Share Your Reel →" CTA link (opens /reels with the submit dialog intent, via query param)
-  - Coin earn badges: `+2 coins to watch`, `+10 coins to upload`
+**3. Improved Blog Cards (Listing Page)**
+- Cards now link to `/blogs/[id]` (the detail page)
+- Add a small share icon on each card
+- Fix the fetch query: remove the broken `events(title, date)` join
 
----
+**4. Enhanced Categories**
+- Add: "AKTU Updates", "Roadmap", "Tips & Tricks", "University News", "Opportunities" to the write modal categories
 
-### Part 2 — Mobile Bottom Nav (`src/components/MobileBottomNav.tsx`)
+**5. Database: Add `user_id` column**
+- Add `user_id UUID` to `blogs` table (nullable, references nothing per Supabase guidelines)
+- Update the write modal to save the current user's ID
+- This enables proper "My Blogs" and ownership tracking in future
 
-**Current state:** Bottom bar shows Home, Events, Quiz, Jobs, More. Reels is buried in "More > Tools".
-
-**Change:**
-- Replace **Quiz** slot with **Reels** (using the `Video` icon) in the 4-item bottom nav bar so it's always one tap away on mobile. Quiz moves into the "More" sheet under a new "Explore" category (it already exists there as a full page).
-
----
-
-### Part 3 — Enhanced Sharing in `ReelPlayer` (`src/components/reels/ReelPlayer.tsx`)
-
-**Current state:** The Share button calls `navigator.share()` (native OS share sheet) or copies to clipboard. No platform-specific options. No referral coins.
-
-**Changes:**
-- Replace the single Share button with a **share panel** that slides up (small popover/bottom sheet) showing:
-  - **WhatsApp** — pre-fills message: *"🎬 Check this out on AITD Reels: [title] [url]"*
-  - **Twitter/X** — pre-fills tweet with title + link
-  - **LinkedIn** — opens LinkedIn share
-  - **Copy Link** — copies URL to clipboard with toast confirmation
-- The platform URL will be the reel's page link: `https://aitdevents.lovable.app/reels?id=[reelId]` (so it's shareable and trackable)
-- If the user is logged in, append `?ref=[first8ofUserId]` for referral tracking (consistent with existing referral system)
-- Award **+1 AITD Coin** on share (using `POINT_VALUES.REEL_LIKE` = 1, calling `earnCoins`) — rewarded once per reel per user per platform
+**6. New Route**
+- Add `/blogs/:id` route in `App.tsx` pointing to new `BlogDetail` page
 
 ---
 
 ### Technical Details
 
-**Files to modify:**
-
 | File | Change |
 |---|---|
-| `src/components/Footer.tsx` | Add Reels highlighted link + promo block |
-| `src/components/MobileBottomNav.tsx` | Swap Quiz → Reels in bottom 4-tab bar; move Quiz to More sheet |
-| `src/components/reels/ReelPlayer.tsx` | Replace share handler with expandable share panel (WhatsApp, X, LinkedIn, Copy) + referral coin |
+| **New: `src/pages/BlogDetail.tsx`** | Full blog reading page with content display, share buttons, author info, related blogs |
+| `src/pages/Blogs.tsx` | Fix fetch query (remove events join), make cards link to `/blogs/[id]`, add share icon on cards |
+| `src/components/BlogWriteModal.tsx` | Add new categories, save `user_id` on insert |
+| `src/App.tsx` | Add `/blogs/:id` route |
+| **Database migration** | Add `user_id` column to `blogs` table |
 
-**No database changes** required — referral tracking reuses existing `earn_points` RPC and the existing referral URL convention.
-
-**Coin reward on share:** The existing `earnCoins(1, "reel_like", ...)` call will be reused since it's already mapped server-side. Only triggered once per share action (not per platform tap — user picks one platform).
+### No external services needed
+This is fully self-contained using the existing database. No Google Blogger connection required -- the platform already has its own blogs table and write system. The fixes above will make it fully functional end-to-end.

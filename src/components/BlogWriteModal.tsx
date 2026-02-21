@@ -17,7 +17,8 @@ interface BlogWriteModalProps {
 
 const CATEGORIES = [
   "Technology", "Career", "Campus Life", "Internship", "Hackathon",
-  "Interview Tips", "Study Tips", "Personal Growth", "Events", "Other"
+  "Interview Tips", "Study Tips", "Personal Growth", "Events",
+  "AKTU Updates", "Roadmap", "Tips & Tricks", "University News", "Opportunities", "Other"
 ];
 
 export function BlogWriteModal({ open, onOpenChange, onBlogCreated }: BlogWriteModalProps) {
@@ -71,10 +72,11 @@ export function BlogWriteModal({ open, onOpenChange, onBlogCreated }: BlogWriteM
         content: content.trim(),
         category,
         author: authorName,
+        user_id: user.id,
         read_time: estimateReadTime(content),
         published: true,
         ai_generated: false,
-      });
+      } as any);
 
       if (error) throw error;
 

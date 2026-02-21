@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Calendar, Clock, Sparkles, BookOpen, PenTool } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { User, Calendar, Clock, Sparkles, BookOpen, PenTool, Share2, Copy, MessageCircle } from "lucide-react";
 import blogHero from "@/assets/blog-hero.jpg";
 import { BlogWriteModal } from "@/components/BlogWriteModal";
 
@@ -24,7 +26,7 @@ export default function Blogs() {
     try {
       const { data, error } = await supabase
         .from("blogs")
-        .select("*, events(title, date)")
+        .select("*")
         .eq("published", true)
         .order("created_at", { ascending: false });
 
@@ -96,50 +98,51 @@ export default function Blogs() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBlogs.map((blog: any, index: number) => (
-              <Card
-                key={blog.id}
-                className="p-0 overflow-hidden hover-lift cursor-pointer group animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {/* Card Image Placeholder with Gradient */}
-                <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4 z-10">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">{blog.category}</Badge>
-                      {blog.ai_generated && (
-                        <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
-                          <Sparkles className="h-3 w-3 mr-1" />
-                          AI
-                        </Badge>
-                      )}
+              <Link key={blog.id} to={`/blogs/${blog.id}`} className="block">
+                <Card
+                  className="p-0 overflow-hidden hover-lift cursor-pointer group animate-fade-in h-full"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {/* Card Image Placeholder with Gradient */}
+                  <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4 z-10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="secondary">{blog.category}</Badge>
+                        {blog.ai_generated && (
+                          <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            AI
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Card Content */}
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                    {blog.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4 line-clamp-3">{blog.excerpt}</p>
-                  
-                  <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-primary" />
-                      <span className="font-medium">{blog.author}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-primary" />
-                      <span>{blog.read_time}</span>
+                  {/* Card Content */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4 line-clamp-3">{blog.excerpt}</p>
+                    
+                    <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-primary" />
+                        <span className="font-medium">{blog.author}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span>{new Date(blog.created_at).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <span>{blog.read_time}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
         )}

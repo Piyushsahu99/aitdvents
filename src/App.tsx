@@ -16,7 +16,6 @@ import Blogs from "./pages/Blogs";
 import Reels from "./pages/Reels";
 import Alumni from "./pages/Alumni";
 import AITools from "./pages/AITools";
-import Learning from "./pages/Learning";
 import AIChat from "./pages/AIChat";
 import Mentorship from "./pages/Mentorship";
 import Practice from "./pages/Practice";
@@ -51,23 +50,11 @@ import Certificates from "./pages/Certificates";
 import RSVP from "./pages/RSVP";
 import LiveChatPage from "./pages/LiveChatPage";
 import Quiz from "./pages/Quiz";
-import QuizDiscover from "./pages/QuizDiscover";
-import CreateQuiz from "./pages/CreateQuiz";
-import MyQuizzes from "./pages/MyQuizzes";
-import QuizHost from "./pages/QuizHost";
-import QuizResultsPublic from "./pages/QuizResultsPublic";
-import QuizAnalytics from "./pages/QuizAnalytics";
-import TeamPanel from "./pages/TeamPanel";
-import TeamMemberDashboard from "./pages/TeamMemberDashboard";
+import Games from "./pages/Games";
+import CricketAuction from "./pages/CricketAuction";
+import TargetMaster from "./pages/TargetMaster";
 import SpinWheel from "./pages/SpinWheel";
-import LuckyDraw from "./pages/LuckyDraw";
-import IPLAuction from "./pages/IPLAuction";
-import CreateAuction from "./pages/CreateAuction";
-import CertificatePublic from "./pages/CertificatePublic";
-import EventGallery from "./pages/EventGallery";
-import OurTeam from "./pages/OurTeam";
-import HackSamarth from "./pages/HackSamarth";
-import BlogDetail from "./pages/BlogDetail";
+import RandomPicker from "./pages/RandomPicker";
 
 const queryClient = new QueryClient();
 
@@ -88,11 +75,9 @@ const App = () => (
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/resume" element={<Resume />} />
               <Route path="/blogs" element={<Blogs />} />
-              <Route path="/blogs/:id" element={<BlogDetail />} />
               <Route path="/reels" element={<Reels />} />
               <Route path="/alumni" element={<Alumni />} />
               <Route path="/ai-tools" element={<AITools />} />
-              <Route path="/learning" element={<Learning />} />
               <Route path="/ai-chat" element={<AIChat />} />
               <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/practice" element={<Practice />} />
@@ -126,22 +111,11 @@ const App = () => (
               <Route path="/rsvp" element={<RSVP />} />
               <Route path="/live-chat" element={<LiveChatPage />} />
               <Route path="/quiz" element={<Quiz />} />
-              <Route path="/quiz-discover" element={<QuizDiscover />} />
-              <Route path="/create-quiz" element={<CreateQuiz />} />
-              <Route path="/my-quizzes" element={<MyQuizzes />} />
-              <Route path="/quiz-host/:quizId" element={<QuizHost />} />
-              <Route path="/quiz-results/:quizCode" element={<QuizResultsPublic />} />
-              <Route path="/quiz-analytics/:quizId" element={<QuizAnalytics />} />
-              <Route path="/team-panel" element={<TeamPanel />} />
-              <Route path="/team-dashboard" element={<TeamMemberDashboard />} />
-              <Route path="/spin-wheel" element={<SpinWheel />} />
-              <Route path="/lucky-draw" element={<LuckyDraw />} />
-              <Route path="/ipl-auction" element={<IPLAuction />} />
-              <Route path="/create-auction" element={<CreateAuction />} />
-              <Route path="/certificate/:certificateNumber" element={<CertificatePublic />} />
-              <Route path="/gallery" element={<EventGallery />} />
-              <Route path="/our-team" element={<OurTeam />} />
-              <Route path="/hacksamarth" element={<HackSamarth />} />
+              <Route path="/games" element={<Games />} />
+              <Route path="/games/cricket-auction" element={<CricketAuction />} />
+              <Route path="/games/target-master" element={<TargetMaster />} />
+              <Route path="/games/spin-wheel" element={<SpinWheel />} />
+              <Route path="/games/random-picker" element={<RandomPicker />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

@@ -18,9 +18,7 @@ FROM auth.users
 WHERE email = 'your@email.com';
 ```
 
-<lov-actions>
-<lov-open-backend>Open Backend to Run SQL</lov-open-backend>
-</lov-actions>
+You can run this SQL query in your Supabase dashboard's SQL editor.
 
 ### 2. Access Admin Dashboard
 
@@ -63,7 +61,7 @@ Users can only see:
 
 ## 🤖 AI Features
 
-The system uses **Lovable AI** (Gemini 2.5 Flash) to generate:
+The system uses **Google Gemini 2.5 Flash** API to generate:
 
 1. **Blog Posts**: 800-1000 word articles with:
    - Engaging introductions
@@ -117,10 +115,8 @@ The system uses **Lovable AI** (Gemini 2.5 Flash) to generate:
 - View edge function logs for AI generation issues  
 - All AI requests are logged for debugging
 
-<lov-actions>
-<lov-open-backend>Open Backend</lov-open-backend>
-</lov-actions>
+Access your Supabase dashboard to view logs and debug issues.
 
 ---
 
-**Built with**: React + Vite + Lovable Cloud + Lovable AI
+**Built with**: React + Vite + Supabase + Google Gemini AI

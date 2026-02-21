@@ -71,7 +71,7 @@ serve(async (req) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'AITD Events <certificates@aitdevents.com>',
+          from: 'AITD Events <certificates@aitdevents.in>',
           to: [cert.recipient_email],
           subject: `🎉 Congratulations! Your AITD Events Certificate is Ready`,
           html: generateCertificateEmailHtml(cert)
@@ -127,7 +127,7 @@ serve(async (req) => {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    from: 'AITD Events <certificates@aitdevents.com>',
+                    from: 'AITD Events <certificates@aitdevents.in>',
                     to: [cert.recipient_email],
                     subject: `🏆 Congratulations! You're a Top ${winner.rank} Performer - ${MONTHS[month - 1]} ${year}`,
                     html: generateLeaderboardEmailHtml(cert, winner.rank, MONTHS[month - 1], year, winner.points_earned)
@@ -179,7 +179,7 @@ serve(async (req) => {
 });
 
 function generateCertificateEmailHtml(cert: any): string {
-  const verifyUrl = cert.verification_url || `https://aitdevents.lovable.app/certificates?verify=true&code=${cert.certificate_number}`;
+  const verifyUrl = cert.verification_url || `https://aitdevents.in/certificates?verify=true&code=${cert.certificate_number}`;
   
   return `
     <!DOCTYPE html>
@@ -230,7 +230,7 @@ function generateCertificateEmailHtml(cert: any): string {
 }
 
 function generateLeaderboardEmailHtml(cert: any, rank: number, month: string, year: number, points: number): string {
-  const verifyUrl = cert.verification_url || `https://aitdevents.lovable.app/certificates?verify=true&code=${cert.certificate_number}`;
+  const verifyUrl = cert.verification_url || `https://aitdevents.in/certificates?verify=true&code=${cert.certificate_number}`;
   const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
   const rankTitle = rank === 1 ? 'Champion' : rank === 2 ? 'Runner Up' : 'Achiever';
   const gradientColors = rank === 1 

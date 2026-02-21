@@ -1,22 +1,14 @@
-# Welcome to your Lovable project
+# AITD Events Platform
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/a55a3931-8069-46a1-80ef-3050ffe59939
+AITD Events is India's largest platform connecting students with career-defining opportunities including hackathons, internships, jobs, scholarships, and mentorship.
 
-## How can I edit this code?
+## Getting Started
 
-There are several ways of editing your application.
+**Local Development**
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/a55a3931-8069-46a1-80ef-3050ffe59939) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repository and start developing locally with your preferred IDE.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +54,17 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/a55a3931-8069-46a1-80ef-3050ffe59939) and click on Share -> Publish.
+This project can be deployed to any static hosting service that supports Vite applications:
 
-## Can I connect a custom domain to my Lovable project?
+- **Vercel**: Connect your GitHub repository for automatic deployments
+- **Netlify**: Deploy directly from GitHub with continuous deployment
+- **AWS Amplify**: Host with AWS infrastructure
+- **Firebase Hosting**: Deploy to Google's Firebase platform
 
-Yes, you can!
+### Build for Production
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+npm run build
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The built files will be in the `dist/` directory.

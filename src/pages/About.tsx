@@ -92,7 +92,7 @@ export default function About() {
       title: "CodeMatrix: Genesis Hackathon",
       description: "Our first community-organized hackathon with $500+ prize pool, hosted by GDG on Campus - Dr. AITD, Kanpur. 40+ teams participated in AI, Web & Cloud, and Blockchain tracks.",
       date: "Dec 2025",
-      link: "https://codematrix-genesis-site.lovable.app",
+      link: "https://codematrix-genesis.aitdevents.in",
       highlight: true,
     },
   ];
@@ -203,8 +203,120 @@ export default function About() {
             MEETS OPPORTUNITY
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-            A youth-driven, collaborative platform revolutionizing campus engagement and student community building across India
+            Empowering Tier 2 & Tier 3 College Students • Connecting Brands with India's Future Talent
           </p>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-primary/5 via-accent/5 to-background">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-base px-6 py-2">
+              <Heart className="h-4 w-4 mr-2" />
+              Our Mission
+            </Badge>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              BRIDGING THE{" "}
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                OPPORTUNITY GAP
+              </span>
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+              We believe every student deserves equal access to opportunities, regardless of their college tier
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {/* Student Focus */}
+            <Card className="p-8 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20 hover:shadow-xl transition-all duration-300 group">
+              <div className="flex items-start gap-4">
+                <div className="p-4 bg-primary/20 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                  <GraduationCap className="h-8 w-8 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">For Students</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Empowering students from <span className="font-bold text-primary">Tier 2 & Tier 3 colleges</span> across India with:
+                  </p>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>Access to premium internships, hackathons & competitions</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>Career guidance and mentorship from industry experts</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>Skill development through courses & workshops</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>Earn rewards while learning and growing</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+
+            {/* Brand Focus */}
+            <Card className="p-8 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 hover:shadow-xl transition-all duration-300 group">
+              <div className="flex items-start gap-4">
+                <div className="p-4 bg-accent/20 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                  <Megaphone className="h-8 w-8 text-accent" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-accent transition-colors">For Brands</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Helping brands <span className="font-bold text-accent">reach maximum students</span> across India through:
+                  </p>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                      <span>Direct access to 10,000+ engaged college students</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                      <span>Campus ambassador programs for grassroots marketing</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                      <span>Product promotions and brand awareness campaigns</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                      <span>Talent acquisition and recruitment pipeline</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Impact Stats */}
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8 border border-primary/10">
+            <h3 className="text-2xl font-bold text-center mb-8">Our Impact</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-primary mb-2">{stats.students.toLocaleString()}+</div>
+                <div className="text-sm text-muted-foreground">Students Registered</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-accent mb-2">{stats.colleges}+</div>
+                <div className="text-sm text-muted-foreground">Colleges Reached</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-primary mb-2">{stats.events}+</div>
+                <div className="text-sm text-muted-foreground">Live Opportunities</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-accent mb-2">{stats.ambassadors}+</div>
+                <div className="text-sm text-muted-foreground">Campus Ambassadors</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -386,15 +498,12 @@ export default function About() {
         </div>
       </section>
 
-      {/* Our Mission/Motive Section */}
+      {/* Solution Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-center">
-            OUR MISSION
+          <h2 className="text-3xl md:text-5xl font-bold mb-12 text-center">
+            THE SOLUTION
           </h2>
-          <p className="text-xl text-muted-foreground text-center mb-12 max-w-3xl mx-auto leading-relaxed">
-            To empower every student in India with equal access to career-defining opportunities, bridging the gap between talent and success through technology and community.
-          </p>
           <div className="space-y-8">
             <Card className="p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
               <div className="flex items-start gap-4">
@@ -402,11 +511,10 @@ export default function About() {
                   <Rocket className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">One Platform, Endless Opportunities</h3>
+                  <h3 className="text-2xl font-bold mb-2">All-in-One Platform</h3>
                   <p className="text-muted-foreground">
-                    We're building India's largest student opportunity ecosystem - aggregating internships, hackathons, scholarships, 
-                    competitions, live quizzes, freelance tasks, workshops, and mentorship programs all under one roof. 
-                    No more scattered searches across dozens of platforms.
+                    AITD Events brings everything together - internships, hackathons, scholarships, 
+                    competitions, freelance tasks, workshops, and mentorship - all in one place.
                   </p>
                 </div>
               </div>
@@ -418,11 +526,10 @@ export default function About() {
                   <GraduationCap className="h-8 w-8 text-accent" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">Youth-Driven Innovation</h3>
+                  <h3 className="text-2xl font-bold mb-2">Personalized Discovery</h3>
                   <p className="text-muted-foreground">
-                    Built by students, for students. Every feature is designed based on real campus needs - from AI-powered 
-                    opportunity matching to gamified learning with AITD Coins. We understand what students need 
-                    because we've been there ourselves.
+                    AI-powered recommendations match you with opportunities based on your skills, 
+                    interests, and career goals. Never miss what's meant for you.
                   </p>
                 </div>
               </div>
@@ -434,11 +541,10 @@ export default function About() {
                   <Trophy className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">Community-Powered Growth</h3>
+                  <h3 className="text-2xl font-bold mb-2">Build Your Brand</h3>
                   <p className="text-muted-foreground">
-                    Our campus ambassador network spans colleges across India, creating a collaborative ecosystem where 
-                    students help students succeed. Share knowledge, earn rewards, build networks, and grow together 
-                    as a community of ambitious achievers.
+                    Track achievements, earn badges, build portfolio, and create a verified profile 
+                    that stands out to recruiters and companies.
                   </p>
                 </div>
               </div>
@@ -525,21 +631,81 @@ export default function About() {
         </div>
       </section>
 
-      {/* Mission Statement */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-8">
-            OUR MISSION
-          </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed mb-8">
-            To democratize access to career opportunities for every Indian student, 
-            regardless of their college, background, or location.
-          </p>
-          <div className="p-8 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl border border-primary/20">
-            <p className="text-lg italic text-muted-foreground">
+      {/* Vision & Mission Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-primary/10 via-accent/5 to-background">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 text-base px-6 py-2">
+              <Lightbulb className="h-4 w-4 mr-2" />
+              Our Vision & Mission
+            </Badge>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              BUILDING INDIA'S{" "}
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                FUTURE
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            {/* Vision */}
+            <Card className="p-8 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20 hover:shadow-2xl transition-all duration-500 group">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="p-4 bg-primary/20 rounded-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  <Target className="h-10 w-10 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold mb-2 group-hover:text-primary transition-colors">Our Vision</h3>
+                  <div className="h-1 w-20 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+                </div>
+              </div>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                To become <span className="font-bold text-primary">India's largest and most trusted platform</span> that connects every college student with life-changing opportunities, creating a level playing field where talent triumphs over privilege.
+              </p>
+              <p className="text-muted-foreground">
+                By 2030, we envision reaching <span className="font-bold text-accent">10 million+ students</span> across 5,000+ colleges, especially in tier 2 & tier 3 cities, transforming how India discovers, nurtures, and places its young talent.
+              </p>
+            </Card>
+
+            {/* Mission */}
+            <Card className="p-8 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 hover:shadow-2xl transition-all duration-500 group">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="p-4 bg-accent/20 rounded-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  <Rocket className="h-10 w-10 text-accent" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold mb-2 group-hover:text-accent transition-colors">Our Mission</h3>
+                  <div className="h-1 w-20 bg-gradient-to-r from-accent to-primary rounded-full"></div>
+                </div>
+              </div>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                To <span className="font-bold text-accent">democratize access</span> to career opportunities for every Indian student, regardless of their college tier, background, or geographic location.
+              </p>
+              <ul className="space-y-3 text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                  <span>Aggregate opportunities from 1000+ sources into one platform</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                  <span>Provide free skill development and mentorship</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                  <span>Connect brands directly with student communities</span>
+                </li>
+              </ul>
+            </Card>
+          </div>
+
+          {/* Quote */}
+          <div className="relative p-8 md:p-12 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl border border-primary/20 overflow-hidden">
+            <div className="absolute top-0 left-0 text-9xl text-primary/10 font-serif">"</div>
+            <p className="text-xl md:text-2xl italic text-foreground leading-relaxed text-center relative z-10">
               "We believe every student deserves a fair shot at their dreams. AITD Events is 
-              building the bridge between ambition and achievement, one opportunity at a time."
+              building the bridge between <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ambition and achievement</span>, one opportunity at a time."
             </p>
+            <p className="text-center mt-6 text-muted-foreground font-semibold">— Piyush Sahu, Founder & Director</p>
           </div>
         </div>
       </section>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket, Gamepad2, Award, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,13 +20,12 @@ import logo from "@/assets/aitd-logo.png";
 // Primary navigation items - shown directly in navbar
 const primaryNavLinks = [
   { name: "Events", path: "/events", icon: Calendar },
+  { name: "Games", path: "/games", icon: Trophy },
   { name: "Bounties", path: "/bounties", icon: DollarSign },
   { name: "Jobs", path: "/jobs", icon: Briefcase },
-  { name: "Learning", path: "/learning", icon: GraduationCap },
-  { name: "Quiz", path: "/quiz", icon: Gamepad2 },
 ];
 
-// Secondary navigation items - shown in "More" dropdown (desktop)
+// Secondary navigation items - shown in "More" dropdown
 const moreNavLinks = [
   { 
     category: "Main",
@@ -36,18 +34,25 @@ const moreNavLinks = [
     ]
   },
   { 
+    category: "Learning",
+    items: [
+      { name: "Courses", path: "/courses", icon: BookOpen },
+      { name: "Study Materials", path: "/study-materials", icon: FileText },
+      { name: "My Courses", path: "/my-courses", icon: GraduationCap },
+      { name: "Practice", path: "/practice", icon: Target },
+      { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
+    ]
+  },
+  { 
     category: "Compete",
     items: [
       { name: "Hackathons", path: "/hackathons", icon: Code },
       { name: "Rewards", path: "/rewards", icon: Trophy },
-      { name: "Live Chat", path: "/live-chat", icon: MessageCircle },
     ]
   },
   { 
     category: "Connect",
     items: [
-      { name: "Our Team", path: "/our-team", icon: Users },
-      { name: "Event Gallery", path: "/gallery", icon: Calendar },
       { name: "Network", path: "/network", icon: Users },
       { name: "Groups", path: "/groups", icon: Users },
       { name: "Community", path: "/community", icon: MessageCircle },
@@ -66,17 +71,6 @@ const moreNavLinks = [
       { name: "Alumni", path: "/alumni", icon: UserCircle },
     ]
   },
-];
-
-// Learning sub-items for mobile menu
-const learningSubItems = [
-  { name: "Learning Hub", path: "/learning", icon: GraduationCap },
-  { name: "Courses", path: "/courses", icon: BookOpen },
-  { name: "Study Materials", path: "/study-materials", icon: FileText },
-  { name: "My Courses", path: "/my-courses", icon: GraduationCap },
-  { name: "Practice", path: "/practice", icon: Target },
-  { name: "Scholarships", path: "/scholarships", icon: GraduationCap },
-  { name: "Certificates", path: "/certificates", icon: Award },
 ];
 
 export const Navbar = () => {
@@ -167,16 +161,18 @@ export const Navbar = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5 group ${
+                  className={`relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1.5 group overflow-hidden ${
                     isActive(link.path)
-                      ? "text-primary-foreground"
-                      : "text-foreground hover:text-primary"
+                      ? "text-primary-foreground shadow-md"
+                      : "text-foreground hover:text-primary hover:shadow-sm"
                   }`}
                 >
-                  {isActive(link.path) && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-xl" />
+                  {isActive(link.path) ? (
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-xl animate-gradient" style={{backgroundSize: '200% 200%'}} />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   )}
-                  <Icon className={`h-4 w-4 relative z-10 ${isActive(link.path) ? '' : 'group-hover:scale-110'}`} />
+                  <Icon className={`h-4 w-4 relative z-10 transition-transform duration-300 ${isActive(link.path) ? '' : 'group-hover:scale-125 group-hover:rotate-12'}`} />
                   <span className="relative z-10">{link.name}</span>
                 </Link>
               );
@@ -238,46 +234,37 @@ export const Navbar = () => {
               </Button>
             </Link>
 
-            {/* Auth */}
+            {/* Auth Buttons */}
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-muted/50 transition-colors">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                        {user.email?.charAt(0)?.toUpperCase() || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 p-1">
-                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
-                    <Link to="/profile" className="flex items-center gap-2 px-3 py-2">
-                      <UserCircle className="h-4 w-4" /> My Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
-                    <Link to="/dashboard" className="flex items-center gap-2 px-3 py-2">
-                      <LayoutDashboard className="h-4 w-4" /> Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  {isAdmin && (
-                    <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
-                      <Link to="/admin" className="flex items-center gap-2 px-3 py-2">
-                        <Settings className="h-4 w-4" /> Admin
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer rounded-lg text-destructive" onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 mr-2" /> Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <>
+                <Link to="/profile">
+                  <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 hover:shadow-lg transition-all duration-300 hover:border-primary/50">
+                    <UserCircle className="mr-2 h-4 w-4" />
+                    Profile
+                  </Button>
+                </Link>
+                <Link to="/dashboard">
+                  <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 hover:shadow-lg transition-all duration-300 hover:border-primary/50">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 hover:shadow-lg transition-all duration-300 hover:border-accent/50">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                )}
+                <Button size="sm" variant="outline" className="rounded-xl hover:scale-105 hover:shadow-lg transition-all duration-300" onClick={handleSignOut}>
+                  Logout
+                </Button>
+              </>
             ) : (
               <Link to="/auth">
-                <Button size="sm" className="rounded-xl bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+                <Button size="sm" className="rounded-xl bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-2xl hover:shadow-primary/30 animate-gradient" style={{backgroundSize: '200% 200%'}}>
+                  <Rocket className="mr-2 h-4 w-4" />
                   Get Started
                 </Button>
               </Link>
@@ -301,7 +288,7 @@ export const Navbar = () => {
               <SheetContent side="right" className="w-[85vw] max-w-[340px] sm:max-w-[380px] p-0 border-l border-primary/20">
                 <div className="flex flex-col h-full bg-gradient-to-b from-background to-muted/20">
                   {/* Header with gradient */}
-                  <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/10">
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/10">
                     <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-3">
                       <div className="relative">
                         <div className="absolute inset-0 bg-primary/30 rounded-xl blur-md" />
@@ -312,24 +299,11 @@ export const Navbar = () => {
                         <span className="text-[10px] text-muted-foreground">Learn • Compete • Grow</span>
                       </div>
                     </Link>
-                    {user && (
-                      <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-primary/10">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                            {user.email?.charAt(0)?.toUpperCase() || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-semibold text-foreground truncate">{user.email?.split("@")[0]}</span>
-                          <span className="text-[10px] text-muted-foreground truncate">{user.email}</span>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   {/* Scrollable Content */}
-                  <ScrollArea className="flex-1">
-                    <div className="p-3 space-y-4">
+                  <ScrollArea className="flex-1 py-2">
+                    <div className="px-3 pb-20 space-y-4">
                       {/* Primary Links - Featured Cards */}
                       <div className="space-y-2">
                         <p className="text-[10px] font-bold text-primary uppercase tracking-widest px-2 flex items-center gap-1.5">
@@ -358,39 +332,6 @@ export const Navbar = () => {
                                   <Icon className={`h-5 w-5 ${isActive(link.path) ? "text-white" : "text-primary"}`} />
                                 </div>
                                 <span className="font-semibold text-xs">{link.name}</span>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Learning Section */}
-                      <div className="space-y-1.5">
-                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest px-2 flex items-center gap-1.5">
-                          <GraduationCap className="h-3 w-3" />
-                          Learning
-                        </p>
-                        <div className="bg-card/50 rounded-2xl border border-border/30 overflow-hidden">
-                          {learningSubItems.map((item, idx) => {
-                            const Icon = item.icon;
-                            return (
-                              <Link
-                                key={item.path}
-                                to={item.path}
-                                onClick={() => setIsOpen(false)}
-                                className={`flex items-center justify-between px-3 py-3 text-sm transition-all active:bg-muted/80 ${
-                                  isActive(item.path)
-                                    ? "bg-primary/10 text-primary font-semibold"
-                                    : "text-foreground"
-                                } ${idx !== learningSubItems.length - 1 ? "border-b border-border/30" : ""}`}
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className={`p-1.5 rounded-lg ${isActive(item.path) ? "bg-primary/20" : "bg-muted/50"}`}>
-                                    <Icon className={`h-4 w-4 ${isActive(item.path) ? "text-primary" : "text-muted-foreground"}`} />
-                                  </div>
-                                  <span>{item.name}</span>
-                                </div>
-                                <ChevronRight className={`h-4 w-4 ${isActive(item.path) ? "text-primary" : "text-muted-foreground/50"}`} />
                               </Link>
                             );
                           })}

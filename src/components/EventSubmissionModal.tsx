@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Calendar, MapPin, Link, Tag, Upload, Users, Coins, Image } from 'lucide-react';
+import { Plus, Calendar, MapPin, Link, Tag, Upload, Users, Coins, Image, Loader2 } from 'lucide-react';
 import { POINT_VALUES } from '@/hooks/useEarnCoins';
 
 interface EventSubmissionModalProps {
@@ -64,8 +64,25 @@ export const EventSubmissionModal = ({ onSuccess }: EventSubmissionModalProps) =
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validation
     if (!formData.title || !formData.description || !formData.date || !formData.location || !formData.category) {
       toast.error('Please fill in all required fields');
+      return;
+    }
+
+    // Validate date is in the future
+    const eventDate = new Date(formData.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (eventDate < today) {
+      toast.error('Event date must be in the future');
+      return;
+    }
+
+    // Validate external link format if provided
+    if (formData.external_link && !formData.external_link.startsWith('http')) {
+      toast.error('External link must start with http:// or https://');
       return;
     }
 
@@ -154,7 +171,7 @@ export const EventSubmissionModal = ({ onSuccess }: EventSubmissionModalProps) =
           </Badge>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             Submit an Event
@@ -163,6 +180,9 @@ export const EventSubmissionModal = ({ onSuccess }: EventSubmissionModalProps) =
               +{POINT_VALUES.EVENT_REGISTER} coins
             </Badge>
           </DialogTitle>
+          <DialogDescription>
+            Share events with the community. Your submission will be reviewed before publishing.
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -215,13 +235,16 @@ export const EventSubmissionModal = ({ onSuccess }: EventSubmissionModalProps) =
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
+            <Label htmlFor="description" className="flex items-center justify-between">
+              <span>Description *</span>
+              <span className="text-xs text-muted-foreground">{formData.description.length}/1000</span>
+            </Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Describe your event..."
-              rows={3}
+              placeholder="Describe your event, what attendees will learn, agenda, etc..."
+              rows={4}
               maxLength={1000}
               required
             />
@@ -238,6 +261,7 @@ export const EventSubmissionModal = ({ onSuccess }: EventSubmissionModalProps) =
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
                 required
               />
             </div>
@@ -351,9 +375,14 @@ export const EventSubmissionModal = ({ onSuccess }: EventSubmissionModalProps) =
               Cancel
             </Button>
             <Button type="submit" disabled={loading} className="flex-1 gap-2">
-              {loading ? 'Submitting...' : (
+              {loading ? (
                 <>
-                  Submit
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  Submit Event
                   <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-600 text-xs">
                     +{POINT_VALUES.EVENT_REGISTER}
                   </Badge>

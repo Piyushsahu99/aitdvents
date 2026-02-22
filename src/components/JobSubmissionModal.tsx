@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 import { Loader2, Briefcase, Building, MapPin, Clock, Banknote, Send, CheckCircle2, Coins, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -19,7 +19,6 @@ interface JobSubmissionModalProps {
 export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmissionModalProps) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { toast } = useToast();
   
   const [formData, setFormData] = useState({
     title: "",
@@ -42,12 +41,15 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validation
     if (!formData.title || !formData.company || !formData.location || !formData.type || !formData.category) {
-      toast({
-        title: "Missing Fields",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+      sonnerToast.error('Please fill in all required fields');
+      return;
+    }
+
+    // Validate apply_link format if provided
+    if (formData.apply_link && !formData.apply_link.startsWith('http')) {
+      sonnerToast.error('Application link must start with http:// or https://');
       return;
     }
 
@@ -56,11 +58,7 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast({
-          title: "Not Authenticated",
-          description: "Please log in to submit a job",
-          variant: "destructive",
-        });
+        sonnerToast.error('Please log in to submit a job');
         return;
       }
 
@@ -106,11 +104,7 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
 
     } catch (error: any) {
       console.error("Error submitting job:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to submit job",
-        variant: "destructive",
-      });
+      sonnerToast.error(error.message || 'Failed to submit job');
     } finally {
       setLoading(false);
     }
@@ -146,9 +140,9 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
               +10 coins
             </Badge>
           </DialogTitle>
-          <p className="text-sm text-muted-foreground">
+          <DialogDescription>
             Share job opportunities with the student community. Earn coins when approved!
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -291,25 +285,37 @@ export function JobSubmissionModal({ open, onOpenChange, onSuccess }: JobSubmiss
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Job Description</Label>
+            <Label htmlFor="description" className="flex items-center justify-between">
+              <span>Job Description</span>
+              {formData.description && (
+                <span className="text-xs text-muted-foreground">{formData.description.length} chars</span>
+              )}
+            </Label>
             <Textarea
               id="description"
               placeholder="Describe the role, responsibilities, and what you're looking for..."
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
               rows={4}
+              maxLength={2000}
             />
           </div>
 
           {/* Requirements */}
           <div className="space-y-2">
-            <Label htmlFor="requirements">Requirements / Skills</Label>
+            <Label htmlFor="requirements" className="flex items-center justify-between">
+              <span>Requirements / Skills</span>
+              {formData.requirements && (
+                <span className="text-xs text-muted-foreground">{formData.requirements.length} chars</span>
+              )}
+            </Label>
             <Textarea
               id="requirements"
               placeholder="List required skills, qualifications, or experience..."
               value={formData.requirements}
               onChange={(e) => handleInputChange("requirements", e.target.value)}
               rows={3}
+              maxLength={1000}
             />
           </div>
 

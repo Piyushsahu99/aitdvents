@@ -5,7 +5,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton-loader";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { User, Calendar, Clock, Sparkles, BookOpen, PenTool, ArrowRight, TrendingUp } from "lucide-react";

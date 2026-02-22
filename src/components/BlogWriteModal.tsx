@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Send } from "lucide-react";
+import { EnhancedBlogEditor } from "@/components/blog/EnhancedBlogEditor";
 
 interface BlogWriteModalProps {
   open: boolean;
@@ -97,12 +99,14 @@ export function BlogWriteModal({ open, onOpenChange, onBlogCreated }: BlogWriteM
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl">Write a Blog ✍️</DialogTitle>
+      <DialogContent className="max-w-4xl max-h-[95vh] p-0">
+        <DialogHeader className="px-6 pt-6 pb-4">
+          <DialogTitle className="text-2xl font-bold">Write a Blog ✍️</DialogTitle>
+          <p className="text-sm text-muted-foreground">Share your knowledge and experiences with the community</p>
         </DialogHeader>
 
-        <div className="space-y-4 mt-2">
+        <ScrollArea className="max-h-[calc(95vh-120px)] px-6 pb-6">
+        <div className="space-y-5">
           <div>
             <Label htmlFor="blog-title">Title *</Label>
             <Input
@@ -142,19 +146,12 @@ export function BlogWriteModal({ open, onOpenChange, onBlogCreated }: BlogWriteM
           </div>
 
           <div>
-            <Label htmlFor="blog-content">Content *</Label>
-            <Textarea
-              id="blog-content"
-              placeholder="Write your blog content here... Share your experiences, tips, and insights with the community!"
+            <Label htmlFor="blog-content">Content * (Markdown Supported)</Label>
+            <EnhancedBlogEditor
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[200px]"
+              onChange={setContent}
+              placeholder="Write your blog content here... Share your experiences, tips, and insights with the community!&#10;&#10;**Tip:** Use the toolbar to format your text with headings, lists, links, and more!"
             />
-            {content.trim() && (
-              <p className="text-xs text-muted-foreground mt-1">
-                ~{content.trim().split(/\s+/).length} words · {estimateReadTime(content)}
-              </p>
-            )}
           </div>
 
           <Button onClick={handleSubmit} disabled={loading} className="w-full">
@@ -162,6 +159,7 @@ export function BlogWriteModal({ open, onOpenChange, onBlogCreated }: BlogWriteM
             {loading ? "Publishing..." : "Publish Blog"}
           </Button>
         </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

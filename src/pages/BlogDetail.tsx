@@ -12,6 +12,7 @@ import {
   ArrowLeft, User, Calendar, Clock, Sparkles, Share2,
   Copy, MessageCircle, Twitter, Linkedin, BookOpen, ArrowRight
 } from "lucide-react";
+import { BlogComments } from "@/components/blog/BlogComments";
 
 const PUBLISHED_BASE = import.meta.env.VITE_APP_URL || window.location.origin;
 
@@ -204,8 +205,20 @@ export default function BlogDetail() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.25 }}
       >
-        <article className="text-base md:text-lg leading-8 whitespace-pre-wrap text-foreground/90">
-          {blog.content}
+        {/* Enhanced Article Typography */}
+        <article className="prose prose-lg max-w-none">
+          <div 
+            className="text-[17px] md:text-[19px] leading-[1.8] md:leading-[1.9] text-foreground/90 font-normal tracking-normal"
+            style={{ 
+              fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              wordSpacing: '0.05em',
+              letterSpacing: '0.01em'
+            }}
+          >
+            <div className="whitespace-pre-wrap break-words">
+              {blog.content}
+            </div>
+          </div>
         </article>
 
         <Separator className="my-10" />
@@ -215,6 +228,11 @@ export default function BlogDetail() {
           <Button variant="ghost" size="sm" className="rounded-full text-muted-foreground" onClick={() => navigate("/blogs")}>
             More Blogs <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
+        </div>
+
+        {/* Comments Section */}
+        <div className="mt-16">
+          <BlogComments blogId={blog.id} />
         </div>
 
         {/* Related Blogs */}

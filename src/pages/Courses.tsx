@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, Star, GraduationCap, Loader2, Coins } from "lucide-react";
 import lmsHero from "@/assets/lms-hero.jpg";
 import { POINT_VALUES } from "@/hooks/useEarnCoins";
+import { SkeletonGrid, SkeletonCourseCard } from "@/components/ui/skeleton-loader";
 
 interface Course {
   id: string;
@@ -95,8 +96,33 @@ export default function Courses() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 pb-20 lg:pb-0">
+        {/* Hero Section */}
+        <div className="relative h-48 sm:h-64 lg:h-[320px] overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-accent/90" />
+          <img
+            src={lmsHero}
+            alt="Learning Platform"
+            className="w-full h-full object-cover mix-blend-overlay"
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+            <div className="max-w-3xl">
+              <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 text-xs sm:text-sm">
+                <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
+                Learn & Grow
+              </Badge>
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-4">
+                Explore Courses
+              </h1>
+              <p className="text-sm sm:text-lg lg:text-xl text-white/90 mb-3 sm:mb-4">
+                Master new skills with expert-led courses
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="container mx-auto px-4 py-6 sm:py-8 lg:py-12">
+          <SkeletonGrid count={6} component={SkeletonCourseCard} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" />
+        </div>
       </div>
     );
   }

@@ -10,7 +10,9 @@ import {
   Brain,
   Users,
   Coins,
+  Clock,
 } from "lucide-react";
+import { AnimatedStagger, AnimatedStaggerItem } from "@/components/animated/AnimatedSection";
 
 interface Game {
   id: string;
@@ -178,14 +180,14 @@ export default function Games() {
       {/* Games Grid */}
       <section className="py-12 px-4">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatedStagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.1}>
             {filteredGames.map((game) => {
               const Icon = game.icon;
               return (
-                <Card
-                  key={game.id}
-                  className="group hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] relative overflow-hidden border-border/50 hover:border-primary/30 backdrop-blur-sm"
-                >
+                <AnimatedStaggerItem key={game.id}>
+                  <Card
+                    className="group hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] relative overflow-hidden border-border/50 hover:border-primary/30 backdrop-blur-sm h-full"
+                  >
                   {/* Gradient Background */}
                   <div
                     className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${game.gradient} transition-all duration-300 group-hover:h-3`}
@@ -236,7 +238,7 @@ export default function Games() {
                           </>
                         ) : (
                           <>
-                            <Timer className="h-4 w-4 mr-2" />
+                            <Clock className="h-4 w-4 mr-2" />
                             Coming Soon
                           </>
                         )}
@@ -244,9 +246,10 @@ export default function Games() {
                     </div>
                   </CardContent>
                 </Card>
+                </AnimatedStaggerItem>
               );
             })}
-          </div>
+          </AnimatedStagger>
         </div>
       </section>
 

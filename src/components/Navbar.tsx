@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket } from "lucide-react";
+import { Menu, X, Settings, Sparkles, Trophy, LayoutDashboard, ChevronDown, Calendar, Briefcase, Code, GraduationCap, MessageCircle, Users, Target, DollarSign, BookOpen, Rss, Video, UserCircle, Wrench, FileText, ChevronRight, ShoppingBag, Rocket, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -78,16 +78,39 @@ export const Navbar = () => {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      
+      // Set scrolled state for styling
+      setScrolled(currentScrollY > 10);
+      
+      // Show/hide navbar based on scroll direction
+      if (currentScrollY < 10) {
+        // Always show at top
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down & past threshold - hide navbar
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - show navbar
+        setIsVisible(true);
+      }
+      
+      // Show scroll-to-top button
+      setShowScrollTop(currentScrollY > 400);
+      
+      setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -127,12 +150,19 @@ export const Navbar = () => {
     setIsOpen(false);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <nav className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
-      scrolled 
-        ? 'bg-background/98 backdrop-blur-xl shadow-lg border-border/80' 
-        : 'bg-background/95 backdrop-blur-md border-border/50'
-    }`}>
+    <>
+      <nav className={`fixed top-0 z-50 w-full border-b transition-all duration-500 ${
+        scrolled 
+          ? 'bg-background/98 backdrop-blur-xl shadow-lg border-border/80' 
+          : 'bg-background/95 backdrop-blur-md border-border/50'
+      } ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex h-14 lg:h-16 items-center justify-between gap-2">
           {/* Logo */}
@@ -444,5 +474,21 @@ export const Navbar = () => {
         </div>
       </div>
     </nav>
+
+    {/* Spacer for fixed navbar */}
+    <div className="h-14 lg:h-16" aria-hidden="true" />
+
+    {/* Scroll to Top Button */}
+    <button
+      onClick={scrollToTop}
+      className={`fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-40 p-3 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group ${
+        showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16 pointer-events-none'
+      }`}
+      aria-label="Scroll to top"
+      title="Scroll to top"
+    >
+      <ArrowUp className="h-5 w-5 group-hover:animate-bounce" />
+    </button>
+    </>
   );
 };

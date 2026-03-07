@@ -26,6 +26,11 @@ import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPortal from "./pages/admin/AdminPortal";
 import AdminDashboardNew from "./pages/admin/Dashboard";
+import AdminAnalytics from "./pages/admin/Analytics";
+import AdminUsers from "./pages/admin/Users";
+import AdminCRM from "./pages/admin/CRM";
+import AdminContent from "./pages/admin/Content";
+import AdminSettings from "./pages/admin/Settings";
 import Bounties from "./pages/Bounties";
 import Hackathons from "./pages/Hackathons";
 import TermsAndConditions from "./pages/TermsAndConditions";
@@ -92,8 +97,13 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               {/* New Admin Portal Routes */}
               <Route path="/admin-portal" element={<AdminPortal />}>
-                <Route path="dashboard" element={<AdminDashboardNew />} />
                 <Route index element={<AdminDashboardNew />} />
+                <Route path="dashboard" element={<AdminDashboardNew />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="crm" element={<AdminCRM />} />
+                <Route path="content" element={<AdminContent />} />
+                <Route path="settings" element={<AdminSettings />} />
               </Route>
               <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />

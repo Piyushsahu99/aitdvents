@@ -24,6 +24,8 @@ import About from "./pages/About";
 import Scholarships from "./pages/Scholarships";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminPortal from "./pages/admin/AdminPortal";
+import AdminDashboardNew from "./pages/admin/Dashboard";
 import Bounties from "./pages/Bounties";
 import Hackathons from "./pages/Hackathons";
 import TermsAndConditions from "./pages/TermsAndConditions";
@@ -88,6 +90,11 @@ const App = () => (
               <Route path="/hackathons" element={<Hackathons />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              {/* New Admin Portal Routes */}
+              <Route path="/admin-portal" element={<AdminPortal />}>
+                <Route path="dashboard" element={<AdminDashboardNew />} />
+                <Route index element={<AdminDashboardNew />} />
+              </Route>
               <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/cookies" element={<CookiePolicy />} />

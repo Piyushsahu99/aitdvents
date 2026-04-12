@@ -223,16 +223,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <ProfileCompletionPopup />
-      
-      
+
+
       {/* Hero Section - Enhanced with Mascot */}
       <section className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center py-8 sm:py-12 lg:py-20 px-4 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-background to-orange-100/30 dark:from-orange-950/20 dark:via-background dark:to-orange-900/10" />
-        
+
         {/* Animated mesh gradient overlay */}
         <div className="absolute inset-0 bg-mesh opacity-50" />
-        
+
         {/* Shooting stars */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {/* Shooting star 1 */}
@@ -252,7 +252,7 @@ export default function Home() {
             <div className="w-28 sm:w-36 h-0.5 bg-gradient-to-l from-transparent via-teal-400 to-cyan-200 rounded-full shadow-lg shadow-teal-400/50" />
           </div>
         </div>
-        
+
         {/* Floating particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[20%] left-[10%] w-2 h-2 rounded-full bg-orange-400/40 animate-particle" />
@@ -263,7 +263,7 @@ export default function Home() {
           <div className="absolute bottom-[20%] left-[40%] w-1 h-1 rounded-full bg-orange-300/50 animate-rise" />
           <div className="absolute bottom-[30%] right-[45%] w-1.5 h-1.5 rounded-full bg-amber-300/40 animate-rise-delayed" />
         </div>
-        
+
         {/* Animated decorative blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[10%] left-[5%] w-16 sm:w-24 lg:w-32 h-16 sm:h-24 lg:h-32 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full blur-2xl animate-float" />
@@ -280,7 +280,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
+
         <div className="container mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
@@ -290,7 +290,7 @@ export default function Home() {
                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 text-orange-500 animate-pulse" />
                 {stats.students > 0 ? `${stats.students.toLocaleString()}+ Students Growing` : "India's #1 Student Platform"}
               </Badge>
-              
+
               {/* Main heading with AITD branding */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-5 animate-fade-in-up leading-tight">
                 <span className="text-orange-500">AITD</span>{" "}
@@ -301,7 +301,7 @@ export default function Home() {
                   <span className="text-foreground">Grow.</span>
                 </span>
               </h1>
-              
+
               {/* Subheading */}
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 animate-fade-in-up stagger-1">
                 Join India's fastest-growing platform for students to learn new skills, win bounties & land dream jobs
@@ -309,7 +309,7 @@ export default function Home() {
 
               {/* CTA Buttons with orange theme */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-in-up stagger-2">
-              <Link to="/auth" className="w-full sm:w-auto">
+                <Link to="/auth" className="w-full sm:w-auto">
                   <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-6 sm:px-8 rounded-xl shadow-lg active:scale-95 transition-transform duration-150 bg-gradient-to-r from-orange-500 to-amber-500 border-0 text-white">
                     <Rocket className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     Start Free - Earn Coins
@@ -347,44 +347,44 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-400/25 to-amber-400/25 rounded-full blur-3xl scale-90 animate-pulse-soft" />
                 <div className="absolute inset-4 bg-gradient-to-tr from-amber-300/20 to-orange-500/20 rounded-full blur-2xl scale-75 animate-float" />
                 <div className="absolute -inset-4 bg-gradient-to-bl from-orange-300/15 to-yellow-400/15 rounded-full blur-3xl scale-110 animate-float-delayed opacity-60" />
-                
+
                 {/* Sparkle effects */}
                 <div className="absolute top-4 left-8 sm:top-8 sm:left-12 w-3 h-3 sm:w-4 sm:h-4 animate-sparkle z-20">
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-amber-400 drop-shadow-lg">
-                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor" />
                   </svg>
                 </div>
                 <div className="absolute top-1/4 right-4 sm:right-8 w-2.5 h-2.5 sm:w-3 sm:h-3 animate-sparkle-delayed z-20">
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-orange-400 drop-shadow-lg">
-                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor" />
                   </svg>
                 </div>
                 <div className="absolute bottom-1/4 left-4 sm:left-6 w-2 h-2 sm:w-2.5 sm:h-2.5 animate-twinkle z-20">
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-yellow-400 drop-shadow-lg">
-                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor" />
                   </svg>
                 </div>
                 <div className="absolute bottom-8 right-8 sm:bottom-12 sm:right-16 w-3 h-3 sm:w-4 sm:h-4 animate-twinkle-delayed z-20">
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-amber-300 drop-shadow-lg">
-                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor" />
                   </svg>
                 </div>
                 <div className="absolute top-1/2 left-0 w-2 h-2 animate-twinkle-slow z-20">
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-orange-300 drop-shadow-lg">
-                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
+                    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor" />
                   </svg>
                 </div>
-                
-                <img 
-                  src={aitdMascot} 
-                  alt="AITD Events Mascot - A friendly student holding QR code" 
+
+                <img
+                  src={aitdMascot}
+                  alt="AITD Events Mascot - A friendly student holding QR code"
                   className="relative z-10 w-56 sm:w-72 md:w-80 lg:w-96 h-auto drop-shadow-2xl animate-float-slow"
                   loading="eager"
                 />
               </div>
             </div>
           </div>
-          
+
           {/* Quick stats row below hero */}
           <div className="flex items-center justify-center gap-6 sm:gap-10 lg:gap-16 mt-10 sm:mt-14 pt-8 border-t border-orange-200/50 dark:border-orange-800/30 animate-fade-in-up stagger-3">
             <div className="text-center">
@@ -439,14 +439,16 @@ export default function Home() {
         <div className="container mx-auto flex items-center justify-center gap-2 sm:gap-3 text-white">
           <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-pulse" />
           <span className="font-medium text-xs sm:text-sm">Join Telegram for updates & gifts!</span>
-          <a 
-            href="https://t.me/aitdevents" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white/20 hover:bg-white/30 rounded-full text-[10px] sm:text-xs font-medium transition-all hover:scale-105"
-          >
-            Join →
-          </a>
+          <div>
+            <a
+              href="https://t.me/aitdevents"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white/20 hover:bg-white/30 rounded-full text-[10px] sm:text-xs font-medium transition-all hover:scale-105"
+            >
+              Join →
+            </a>
+          </div>
         </div>
       </div>
 
@@ -514,13 +516,13 @@ export default function Home() {
                 Master new skills with expert-led courses
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8">
               {featuredCourses.map((course, index) => (
-                <Link 
-                  key={course.id} 
-                  to={`/courses/${course.id}`} 
-                  className="animate-fade-in-up" 
+                <Link
+                  key={course.id}
+                  to={`/courses/${course.id}`}
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full border-border/50">
@@ -569,7 +571,7 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            
+
             <div className="text-center">
               <Link to="/courses">
                 <Button variant="outline" className="hover:scale-[1.02] transition-all rounded-xl text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">
@@ -598,13 +600,13 @@ export default function Home() {
                 Join hackathons, workshops, and competitions
               </p>
             </div>
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
               {highlightedEvents.map((event, index) => (
-                <Link 
-                  key={event.id} 
-                  to="/events" 
-                  className="animate-fade-in-up" 
+                <Link
+                  key={event.id}
+                  to="/events"
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50 hover:border-orange-500/30">
@@ -617,11 +619,10 @@ export default function Home() {
                           loading="lazy"
                         />
                       ) : (
-                        <div className={`w-full h-full bg-gradient-to-br ${
-                          index % 4 === 0 ? 'from-orange-500 to-amber-600' : 
+                        <div className={`w-full h-full bg-gradient-to-br ${index % 4 === 0 ? 'from-orange-500 to-amber-600' :
                           index % 4 === 1 ? 'from-teal-500 to-cyan-600' :
-                          index % 4 === 2 ? 'from-blue-500 to-cyan-600' : 'from-emerald-500 to-teal-600'
-                        }`} />
+                            index % 4 === 2 ? 'from-blue-500 to-cyan-600' : 'from-emerald-500 to-teal-600'
+                          }`} />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="absolute top-2 left-2 flex flex-wrap gap-1">
@@ -653,7 +654,7 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            
+
             <div className="text-center">
               <Link to="/events">
                 <Button variant="outline" className="hover:scale-[1.02] transition-all rounded-xl text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">
@@ -667,12 +668,12 @@ export default function Home() {
       )}
 
       {/* Games Section */}
-      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-purple-600 via-indigo-500 to-cyan-500 relative overflow-hidden">
+      {/* <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-purple-600 via-indigo-500 to-cyan-500 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[20%] right-[10%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[15%] left-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-yellow-400/20 rounded-full blur-3xl animate-float-delayed" />
         </div>
-        
+
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-8 sm:mb-12">
             <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm animate-pulse">
@@ -686,7 +687,7 @@ export default function Home() {
               Play exciting games, compete with others, and earn AITD Coins while having fun!
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 max-w-6xl mx-auto">
             {[
               { name: "Spin Wheel", icon: "🎡", coins: 1000, link: "/games/spin-wheel" },
@@ -716,7 +717,81 @@ export default function Home() {
               </Link>
             ))}
           </div>
-          
+
+          <div className="text-center mt-8">
+            <Link to="/games">
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-white/90 text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all font-semibold shadow-2xl">
+                View All Games
+                <Trophy className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section> */}
+
+      <section className="py-10 sm:py-14 lg:py-20 px-4 bg-gradient-to-br from-purple-600 via-indigo-500 to-cyan-500 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[20%] right-[10%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-[15%] left-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-yellow-400/20 rounded-full blur-3xl animate-float-delayed" />
+        </div>
+
+        <div className="container mx-auto relative z-10">
+          <div className="text-center mb-8 sm:mb-12">
+            <Badge className="mb-3 sm:mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30 text-xs sm:text-sm animate-pulse">
+              <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
+              Play & Earn
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-white">
+              Fun Games <span className="opacity-90">Await You!</span>
+            </h2>
+            <p className="text-sm sm:text-base lg:text-lg text-white/90 mb-4 sm:mb-6 max-w-2xl mx-auto">
+              Play exciting games, compete with others, and earn AITD Coins while having fun!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 max-w-6xl mx-auto">
+            {[
+              { name: "Spin Wheel", icon: "🎡", coins: 1000, link: "/games/spin-wheel" },
+              { name: "Cricket Auction", icon: "🏏", coins: 100, link: "/games/cricket-auction" },
+              { name: "Target Master", icon: "🎯", coins: 30, link: "/games/target-master" },
+              { name: "Random Picker", icon: "🎲", coins: 0, link: "/games/random-picker" },
+              { name: "Quiz Battle", icon: "🧠", coins: 50, link: "/quiz" },
+            ].map((game, index) => (
+              <Link
+                key={game.name}
+                to={game.link}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="h-full flex flex-col justify-between bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-2xl p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl border border-white/20 group cursor-pointer">
+
+                  {/* Top content */}
+                  <div>
+                    <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform">
+                      {game.icon}
+                    </div>
+                    <div className="text-white font-bold text-sm sm:text-base mb-2">
+                      {game.name}
+                    </div>
+                  </div>
+
+                  {/* Bottom (coins or empty space) */}
+                  <div className="h-5 flex items-center justify-center">
+                    {game.coins > 0 ? (
+                      <div className="flex items-center gap-1 text-xs text-yellow-300">
+                        <Coins className="h-3 w-3" />
+                        <span>Up to {game.coins}</span>
+                      </div>
+                    ) : (
+                      <span className="invisible">placeholder</span>
+                    )}
+                  </div>
+
+                </div>
+              </Link>
+            ))}
+          </div>
+
           <div className="text-center mt-8">
             <Link to="/games">
               <Button size="lg" className="bg-white text-purple-600 hover:bg-white/90 text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:scale-[1.02] transition-all font-semibold shadow-2xl">
@@ -727,6 +802,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
 
       {/* Latest Jobs Section */}
       {latestJobs.length > 0 && (
@@ -744,13 +820,13 @@ export default function Home() {
                 Freshly added internships and job openings
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
               {latestJobs.map((job, index) => (
-                <Link 
-                  key={job.id} 
-                  to="/jobs" 
-                  className="animate-fade-in-up" 
+                <Link
+                  key={job.id}
+                  to="/jobs"
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden h-full border-border/50 hover:border-orange-500/30">
@@ -782,7 +858,7 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            
+
             <div className="text-center">
               <Link to="/jobs">
                 <Button variant="outline" className="hover:scale-[1.02] transition-all rounded-xl text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">
@@ -801,7 +877,7 @@ export default function Home() {
           <div className="absolute top-[10%] left-[5%] w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[10%] right-[5%] w-40 sm:w-64 h-40 sm:h-64 bg-white/10 rounded-full blur-3xl animate-float-delayed" />
         </div>
-        
+
         <div className="container mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="text-center lg:text-left">
@@ -815,7 +891,7 @@ export default function Home() {
               <p className="text-sm sm:text-base opacity-90 mb-4 sm:mb-6 max-w-lg mx-auto lg:mx-0">
                 Join our campus ambassador program and earn rewards while helping fellow students discover opportunities!
               </p>
-              
+
               <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6 max-w-sm mx-auto lg:mx-0">
                 <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
@@ -895,7 +971,7 @@ export default function Home() {
           <div className="absolute top-[20%] left-[10%] w-40 sm:w-64 h-40 sm:h-64 bg-orange-500/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-[20%] right-[10%] w-48 sm:w-80 h-48 sm:h-80 bg-teal-500/10 rounded-full blur-3xl animate-float-delayed" />
         </div>
-        
+
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-8 sm:mb-12">
             <Badge className="mb-2 sm:mb-3 text-xs sm:text-sm bg-orange-500/10 text-orange-600 border-orange-500/20">
@@ -909,7 +985,7 @@ export default function Home() {
               Thousands of students are already building their future with us
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {[
               { value: stats.students, label: "Students", sublabel: "Learning & Growing", color: "text-orange-500" },

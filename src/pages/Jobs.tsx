@@ -27,7 +27,7 @@ export default function Jobs() {
 
   useEffect(() => {
     fetchJobs();
-    
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
@@ -122,7 +122,7 @@ export default function Jobs() {
           <div className="absolute top-10 left-10 w-32 sm:w-48 lg:w-72 h-32 sm:h-48 lg:h-72 bg-orange-500/20 rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-10 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-amber-500/20 rounded-full blur-3xl" />
         </div>
-        
+
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-6 sm:mb-10">
             <Badge className="mb-3 sm:mb-4 bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20 text-xs sm:text-sm">
@@ -135,9 +135,9 @@ export default function Jobs() {
             <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 sm:mb-6">
               Launch your career with opportunities from top companies
             </p>
-            
+
             {/* Post Job Button */}
-            <Button 
+            <Button
               onClick={handlePostJob}
               className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg h-10 sm:h-11 text-sm sm:text-base"
             >
@@ -188,14 +188,16 @@ export default function Jobs() {
         <div className="container mx-auto max-w-6xl flex items-center justify-center gap-2 text-white text-xs sm:text-sm">
           <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           <span className="font-medium">Join Telegram for daily job updates!</span>
-          <a 
-            href="https://t.me/aitdevents" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="ml-1 sm:ml-2 px-2 sm:px-3 py-0.5 sm:py-1 bg-white/20 hover:bg-white/30 rounded-full text-[10px] sm:text-xs font-semibold transition-colors"
-          >
-            Join →
-          </a>
+          <div>
+            <a
+              href="https://t.me/aitdevents"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 sm:ml-2 px-2 sm:px-3 py-0.5 sm:py-1 bg-white/20 hover:bg-white/30 rounded-full text-[10px] sm:text-xs font-semibold transition-colors"
+            >
+              Join →
+            </a>
+          </div>
         </div>
       </div>
 
@@ -209,18 +211,17 @@ export default function Jobs() {
               value={search}
               onChange={setSearch}
             />
-            
+
             {/* Category Pills */}
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setCategory(cat)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all active:scale-95 ${
-                    category === cat
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all active:scale-95 ${category === cat
                       ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg"
                       : "bg-card border border-border hover:border-orange-500/50 text-foreground"
-                  }`}
+                    }`}
                 >
                   {cat}
                 </button>
@@ -240,7 +241,7 @@ export default function Jobs() {
                         <div className="h-5 w-20 bg-muted rounded-full" />
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {[1,2,3,4].map((j) => (
+                        {[1, 2, 3, 4].map((j) => (
                           <div key={j} className="flex items-center gap-2">
                             <div className="p-1.5 rounded-lg bg-muted w-8 h-8" />
                             <div className="flex-1 space-y-1">
@@ -273,7 +274,7 @@ export default function Jobs() {
                         className="w-full h-full object-cover lg:object-contain lg:p-4"
                       />
                     </div>
-                    
+
                     {/* Content Section */}
                     <div className="flex-1 p-6">
                       <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -285,14 +286,14 @@ export default function Jobs() {
                           Open to All Students
                         </Badge>
                       </div>
-                      
+
                       <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
                         Join AITD Events Team - Multiple Roles
                       </h3>
                       <p className="text-sm text-muted-foreground mb-4">
                         Be part of our student-driven community! We're looking for passionate students to join exciting roles.
                       </p>
-                      
+
                       <div className="flex flex-wrap gap-2 mb-4">
                         {["Graphic Designer", "Video Editor", "Event Manager", "Sponsorship Team", "Marketing & PR", "Community Lead"].map((role) => (
                           <div key={role} className="flex items-center gap-1 text-xs bg-orange-500/10 text-orange-700 rounded-full px-2.5 py-1 border border-orange-500/20">
@@ -301,7 +302,7 @@ export default function Jobs() {
                           </div>
                         ))}
                       </div>
-                      
+
                       <div className="flex flex-wrap gap-3 mb-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Gift className="w-3.5 h-3.5 text-orange-500" />
@@ -316,7 +317,7 @@ export default function Jobs() {
                           <span>Certificate</span>
                         </div>
                       </div>
-                      
+
                       <a href="https://forms.gle/12yBH78tNfAzhDFm6" target="_blank" rel="noopener noreferrer">
                         <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg">
                           Apply Now
@@ -333,137 +334,138 @@ export default function Jobs() {
                   const daysRemaining = getDaysRemaining(job.apply_by);
                   const isUrgent = daysRemaining !== null && daysRemaining <= 3 && daysRemaining >= 0;
                   const isExpired = daysRemaining !== null && daysRemaining < 0;
-                  
+
                   return (
-                  <Card
-                    key={job.id}
-                    className={`group overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-border/50 animate-fade-in cursor-pointer relative ${isUrgent ? 'ring-2 ring-red-500/30' : ''} ${isExpired ? 'opacity-60' : ''}`}
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                    onClick={() => openJobDetail(job)}
-                  >
-                    {/* Top gradient accent bar */}
-                    <div className={`h-1.5 w-full ${typeColors[job.type] || 'bg-primary'}`} />
-                    
-                    <CardContent className="p-5">
-                      {/* Header */}
-                      <div className="flex items-start gap-3 mb-4">
-                        {(() => {
-                          const initial = job.company?.charAt(0)?.toUpperCase() || "?";
-                          const hash = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
-                          const bgColors = ["bg-primary", "bg-accent", "bg-blue-500", "bg-emerald-500", "bg-violet-500"];
-                          const bg = bgColors[Math.abs(hash) % bgColors.length];
-                          return (
-                            <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-lg`}>
-                              {initial}
-                            </div>
-                          );
-                        })()}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-bold text-foreground group-hover:text-orange-500 transition-colors truncate">
-                            {job.title}
-                          </h3>
-                          <p className="text-sm text-muted-foreground font-medium">{job.company}</p>
-                        </div>
-                        <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0 flex-shrink-0 text-xs`}>
-                          {job.type}
-                        </Badge>
-                      </div>
+                    <Card
+                      key={job.id}
+                      className={`group overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-border/50 animate-fade-in cursor-pointer relative ${isUrgent ? 'ring-2 ring-red-500/30' : ''} ${isExpired ? 'opacity-60' : ''}`}
+                      style={{ animationDelay: `${index * 0.05}s` }}
+                      onClick={() => openJobDetail(job)}
+                    >
+                      {/* Top gradient accent bar */}
+                      <div className={`h-1.5 w-full ${typeColors[job.type] || 'bg-primary'}`} />
 
-                      {/* Info chips */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        <div className="flex items-center gap-1.5 text-xs bg-muted/60 rounded-full px-2.5 py-1">
-                          <MapPin className="h-3 w-3 text-blue-500" />
-                          <span className="text-muted-foreground">{job.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs bg-muted/60 rounded-full px-2.5 py-1">
-                          <Clock className="h-3 w-3 text-violet-500" />
-                          <span className="text-muted-foreground">{job.duration}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs bg-emerald-500/10 rounded-full px-2.5 py-1 font-semibold">
-                          <Banknote className="h-3 w-3 text-emerald-500" />
-                          <span className="text-emerald-600">{job.stipend}</span>
-                        </div>
-                      </div>
-                              
-                      {job.description && (
-                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
-                          {job.description}
-                        </p>
-                      )}
-
-                      {/* Badges row */}
-                      <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <Badge variant="outline" className="rounded-full text-xs">
-                          {job.category}
-                        </Badge>
-                        {isUrgent && !isExpired && (
-                          <Badge className="rounded-full bg-red-500 text-white border-0 animate-pulse text-xs">
-                            🔥 {daysRemaining === 0 ? "Last day!" : `${daysRemaining} days left`}
+                      <CardContent className="p-5">
+                        {/* Header */}
+                        <div className="flex items-start gap-3 mb-4">
+                          {(() => {
+                            const initial = job.company?.charAt(0)?.toUpperCase() || "?";
+                            const hash = job.company?.split("").reduce((a: number, b: string) => ((a << 5) - a) + b.charCodeAt(0), 0) || 0;
+                            const bgColors = ["bg-primary", "bg-accent", "bg-blue-500", "bg-emerald-500", "bg-violet-500"];
+                            const bg = bgColors[Math.abs(hash) % bgColors.length];
+                            return (
+                              <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-lg`}>
+                                {initial}
+                              </div>
+                            );
+                          })()}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-bold text-foreground group-hover:text-orange-500 transition-colors truncate">
+                              {job.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground font-medium">{job.company}</p>
+                          </div>
+                          <Badge className={`${typeColors[job.type] || 'bg-primary'} text-white border-0 flex-shrink-0 text-xs`}>
+                            {job.type}
                           </Badge>
-                        )}
-                        {isExpired && (
-                          <Badge variant="destructive" className="rounded-full text-xs">
-                            Expired
-                          </Badge>
-                        )}
-                        {job.apply_by && !isUrgent && !isExpired && (
-                          <Badge variant="secondary" className="rounded-full bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
-                            <Clock className="h-3 w-3 mr-1" />
-                            Apply by: {job.apply_by}
-                          </Badge>
-                        )}
-                      </div>
+                        </div>
 
-                      {/* Apply link highlight */}
-                      {job.apply_link && (
-                        <div className="flex items-center gap-2 mb-4 p-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20" onClick={(e) => { e.stopPropagation(); window.open(job.apply_link, '_blank', 'noopener,noreferrer'); }}>
-                          <ExternalLink className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                          <span className="text-xs text-emerald-600 font-medium truncate">{job.apply_link}</span>
-                          <ArrowRight className="h-3 w-3 text-emerald-500 flex-shrink-0 ml-auto" />
+                        {/* Info chips */}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <div className="flex items-center gap-1.5 text-xs bg-muted/60 rounded-full px-2.5 py-1">
+                            <MapPin className="h-3 w-3 text-blue-500" />
+                            <span className="text-muted-foreground">{job.location}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs bg-muted/60 rounded-full px-2.5 py-1">
+                            <Clock className="h-3 w-3 text-violet-500" />
+                            <span className="text-muted-foreground">{job.duration}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs bg-emerald-500/10 rounded-full px-2.5 py-1 font-semibold">
+                            <Banknote className="h-3 w-3 text-emerald-500" />
+                            <span className="text-emerald-600">{job.stipend}</span>
+                          </div>
                         </div>
-                      )}
 
-                      {/* Actions */}
-                      <div className="flex items-center justify-between pt-3 border-t border-border/50" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-1">
-                          <ShareButtons 
-                            title={job.title}
-                            url={job.apply_link || `${window.location.origin}/jobs?id=${job.id}`}
-                            type="job"
-                            referenceId={job.id}
-                            compact
-                          />
+                        {job.description && (
+                          <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+                            {job.description}
+                          </p>
+                        )}
+
+                        {/* Badges row */}
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                          <Badge variant="outline" className="rounded-full text-xs">
+                            {job.category}
+                          </Badge>
+                          {isUrgent && !isExpired && (
+                            <Badge className="rounded-full bg-red-500 text-white border-0 animate-pulse text-xs">
+                              🔥 {daysRemaining === 0 ? "Last day!" : `${daysRemaining} days left`}
+                            </Badge>
+                          )}
+                          {isExpired && (
+                            <Badge variant="destructive" className="rounded-full text-xs">
+                              Expired
+                            </Badge>
+                          )}
+                          {job.apply_by && !isUrgent && !isExpired && (
+                            <Badge variant="secondary" className="rounded-full bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Apply by: {job.apply_by}
+                            </Badge>
+                          )}
                         </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openJobDetail(job);
-                            }}
-                            className="text-muted-foreground hover:text-orange-500 h-8 px-3"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View
-                          </Button>
-                          <Button 
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleApply(job);
-                            }}
-                            disabled={isExpired}
-                            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md h-8 px-4"
-                          >
-                            {job.apply_link ? 'Apply' : 'Apply Now'}
-                            <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
-                          </Button>
+
+                        {/* Apply link highlight */}
+                        {job.apply_link && (
+                          <div className="flex items-center gap-2 mb-4 p-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20" onClick={(e) => { e.stopPropagation(); window.open(job.apply_link, '_blank', 'noopener,noreferrer'); }}>
+                            <ExternalLink className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                            <span className="text-xs text-emerald-600 font-medium truncate">{job.apply_link}</span>
+                            <ArrowRight className="h-3 w-3 text-emerald-500 flex-shrink-0 ml-auto" />
+                          </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-between pt-3 border-t border-border/50" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-1">
+                            <ShareButtons
+                              title={job.title}
+                              url={job.apply_link || `${window.location.origin}/jobs?id=${job.id}`}
+                              type="job"
+                              referenceId={job.id}
+                              compact
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openJobDetail(job);
+                              }}
+                              className="text-muted-foreground hover:text-orange-500 h-8 px-3"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleApply(job);
+                              }}
+                              disabled={isExpired}
+                              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md h-8 px-4"
+                            >
+                              {job.apply_link ? 'Apply' : 'Apply Now'}
+                              <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )})}
+                      </CardContent>
+                    </Card>
+                  )
+                })}
               </div>
 
               {filteredJobs.length === 0 && !loading && (
@@ -489,8 +491,8 @@ export default function Jobs() {
       </section>
 
       <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
-      <JobSubmissionModal 
-        open={showJobModal} 
+      <JobSubmissionModal
+        open={showJobModal}
         onOpenChange={setShowJobModal}
         onSuccess={fetchJobs}
       />
